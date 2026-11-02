@@ -1,0 +1,17 @@
+import { S } from "./util.js";
+import { moodFor, faceSvg, wordFor, MOODS } from "./mascot.js";
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(74), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+t("message « ok » : content", moodFor("gmsg ok", "✅ Bien joué !") === "happy");
+t("message « ok » de victoire (🎉) : fête", moodFor("gmsg lt ok", "🎉 Bravo ! Ton programme fonctionne !") === "celebrate" && moodFor("gmsg ok", "🎉 Tu as construit tout le programme !") === "celebrate");
+t("message « warn » : inquiet", moodFor("gmsg warn", "🙂 Pas tout à fait") === "worried" && moodFor("gmsg lt warn", "❌ Faute") === "worried");
+t("message « hint » : réfléchit", moodFor("gmsg hint", "💡 Indice 1") === "thinking");
+t("message neutre : on ne change rien", moodFor("gmsg", "Touche des blocs") === null && moodFor("", "") === null);
+t("« ok » ne se confond pas avec « token » ou « book »", moodFor("gmsg token", "x") === null && moodFor("gmsg book", "x") === null);
+t("5 humeurs, chacune avec un visage différent", MOODS.length === 5 && new Set(MOODS.map(m => faceSvg(m))).size === 5);
+t("chaque visage est un SVG valide et non vide", MOODS.every(m => /^<svg [^>]*>.*<\/svg>$/s.test(faceSvg(m)) && faceSvg(m).length > 400));
+S.robot = { ...S.robot, color: "#e24b4b", head: "square" }; const sq = faceSvg("happy"); S.robot = { ...S.robot, head: "round" }; const rd = faceSvg("happy");
+t("le visage reprend la couleur et la forme de la tête du robot de l'enfant", sq.includes('fill="#e24b4b"') && sq.includes('rx="10"') && rd.includes('rx="28"') && sq !== rd);
+t("la lumière d'antenne change avec l'humeur", faceSvg("happy").includes("#7CFC9A") && faceSvg("worried").includes("#ffb347") && faceSvg("neutral").includes("#bbb"));
+t("des petits mots pour chaque humeur (sauf neutre)", ["happy", "worried", "thinking", "celebrate"].every(m => wordFor(m).length > 3) && wordFor("neutral") === "");
+t("les mots tournent (pas toujours le même)", new Set([0, 1, 2, 3].map(i => wordFor("happy", i))).size === 4);
+console.log(bad ? "PROBLEMES: " + bad : "LE PETIT ROBOT REAGIT");

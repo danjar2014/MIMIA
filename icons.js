@@ -1,0 +1,23 @@
+// Les icônes dessinées de l'appli (même trait épais et mêmes couleurs que le petit robot) : elles s'affichent pareil sur tous les appareils,
+// contrairement aux emojis. Chaque icône est décorative : le nom de la carte porte le sens (aria-hidden).
+const D = "#38362f", S = `stroke="${D}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+const wrap = body => `<svg viewBox="0 0 48 48" class="ico" aria-hidden="true" focusable="false">${body}</svg>`;
+const gear = (cx, cy, r, n, fill) => { const pts = []; for (let i = 0; i < n * 2; i++) { const a = (Math.PI * i) / n, rr = i % 2 ? r * 0.78 : r; pts.push(`${(cx + rr * Math.cos(a - 0.2)).toFixed(1)},${(cy + rr * Math.sin(a - 0.2)).toFixed(1)} ${(cx + rr * Math.cos(a + 0.2)).toFixed(1)},${(cy + rr * Math.sin(a + 0.2)).toFixed(1)}`); } return `<polygon points="${pts.join(" ")}" fill="${fill}" ${S}/>`; };
+export const ICONS = {
+  play: wrap(`<circle cx="24" cy="24" r="19" fill="#34c38f" ${S}/><path d="M19 15l16 9-16 9z" fill="#fff" ${S}/>`),
+  path: wrap(`<path d="M5 12l12-5 14 5 12-5v29l-12 5-14-5-12 5z" fill="#ffd54a" ${S}/><path d="M17 7v29M31 12v29" ${S} fill="none"/><path d="M12 33q6-12 12-4t10-10" stroke="#e24b4b" stroke-width="3.5" stroke-dasharray="1 6" stroke-linecap="round" fill="none"/><circle cx="35" cy="19" r="3.5" fill="#e24b4b" ${S}/>`),
+  target: wrap(`<circle cx="22" cy="26" r="17" fill="#fff" ${S}/><circle cx="22" cy="26" r="11" fill="#ff6fa5" ${S}/><circle cx="22" cy="26" r="5" fill="#fff" ${S}/><path d="M23 25l15-15M33 8l1 7 7 1" ${S} fill="none" stroke="#3f7fd6" stroke-width="3.5"/>`),
+  medal: wrap(`<path d="M13 4h9l4 12h-9zM35 4h-9l-4 12h9z" fill="#3f7fd6" ${S}/><circle cx="24" cy="31" r="12" fill="#ffd54a" ${S}/><path d="M24 25l2.2 4.4 4.8.7-3.5 3.4.8 4.8-4.3-2.3-4.3 2.3.8-4.8-3.5-3.4 4.8-.7z" fill="#ff9140" stroke="${D}" stroke-width="1.8" stroke-linejoin="round"/>`),
+  magnifier: wrap(`<circle cx="20" cy="20" r="13" fill="#bfe9ff" ${S}/><path d="M13 16a8 8 0 0 1 7-5" stroke="#fff" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M30 30l13 13" ${S} stroke-width="6"/><path d="M30 30l13 13" stroke="#ff9140" stroke-width="3.2" stroke-linecap="round"/>`),
+  gear: wrap(`${gear(20, 26, 15, 8, "#ffb04a")}<circle cx="20" cy="26" r="5" fill="#fff" ${S}/>${gear(36, 11, 9, 6, "#34c38f")}<circle cx="36" cy="11" r="2.6" fill="#fff" ${S}/>`),
+  rocket: wrap(`<path d="M24 3c8 6 11 16 9 27H15c-2-11 1-21 9-27z" fill="#fff" ${S}/><circle cx="24" cy="18" r="5" fill="#6fcfff" ${S}/><path d="M15 30l-7 7 7-2zM33 30l7 7-7-2z" fill="#ff6fa5" ${S}/><path d="M19 30h10l-5 13z" fill="#ffd54a" ${S}/>`),
+  blocks: wrap(`<rect x="4" y="27" width="20" height="16" rx="4" fill="#3f7fd6" ${S}/><rect x="24" y="27" width="20" height="16" rx="4" fill="#ff6fa5" ${S}/><rect x="14" y="8" width="20" height="16" rx="4" fill="#34c38f" ${S}/><circle cx="14" cy="35" r="2.4" fill="#fff"/><circle cx="34" cy="35" r="2.4" fill="#fff"/><circle cx="24" cy="16" r="2.4" fill="#fff"/>`),
+  code: wrap(`<rect x="3" y="8" width="42" height="32" rx="7" fill="#1b2a41" ${S}/><path d="M15 18l-6 6 6 6M33 18l6 6-6 6" stroke="#5de6ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M27 15l-6 18" stroke="#ffd54a" stroke-width="4" stroke-linecap="round"/>`),
+  sensor: wrap(`<path d="M3 24c6-10 13-15 21-15s15 5 21 15c-6 10-13 15-21 15S9 34 3 24z" fill="#fff" ${S}/><circle cx="24" cy="24" r="9" fill="#8a5cf6" ${S}/><circle cx="24" cy="24" r="4" fill="#38362f"/><circle cx="27" cy="21" r="2" fill="#fff"/>`),
+  palette: wrap(`<path d="M24 4C12 4 4 13 4 24s8 20 19 20c5 0 5-4 3-7s0-6 4-6h6c6 0 8-4 8-8C44 11 35 4 24 4z" fill="#ffe3b3" ${S}/><circle cx="15" cy="20" r="3.4" fill="#e24b4b" ${S}/><circle cx="23" cy="13" r="3.4" fill="#ffd54a" ${S}/><circle cx="33" cy="15" r="3.4" fill="#34c38f" ${S}/><circle cx="37" cy="25" r="3.4" fill="#3f7fd6" ${S}/>`),
+  star: wrap(`<path d="M24 4l6 13 14 2-10 10 2.5 14L24 36l-12.5 7L14 29 4 19l14-2z" fill="#ffd54a" ${S}/><path d="M17 20l4-5" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`),
+  lock: wrap(`<rect x="9" y="21" width="30" height="22" rx="6" fill="#c9c2dd" ${S}/><path d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" ${S} stroke-width="4"/><circle cx="24" cy="31" r="3.4" fill="${D}"/>`),
+  trophy: wrap(`<path d="M13 6h22v12a11 11 0 0 1-22 0z" fill="#ffd54a" ${S}/><path d="M13 10H6c0 8 3 12 8 13M35 10h7c0 8-3 12-8 13" fill="none" ${S}/><path d="M24 29v8M16 43h16l-2-6H18z" fill="#ff9140" ${S}/>`),
+  bolt: wrap(`<path d="M27 3L9 27h12l-3 18 21-26H26z" fill="#ffd54a" ${S}/>`)
+};
+export const icon = (name, cls = "") => (ICONS[name] || ICONS.star).replace('class="ico"', `class="ico ${cls}"`);

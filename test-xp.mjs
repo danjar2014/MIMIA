@@ -1,0 +1,16 @@
+import { S } from "./util.js";
+import { addXP, stepXP, todayXP, totalXP, goalXP, GOALS } from "./xp.js";
+import { STEPS } from "./onboard.js";
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(74), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+const NOW = new Date("2026-11-10T12:00:00").getTime(); S.xp = null; S.dailyGoalXP = 100;
+t("étape réussie sans erreur : 75 XP ; avec erreurs : 50 XP", stepXP(0) === 75 && stepXP(3) === 50);
+let r = addXP(50, NOW); t("première étape du jour : firstOfDay, objectif pas atteint", r.firstOfDay && !r.crossed && r.after === 50);
+r = addXP(75, NOW); t("deuxième étape : objectif de 100 atteint exactement une fois (crossed)", !r.firstOfDay && r.crossed && r.after === 125);
+r = addXP(50, NOW); t("au-delà de l'objectif : pas de nouvelle fête", !r.crossed);
+t("XP du jour et total", todayXP(NOW) === 175 && totalXP() === 175);
+r = addXP(50, NOW + 86400000); t("le lendemain : nouveau jour (firstOfDay), total cumulé", r.firstOfDay && todayXP(NOW + 86400000) === 50 && totalXP() === 225);
+S.dailyGoalXP = 50; r = addXP(75, NOW + 2 * 86400000); t("objectif 50 : atteint dès la première étape de 75", r.crossed && r.firstOfDay);
+S.dailyGoalXP = 0; t("objectif par défaut = 100", goalXP() === 100);
+t("3 objectifs proposés : 50, 100, 200", GOALS.map(g => g.xp).join() === "50,100,200");
+t("la conversation d'accueil : 10 étapes, de la salutation au départ", STEPS.length === 10 && STEPS[0] === "greeting" && STEPS[1] === "name" && STEPS.at(-1) === "ready");
+console.log(bad ? "PROBLEMES: " + bad : "LES XP FONCTIONNENT");

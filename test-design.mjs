@@ -1,0 +1,17 @@
+import { ICONS, icon } from "./icons.js";
+import { SCENES, sceneHtml, sceneFor, SCENE_OF, animatedCount } from "./scene.js";
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(76), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+const names = Object.keys(ICONS);
+t(`${names.length} icônes dessinées, toutes des SVG complets et décoratifs`, names.length >= 14 && names.every(k => /^<svg viewBox="0 0 48 48" class="ico" aria-hidden="true" focusable="false">.+<\/svg>$/s.test(ICONS[k])));
+t("les balises des icônes sont bien refermées", names.every(k => { const s = ICONS[k]; return (s.match(/<svg/g) || []).length === 1 && (s.match(/<\/svg>/g) || []).length === 1 && (s.match(/<g[ >]/g) || []).length === (s.match(/<\/g>/g) || []).length && !/<(path|circle|rect|polygon)[^>]*[^/]>\s*<\/svg>/.test(s); }));
+t("icon() ajoute une classe et se rabat sur une étoile si le nom est inconnu", icon("play", "mini").includes('class="ico mini"') && icon("nimporte") === icon("star"));
+t("aucune icône ne charge quelque chose sur Internet", names.every(k => !/https?:|url\(|href=/.test(ICONS[k])));
+t("4 ambiances + calme, chacune avec son décor", Object.keys(SCENES).sort().join() === "calm,party,sky,space,workshop" && ["sky", "space", "workshop", "party"].every(k => SCENES[k].length >= 8) && SCENES.calm.length === 0);
+t("décor léger : 25 formes animées au maximum par ambiance", Object.keys(SCENES).every(k => animatedCount(k) <= 25), JSON.stringify(Object.fromEntries(Object.keys(SCENES).map(k => [k, animatedCount(k)]))));
+t("aucun décor ne charge quelque chose sur Internet", Object.keys(SCENES).every(k => !/https?:|url\(|href=|<script|onerror|onload/.test(sceneHtml(k))));
+t("chaque forme du décor est animée par une classe connue", Object.keys(SCENES).every(k => SCENES[k].every(h => /class="sc (sc-drift|sc-bob|sc-spin|sc-rev|sc-twinkle|sc-fly|sc-rise|sc-fall|sc-hills)/.test(h))));
+t("les activités ont leur ambiance : code = espace, carte = atelier, défi = fête", sceneFor("code") === "space" && sceneFor("build") === "workshop" && sceneFor("daily") === "party" && sceneFor("learn") === "sky");
+t("une activité inconnue retombe sur le ciel", sceneFor("autre") === "sky");
+t("tableau de bord des parents : ambiance calme, sans animation", SCENE_OF.dash === "calm");
+t("des couleurs variées : au moins 6 teintes différentes dans les décors", new Set(Object.keys(SCENES).flatMap(k => sceneHtml(k).match(/#[0-9a-fA-F]{6}/g) || [])).size >= 6);
+console.log(bad ? "PROBLEMES: " + bad : "LE DESIGN EST COHERENT");
