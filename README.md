@@ -63,3 +63,11 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - Appareil déjà utilisé avant cette version : la configuration parent est demandée une fois, la progression de l'enfant est conservée.
 - Voix selon l'âge (réglage « Selon l'âge ») : 6-8 et 8-10 ans = consigne et résultat à voix haute (les 6-8 ans entendent aussi les réponses, plus lentement) ; 10-12 ans = seulement avec le bouton 🔊.
 - Test : `node test-parentsetup.mjs`.
+
+## Moins de texte (esprit Montessori)
+
+- Les menus (Mon parcours, Programmer, Construire, Coder, Aller plus loin, Badges) n'affichent plus de sous-titres ni de phrases d'introduction : une icône et un titre court par carte. L'explication d'une section se lit en touchant ℹ️.
+- « Mon parcours » : un titre court par aventure (« Aventure 2 · Curieux (0/6) »), l'aventure en cours est ouverte, les aventures terminées sont repliées (▸) et se rouvrent pour refaire leurs étapes, les suivantes restent verrouillées.
+- « Mes badges » : un compteur (🏅 4 sur 38 · 🔥 2) et des médailles ; l'explication d'un badge s'affiche en le touchant.
+- Mots à l'écran (mesure sur l'écran de départ) : Coder 628 → 222, Badges 420 → 186, Parcours 356 → 110, Construire 341 → 79, Aller plus loin 261 → 153.
+- Vocabulaire : « rang » devient « aventure » ; l'aventure 1 s'appelle « Poussin » 🐣.

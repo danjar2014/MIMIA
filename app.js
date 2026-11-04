@@ -191,8 +191,8 @@ function playDaily(practice) {
 function showBadges() {
   leave(); if (sceneApi) sceneApi.set("party"); app.innerHTML = ""; app.append(topbar("Mes badges", home, false)); const box = el("div", "astage"); app.append(box);
   const L = badgeList(), got = L.filter(b => b.date).length, ss = softStreak(playDays());
-  box.append(el("div", "gmsg lt", `🏅 ${got} badge${got > 1 ? "s" : ""} sur ${L.length}. ${ss.streak ? `🔥 Série douce : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}${ss.rested ? " (un jour de repos, ça compte !)" : ""}.` : "Joue aujourd'hui pour commencer une nouvelle série !"} Un jour de repos ne casse jamais ta série.`));
-  const grid = el("div", "badgegrid"); L.forEach(b => { const c = el("div", "badge" + (b.date ? " on" : ""), `<span>${b.date ? b.icon : "🔒"}</span><b>${b.name}</b><small>${b.date ? "Gagné le " + b.date.split("-").reverse().slice(0, 2).join("/") : b.how}</small>`); c.dataset.say = b.date ? `${b.name}. Badge gagné.` : `${b.name}. Pour l'obtenir : ${b.how}`; grid.append(c); }); box.append(grid);
+  const intro = el("div", "gmsg lt", `🏅 ${got} sur ${L.length}${ss.streak ? ` · 🔥 ${ss.streak}` : ""}`); intro.dataset.say = `Tu as ${got} badge${got > 1 ? "s" : ""} sur ${L.length}.${ss.streak ? ` Série douce : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}.` : ""} Un jour de repos ne casse jamais ta série.`; box.append(intro);
+  const grid = el("div", "badgegrid"); L.forEach(b => { const c = el("div", "badge" + (b.date ? " on" : ""), `<span>${b.date ? b.icon : "🔒"}</span><b>${b.name}</b>`); c.onclick = () => toast(b.date ? "Gagné le " + b.date.split("-").reverse().slice(0, 2).join("/") : b.how, 4000); c.dataset.say = b.date ? `${b.name}. Badge gagné.` : `${b.name}. Pour l'obtenir : ${b.how}`; grid.append(c); }); box.append(grid);
 }
 function playLearn(id) {
   const i = LESSONS.findIndex(l => l.id === id), nx = i + 1 < LESSONS.length ? () => playLearn(LESSONS[i + 1].id) : null;
@@ -219,12 +219,12 @@ function launchStep(s) {
 }
 function parcours() {
   const ns = nextStep();
-  const groups = [{ header: "🗺️ Ton chemin, du tout début jusqu'à Expert. Termine une aventure pour ouvrir la suivante. Touche l'étape qui brille pour continuer, ou refais une étape d'une aventure déjà terminée !", items: [] }];
+  const groups = [];
   RANKS.forEach((r, i) => {
     const p = rankProgress(i), un = rankUnlocked(i), fin = rankDone(i);
-    const header = `${r.icon} Aventure ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"} — ${un ? r.goal : "Termine l'aventure d'avant pour l'ouvrir."}`;
-    if (!un) { groups.push({ header, items: [] }); return; }  // une aventure terminée reste ouverte : on peut refaire ses étapes
-    groups.push({ header, items: r.steps.map((s, j) => { const info = stepInfo(s), ok = stepUnlocked(i, j); return { icon: info.icon, title: info.title, sub: info.sub, done: stepDone(s), rec: !!ns && ns.rank === i && ns.index === j, locked: !ok, go: ok ? () => launchStep(s) : () => { toast("Termine d'abord l'étape d'avant 🙂"); speak("Termine d'abord l'étape d'avant."); } }; }) });
+    const header = `${r.icon} Aventure ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"}`, info = un ? r.goal : "Termine l'aventure d'avant pour l'ouvrir.";
+    if (!un) { groups.push({ header, info, items: [] }); return; }  // une aventure terminée reste ouverte : on peut refaire ses étapes
+    groups.push({ header, info, collapsed: fin, items: r.steps.map((s, j) => { const info = stepInfo(s), ok = stepUnlocked(i, j); return { icon: info.icon, title: info.title, sub: info.sub, done: stepDone(s), rec: !!ns && ns.rank === i && ns.index === j, locked: !ok, go: ok ? () => launchStep(s) : () => { toast("Termine d'abord l'étape d'avant 🙂"); speak("Termine d'abord l'étape d'avant."); } }; }) });
   });
   menu("Mon parcours", groups, home);
 }
@@ -242,7 +242,18 @@ function topbar(title, back, withPause = true) {
 }
 function menu(title, groups, back) {
   leave(); if (sceneApi) sceneApi.set("sky"); app.innerHTML = ""; app.append(topbar(title, back, false)); const box = el("div", "levels");
-  groups.forEach(g => { if (g.header) box.append(el("div", "gh", g.header)); (g.items || []).forEach(it => { const b = el("button", "lv" + (it.rec ? " rec" : "") + (it.locked ? " locked" : ""), `<span class="n">${it.icon}</span><span class="ttl2"><b>${it.title}</b>${it.sub ? `<small>${it.sub}</small>` : ""}</span><span class="st">${it.locked ? "🔒" : it.done ? "⭐" : ""}</span>`); b.onclick = it.go; box.append(b); }); });
+  groups.forEach(g => {
+    const holder = el("div", "gitems");
+    if (g.header) {
+      // Montessori : très peu de mots à l'écran. On garde le début du titre ; l'explication se lit en touchant ℹ️
+      const parts = String(g.header).split(/\s[:—]\s/), short = parts[0], more = g.info || parts.slice(1).join(" — ");
+      const head = el("div", "gh"), tt = el(g.collapsed ? "button" : "span", "ght" + (g.collapsed ? " ghfold" : ""), short + (g.collapsed ? " ▸" : "")); head.append(tt); box.append(head);
+      if (more) { const tip = el("div", "ghmore", more), inf = el("button", "ghi", "ℹ️"); tip.style.display = "none"; inf.setAttribute("aria-label", "Plus d'explications"); inf.onclick = () => { tip.style.display = tip.style.display === "none" ? "" : "none"; }; head.append(inf); box.append(tip); }
+      if (g.collapsed) { holder.style.display = "none"; tt.onclick = () => { const open = holder.style.display === "none"; holder.style.display = open ? "" : "none"; tt.textContent = short + (open ? " ▾" : " ▸"); }; }
+    }
+    box.append(holder);
+    (g.items || []).forEach(it => { const b = el("button", "lv" + (it.rec ? " rec" : "") + (it.locked ? " locked" : ""), `<span class="n">${it.icon}</span><span class="ttl2"><b>${it.title}</b></span><span class="st">${it.locked ? "🔒" : it.done ? "⭐" : ""}</span>`); if (it.sub) b.setAttribute("aria-label", `${String(it.title).replace(/<[^>]+>/g, "")}. ${String(it.sub).replace(/<[^>]+>/g, "")}`); b.onclick = it.go; holder.append(b); });
+  });
   app.append(box);
 }
 const firstTodo = list => list.findIndex(i => !i.done);

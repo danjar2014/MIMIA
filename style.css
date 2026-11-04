@@ -281,3 +281,12 @@ body.calm .hface svg{animation:none}
 .homebar{min-height:110px;align-items:flex-start;padding-top:6px}.homebar .greet{margin-top:6px}
 #overlay{background:rgba(255,255,255,.34);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .langsw{gap:6px}.langsw .chip{font-size:15px;padding:6px 12px}.langsw .apl{font-size:14px}
+
+/* Montessori : peu de mots dans les menus */
+.gh{display:flex;align-items:center;gap:8px}.gh .ght{flex:1}
+.ghfold{background:none;border:0;font:inherit;font-weight:700;color:inherit;text-align:start;min-height:44px;padding:0;cursor:pointer}
+.ghi{flex:none;min-width:44px;min-height:44px;border:0;background:#ffffffb3;border-radius:50%;font-size:20px;cursor:pointer}
+.ghmore{background:#fff;border:3px solid var(--line);border-radius:16px;padding:10px 14px;font-size:calc(15px*var(--fs));line-height:1.4}
+.gitems{display:flex;flex-direction:column;gap:10px}
+.badge{cursor:pointer}
+.gitems .lv{width:100%;box-sizing:border-box}
