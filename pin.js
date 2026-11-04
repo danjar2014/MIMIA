@@ -14,6 +14,9 @@ export async function hash(text, salt) {
 }
 export const hasPin = () => !!(S.pin && S.pin.hash);
 export const validPinFormat = p => /^\d{4}$/.test(p);
+// codes qu'un enfant devine en deux essais
+const WEAK = new Set(["0000", "1111", "2222", "3333", "4444", "5555", "6666", "7777", "8888", "9999", "1234", "4321", "0123", "3210", "2580", "1212", "2000", "1010"]);
+export const isWeakPin = p => WEAK.has(String(p));
 const normRec = c => String(c || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
 export const newRecoveryCode = () => { const r = rnd(8); const raw = [...r].map(x => ALPHA[x % ALPHA.length]).join(""); return raw.slice(0, 4) + "-" + raw.slice(4); };
 
@@ -72,15 +75,16 @@ function recover({ onOk, onCancel }) {
   o.querySelector("#rbk").onclick = onCancel;
   o.querySelector("#rok").onclick = async () => { const r = await checkRecovery(o.querySelector("#rcv").value), m = o.querySelector("#rmsg"); if (r.ok) { removePin(); toast("Code effacé : choisis-en un nouveau"); createPin({ onDone: onOk, onCancel: () => { o.style.display = "none"; } }); } else { m.className = "pinmsg gmsg warn"; m.textContent = r.wait ? `Trop d'essais. Réessaie dans ${r.wait} s.` : "Ce n'est pas le bon code de secours."; } };
   o.querySelector("#rwipe").onclick = () => {
-    o.innerHTML = `<div class="panel"><h1>⚠️ Tout effacer ?</h1><p class="sub">Sans code de secours, la seule solution est d'effacer TOUTES les données de l'appli sur cet appareil : progression, créations, réglages et statistiques. Cette action est définitive.</p><div class="agebtns"><button class="big-btn alt" id="wno">Non, retour</button><button class="big-btn" id="wyes" style="background:#c0392b">Oui, tout effacer</button></div></div>`;
+    const qa = 6 + Math.floor(Math.random() * 4), qb = 6 + Math.floor(Math.random() * 4);
+    o.innerHTML = `<div class="panel"><h1>⚠️ Tout effacer ?</h1><p class="sub">Sans code de secours, la seule solution est d'effacer TOUTES les données de l'appli sur cet appareil : progression, créations, réglages et statistiques. Cette action est définitive.</p><p class="sub">Réservé aux adultes : combien font <b>${qa} × ${qb}</b> ?</p><input id="wq" inputmode="numeric" class="pname" autocomplete="off" aria-label="Réponse"><div class="agebtns"><button class="big-btn alt" id="wno">Non, retour</button><button class="big-btn" id="wyes" style="background:#c0392b">Oui, tout effacer</button></div></div>`;
     o.querySelector("#wno").onclick = onCancel;
-    o.querySelector("#wyes").onclick = () => { try { localStorage.clear(); } catch (e) {} location.reload(); };
+    o.querySelector("#wyes").onclick = () => { if (+o.querySelector("#wq").value !== qa * qb) return; try { localStorage.clear(); } catch (e) {} location.reload(); };
   };
 }
 // créer ou changer le code : deux saisies, puis le code de secours
 export function createPin({ onDone, onCancel }) {
   let first = null;
-  const step1 = () => { first = null; pinEntry({ title: "🔒 Choisis un code parent", sub: "4 chiffres que seuls les adultes connaissent. Évite 0000 ou 1234.", onCancel, onDone: code => { first = code; step2(); return "keep"; } }); };
+  const step1 = () => { first = null; pinEntry({ title: "🔒 Choisis un code parent", sub: "4 chiffres que seuls les adultes connaissent. Évite 0000 ou 1234.", onCancel, onDone: (code, say) => { if (isWeakPin(code)) { say("Ce code est trop facile à deviner. Choisis-en un autre.", "warn"); return; } first = code; step2(); return "keep"; } }); };
   const step2 = () => { pinEntry({ title: "Retape ton code", sub: "Pour être sûr de ne pas s'être trompé.", onCancel: step1, onDone: async (code, say) => { if (code !== first) { say("Les deux codes sont différents. On recommence.", "warn"); setTimeout(step1, 900); return "keep"; } const rec = await setPin(code); done(rec); return "keep"; } }); };
   const done = rec => { const o = ov(); o.innerHTML = `<div class="panel"><h1>✅ Code enregistré</h1><p class="sub">Voici ton <b>code de secours</b>. Note-le sur un papier, dans un endroit sûr : il sert si tu oublies ton code.</p><div class="reccode" id="reccode" data-silent>${rec}</div><p class="sub">Il ne sera plus affiché.</p><div class="agebtns"><button class="big-btn" id="recok">J'ai noté mon code de secours</button></div></div>`; o.querySelector("#recok").onclick = () => { o.style.display = "none"; onDone && onDone(); }; };
   step1();

@@ -4,10 +4,11 @@ import { mountLearn, LESSONS } from "./learn.js";
 import { mountProject } from "./project.js";
 import { initStats, track, limitState, extendLimit } from "./stats.js";
 import { renderDashboard } from "./dashboard.js";
-import { hasPin, askPin, createPin, removePin } from "./pin.js";
+import { hasPin, askPin, createPin } from "./pin.js";
 import { mountDaily, dailyDoneToday } from "./daily.js";
 import { checkBadges, badgeList, playDays, softStreak } from "./badges.js";
 import { mountOnboarding, mountPlacement } from "./onboard.js";
+import { needsParentSetup, startParentSetup } from "./parentsetup.js";
 import { initMascot, faceSvg } from "./mascot.js";
 import { initScene, sceneFor } from "./scene.js";
 import { icon } from "./icons.js";
@@ -129,7 +130,7 @@ const isRec = (bands) => !S.age || bands.includes(S.age);
 // ---------- écrans ----------
 function home() {
   announceBadges(); leave(); applySettings(); if (sceneApi) sceneApi.set("sky"); app.className = "home"; app.innerHTML = "";
-  if (!S.age || !S.placed) startOnboarding();
+  if (needsParentSetup()) startSetup(); else if (!S.age || !S.placed) startOnboarding();
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const bar = el("div", "bar homebar"), gear = el("button", "iconbtn", icon("gear")); gear.setAttribute("aria-label", "Réglages pour les parents. Maintiens le doigt appuyé.");
   bar.append(el("h1", "greet", `Bonjour${S.name ? " " + esc(S.name) : ""} !`), gear); app.append(bar);
@@ -159,6 +160,8 @@ function ageChooser() {
   overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel"><h1>Quel âge as-tu ?</h1><p class="sub">Je te propose les activités qui conviennent le mieux. Tu pourras tout essayer quand tu veux.</p><div class="agebtns"></div></div>`;
   Object.entries(BANDS).forEach(([k, b]) => { const x = el("button", "big-btn", b.name); x.onclick = () => { S.age = k; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(x); });
 }
+// première configuration : obligatoirement par un parent (code parent + profil de l'enfant), puis l'enfant commence
+function startSetup() { startParentSetup(overlay, () => { applySettings(); home(); }); }
 function startOnboarding() {
   mountOnboarding(overlay, ans => { applySettings(); home(); if (ans.rank === 0) playLearn("l1"); else parcours(); });
 }
@@ -333,7 +336,7 @@ function pauseScreen() {
 function resetJourney() {
   S.progress = {}; S.xp = null; S.badges = null; S.badgesInit = false; S.daily = null; S.dailyDays = []; S.dailyLast = []; S.project = null; S.placementResult = null; S.flags = {}; S.startRank = 0; save();
 }
-function openSettings() { askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
+function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
 function settings() {
   overlay.style.display = "flex"; const sel = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
   overlay.innerHTML = `<div class="panel"><h1>Réglages (parents)</h1>
@@ -345,7 +348,8 @@ function settings() {
    <div class="row"><span>Petit robot qui réagit</span><button class="tog ${S.mascot !== false ? "on" : ""}" data-k="mascot"></button></div>
    <div class="row"><span>Sons</span><button class="tog ${S.sound ? "on" : ""}" data-k="sound"></button></div>
    <div class="row"><span>Mode calme (moins d'animations)</span><button class="tog ${S.calm ? "on" : ""}" data-k="calm"></button></div>
-   <div class="row"><span>Code parent ${hasPin() ? "✅ activé" : "(recommandé)"}</span><div id="pinbtns" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
+   <div class="row"><span>Code parent ✅ obligatoire</span><div id="pinbtns" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
+   <div class="row"><span>Abonnement</span><small>Version gratuite · gestion bientôt disponible</small></div>
    <div class="row"><span>Suivi et temps de jeu</span><button class="big-btn alt" id="sdb" style="padding:8px 16px;font-size:18px">📊 Tableau de bord</button></div>
    <div class="row"><span>Tout débloquer (parcours)</span><button class="tog ${S.unlockAll ? "on" : ""}" data-k="unlockAll"></button></div>
    <div class="row"><span>Niveau de départ</span><select id="ss">${sel(S.startRank ?? 0, RANKS.map((r, i) => [i, `Rang ${i + 1} · ${r.name}`]))}</select></div>
@@ -357,8 +361,7 @@ function settings() {
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
   const grab = () => { S.name = $("#sn").value.trim(); S.age = $("#sa").value; S.reminder = +$("#sr").value; S.startRank = +$("#ss").value; S.dailyGoalXP = +$("#sg").value; S.voiceMode = $("#sv").value; S.voiceModeSet = S.voiceMode !== "auto"; S.placed = true; save(); };
   const pb = $("#pinbtns"), pbtn = (t, fn) => { const b = el("button", "gb", t); b.onclick = () => { grab(); fn(); }; pb.append(b); };
-  if (!hasPin()) pbtn("🔒 Créer un code", () => createPin({ onDone: settings, onCancel: settings }));
-  else { pbtn("Changer", () => createPin({ onDone: settings, onCancel: settings })); pbtn("Retirer", () => askPin({ title: "Retirer le code ?", sub: "Entre ton code pour confirmer.", onOk: () => { removePin(); toast("Le code parent est retiré"); settings(); }, onCancel: settings })); }
+  pbtn("Changer", () => createPin({ onDone: settings, onCancel: settings }));
   $("#sdb").onclick = () => { $("#cl").onclick(); dashboard(); };
   $("#sdt").onclick = () => { grab(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : rang ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); home(); }); };
   let armed = false; $("#rs").onclick = e => { if (!armed) { armed = true; e.target.textContent = "✔ ?"; setTimeout(() => { armed = false; e.target.textContent = "↺"; }, 3000); } else { resetJourney(); e.target.textContent = "✔"; } };
@@ -372,5 +375,5 @@ initVoice();
 mascotApi = initMascot();
 sceneApi = initScene();
 initStats({ onLimit: () => { if (overlay.style.display !== "flex") showLimit(); } });
-window.__app = { get mascot() { return mascotApi; }, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
+window.__app = { get mascot() { return mascotApi; }, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
 home();

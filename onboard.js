@@ -63,12 +63,14 @@ export function mountPlacement(host, onDone) {
 // ----- l'accueil complet -----
 // host : l'élément plein écran (#overlay). onDone(réponses) est appelé à la fin.
 export function mountOnboarding(host, onDone) {
-  const ans = { name: S.name || "", age: S.age || "", motivation: "", rank: 0, goal: 100 }; let i = 0;
+  const ans = { name: S.name || "", age: S.age || "", motivation: "", rank: 0, goal: S.dailyGoalXP || 100 }; let i = 0;
+  // le parent a déjà réglé le prénom, l'âge et l'objectif du jour (première configuration) : l'enfant ne les redemande pas
+  const steps = S.parentSetup ? STEPS.filter(s => s !== "name" && s !== "age" && s !== "goal") : STEPS;
   const ui = shell(host), { say, btn, choice, act } = ui, next = () => { i++; render(); };
   function render() {
-    act.innerHTML = ""; ui.progress(i, STEPS.length);
+    act.innerHTML = ""; ui.progress(i, steps.length);
     const nm = ans.name ? ` ${esc(ans.name)}` : "";
-    switch (STEPS[i]) {
+    switch (steps[i]) {
       case "greeting": say("Salut ! Je suis <b>Bolt</b>, ton petit robot.", "Je serai ton compagnon de route dans le monde des robots et du code."); btn("Continuer", next); break;
       case "name": {
         say("Je suis curieux… Comment t'appelles-tu ?"); const inp = el("input", "pname obin"); inp.maxLength = 20; inp.placeholder = "Ton prénom"; inp.value = ans.name; inp.setAttribute("aria-label", "Ton prénom"); act.append(inp);
@@ -94,5 +96,5 @@ export function mountOnboarding(host, onDone) {
   }
   function finish() { S.name = ans.name; S.age = ans.age || "a"; S.startRank = ans.rank; S.placed = true; S.onboarded = true; S.motivation = ans.motivation; S.dailyGoalXP = ans.goal; save(); host.style.display = "none"; host.innerHTML = ""; onDone(ans); }
   render();
-  return { step: () => STEPS[i], answers: ans };
+  return { step: () => steps[i], answers: ans };
 }

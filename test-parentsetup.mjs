@@ -1,0 +1,35 @@
+// La première configuration est obligatoirement faite par un parent : code parent + profil de l'enfant.
+import { S } from "./util.js";
+import { setPin, removePin, hasPin, isWeakPin } from "./pin.js";
+import { needsParentSetup, applyProfile, validProfile, adultQuestion, AGES, VOICES } from "./parentsetup.js";
+import { readFileSync } from "node:fs";
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(78), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+
+S.pin = null; S.parentSetup = null; S.onboarded = false;
+t("appli neuve : la configuration parent est obligatoire", needsParentSetup());
+await setPin("4821");
+t("avec un code mais sans profil : encore obligatoire (configuration interrompue)", hasPin() && needsParentSetup());
+t("un profil sans prénom est refusé", !validProfile({ name: "  " }) && validProfile({ name: "Lina" }));
+let refused = false; try { applyProfile({ name: "" }); } catch (e) { refused = true; } t("applyProfile refuse un prénom vide", refused && !S.parentSetup);
+applyProfile({ name: "  Lina  ", age: "b", goal: 150, voiceMode: "demande", limit: 30 });
+t("le profil de l'enfant est enregistré", S.name === "Lina" && S.age === "b" && S.dailyGoalXP === 150 && S.voiceMode === "demande" && S.voiceModeSet === true && S.dailyLimit === 30);
+t("un enfant neuf fait ensuite l'accueil avec Bolt (pas encore « placé »)", S.placed === false);
+t("la configuration est terminée : code + profil", !needsParentSetup() && S.parentSetup.plan === "free" && S.parentSetup.v === 1);
+applyProfile({ name: "Léa", age: "zzz", goal: 0, voiceMode: "n'importe quoi", limit: 0 });
+t("valeurs inconnues : repli sûr (âge 6-8, objectif 100, voix selon l'âge)", S.age === "a" && S.dailyGoalXP === 100 && S.voiceMode === "auto" && S.voiceModeSet === false && S.dailyLimit === 0);
+t("l'abonnement choisi plus tard n'est pas écrasé", (() => { S.parentSetup.plan = "premium"; applyProfile({ name: "Léa" }); return S.parentSetup.plan === "premium"; })());
+S.onboarded = true; S.placed = true; applyProfile({ name: "Léa" });
+t("un enfant déjà accueilli (appareil existant) garde sa progression", S.placed === true);
+removePin();
+t("si le code disparaît, la configuration redevient obligatoire", needsParentSetup());
+t("codes trop faciles refusés (0000, 1234, 1111…)", ["0000", "1234", "1111", "4321"].every(isWeakPin) && !isWeakPin("4821") && !isWeakPin("7305"));
+const q = adultQuestion(() => 0), q2 = adultQuestion(() => 0.99);
+t("question d'adulte : tables de 6 à 9, réponse juste", q.answer === 36 && q2.answer === 81 && q.a >= 6 && q2.b <= 9);
+t("trois tranches d'âge et quatre modes de voix proposés", AGES.length === 3 && VOICES.length === 4);
+const app = readFileSync("./app.js", "utf8"), pin = readFileSync("./pin.js", "utf8"), sw = readFileSync("./sw.js", "utf8");
+t("l'accueil lance la configuration parent AVANT l'accueil de l'enfant", /needsParentSetup\(\)\) startSetup\(\); else if \(!S\.age/.test(app));
+t("les réglages sans code lancent la configuration (pas d'accès direct)", /function openSettings\(\) \{ if \(needsParentSetup\(\)\) return startSetup\(\)/.test(app));
+t("le code parent ne peut plus être retiré depuis les réglages", !/Retirer/.test(app) && !/removePin/.test(app));
+t("l'effacement total (code oublié) est réservé aux adultes", /Réservé aux adultes/.test(pin) && /#wq/.test(pin));
+t("le service worker connaît parentsetup.js", /parentsetup\.js/.test(sw));
+console.log(bad ? "PROBLEMES: " + bad : "LA CONFIGURATION PARENT EST OBLIGATOIRE");
