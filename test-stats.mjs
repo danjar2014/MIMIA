@@ -7,7 +7,7 @@ S.progress = {}; S.startRank = 0; S.unlockAll = false; resetStats();
 // 1. rien d'enregistré
 let sm = summary(NOW);
 t("au début : aucun temps, aucun jour actif, conseil de démarrage", sm.totalSec === 0 && sm.streak === 0 && /première leçon/.test(sm.tips[0]));
-t("au début : 0 étape réussie et rang Novice", sm.doneSteps === 0 && sm.rank.name === "Novice" && sm.totalSteps === RANKS.flatMap(r => r.steps).length);
+t("au début : 0 étape réussie et rang Poussin", sm.doneSteps === 0 && sm.rank.name === "Poussin" && sm.totalSteps === RANKS.flatMap(r => r.steps).length);
 // 2. du temps sur 4 jours d'affilée (aujourd'hui compris) + un jour isolé
 noteStart(NOW - 5 * DAY); noteStart(NOW);
 for (const [back, min] of [[0, 12], [1, 20], [2, 8], [3, 15], [6, 30]]) addSeconds(min * 60, statKey("prog", "a1"), NOW - back * DAY);
@@ -41,8 +41,8 @@ t("« dernières réussites » donne le titre et la date", sm.recentDone[0].titl
 // 5. compétences et rangs
 RANKS[0].steps.forEach(s => markDone(s.sec, s.id)); sm = summary(NOW);
 const bases = sm.cats.find(c => c.name === "Les bases");
-t("compétence « Les bases » : 6/10 après le rang Novice", bases && bases.done === 6 && bases.total === 10, JSON.stringify(bases));
-t("rang Novice terminé, rang courant = Curieux", sm.ranks[0].complete && sm.rank.name === "Curieux");
+t("compétence « Les bases » : 6/10 après le rang Poussin", bases && bases.done === 6 && bases.total === 10, JSON.stringify(bases));
+t("rang Poussin terminé, rang courant = Curieux", sm.ranks[0].complete && sm.rank.name === "Curieux");
 t("toutes les étapes sont rangées dans une catégorie connue", RANKS.flatMap(r => r.steps).every(s => categoryOf(s) !== "Autres"));
 // 6. limite quotidienne
 resetStats(); S.dailyLimit = 30; S.limitExtra = null; addSeconds(25 * 60, null, NOW);

@@ -19,7 +19,7 @@ markDone("learn", "l1");
 let f = checkBadges(NOW).map(b => b.id); t("première étape : badge « Premier pas » (et lui seul)", f.join() === "first", f.join());
 t("les badges déjà gagnés ne reviennent pas", checkBadges(NOW).length === 0);
 ["l2", "l3", "l4", "l5", "l6"].forEach(i => markDone("learn", i)); f = checkBadges(NOW).map(b => b.id);
-t("rang Novice terminé : badges l2, l6 et « Rang 1 »", ["learn-l2", "learn-l6", "rank0"].every(x => f.includes(x)), f.join());
+t("rang Poussin terminé : badges l2, l6 et « Rang 1 »", ["learn-l2", "learn-l6", "rank0"].every(x => f.includes(x)), f.join());
 // jours de jeu
 resetStats(); for (const b of [0, 1, 2, 4]) addSeconds(120, null, NOW - b * DAY); f = checkBadges(NOW).map(b => b.id);
 t("4 jours de jeu : « 3 jours de jeu » et « série de 3 jours »", f.includes("days3") && f.includes("streak3") && !f.includes("days7"), f.join());

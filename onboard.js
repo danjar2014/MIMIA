@@ -48,7 +48,7 @@ export function runPlacement(ui, done, { quiet = false } = {}) {
   function result() {
     ui.act.innerHTML = ""; ui.progress(5, 5); const { passes, rank } = placeFrom(answers);
     const known = PLACEMENT_TOPICS.slice(0, passes);
-    ui.say("Merci ! Voilà ce que j'ai compris :", passes ? `Tu connais déjà : ${known.map(esc).join(" ; ")}.` : "On va tout découvrir ensemble, en douceur : c'est le meilleur départ !", `Je te conseille de commencer ${rank === 0 ? "au tout début, avec le rang Novice 🌱" : `au rang ${rank + 1} : « ${esc(RANKS[rank].name)} » ${RANKS[rank].icon}`}.`);
+    ui.say("Merci ! Voilà ce que j'ai compris :", passes ? `Tu connais déjà : ${known.map(esc).join(" ; ")}.` : "On va tout découvrir ensemble, en douceur : c'est le meilleur départ !", `Je te conseille de commencer ${rank === 0 ? "au tout début, avec le rang Poussin 🐣" : `au rang ${rank + 1} : « ${esc(RANKS[rank].name)} » ${RANKS[rank].icon}`}.`);
     ui.btn("✅ D'accord, on y va", () => { S.placementResult = { date: new Date().toISOString().slice(0, 10), passes, answers: answers.slice(), rank }; save(); done({ rank, passes, answers }); });
     if (rank > 0) ui.btn("↩ Je préfère tout reprendre au début", () => { S.placementResult = { date: new Date().toISOString().slice(0, 10), passes, answers: answers.slice(), rank: 0, chose: "debut" }; save(); done({ rank: 0, passes, answers }); }, "alt");
   }
@@ -83,11 +83,11 @@ export function mountOnboarding(host, onDone) {
       case "reassure": say(`Tu vas te sentir à ta place ici${nm} !`, "Ici, on apprend en jouant : pas de chrono, pas de note. Se tromper, c'est la meilleure façon d'apprendre."); btn("Continuer", next); break;
       case "experience":
         say("Maintenant, je veux te placer au bon endroit.", "As-tu déjà programmé un peu ?");
-        choice("🌱", "Non, je débute", "On commence tout au début, tranquillement", () => { ans.rank = 0; S.placementResult = null; next(); });
+        choice("🐣", "Non, je débute", "On commence tout au début, tranquillement", () => { ans.rank = 0; S.placementResult = null; next(); });
         choice("🎯", "Oui, un peu : je fais le petit test", "5 questions pour trouver ton niveau, sans stress", () => { runPlacement(ui, res => { ans.rank = res.rank; next(); }); }); break;
       case "path": {
         say("Voici ce que je te conseille :", esc(PITCH[ans.motivation] || PITCH.fun));
-        const card = el("div", "obcard", `<div class="oc1">🗺️ Parcours complet</div><b>11 rangs, de Novice à Expert</b><span>${esc(recText(ans.rank))}</span><small>Mes premiers pas : ${RANKS[ans.rank].icon} ${esc(RANKS[ans.rank].name)} · tout se débloque à ton rythme</small>`); act.append(card);
+        const card = el("div", "obcard", `<div class="oc1">🗺️ Parcours complet</div><b>11 rangs, de Poussin à Expert</b><span>${esc(recText(ans.rank))}</span><small>Mes premiers pas : ${RANKS[ans.rank].icon} ${esc(RANKS[ans.rank].name)} · tout se débloque à ton rythme</small>`); act.append(card);
         btn("Continuer avec le parcours complet", next); break;
       }
       case "goal": say("Dernière chose : fixe ton objectif du jour.", "Chaque étape réussie te rapporte des points d'expérience (XP). Tu pourras le changer quand tu veux."); GOALS.forEach(g => choice(g.icon, `${g.name} · ${g.xp} XP`, g.sub, () => { ans.goal = g.xp; next(); })); break;

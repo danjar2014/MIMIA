@@ -167,7 +167,7 @@ function startOnboarding() {
 }
 function levelChooser() {
   overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel"><h1>Où en es-tu ?</h1><p class="sub">Choisis ce qui te ressemble. Tu pourras changer plus tard (réglages des parents).</p><div class="agebtns"></div></div>`;
-  [["🌱 Je ne connais rien : je veux tout apprendre depuis le début", 0], ["🧩 J'ai déjà joué avec des blocs de programmation", 3], ["⌨️ Je sais déjà écrire un peu de code", 6]].forEach(([t, v]) => { const b = el("button", "big-btn", t); b.onclick = () => { S.startRank = v; S.placed = true; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(b); });
+  [["🐣 Je ne connais rien : je veux tout apprendre depuis le début", 0], ["🧩 J'ai déjà joué avec des blocs de programmation", 3], ["⌨️ Je sais déjà écrire un peu de code", 6]].forEach(([t, v]) => { const b = el("button", "big-btn", t); b.onclick = () => { S.startRank = v; S.placed = true; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(b); });
 }
 function dashboard() {
   leave(); if (sceneApi) sceneApi.set("calm"); app.innerHTML = ""; app.append(topbar("Tableau de bord des parents", home, false)); const box = el("div", "astage dash"); app.append(box);

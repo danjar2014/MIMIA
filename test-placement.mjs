@@ -23,7 +23,7 @@ t("niveau 1 = compréhension, 2 = robot sur la grille, 4 = lecture de code Pytho
 const lv = [["c2", "c3", "c5"], ["c10", "c14", "c15", "c16"], ["c22", "c24", "c25", "c26"]]; let okBank = true; for (let d = 0; d < 100; d++) { const q = placementQuestions("b" + d); if (!lv[0].includes(q[0].id) || !lv[1].includes(q[2].id) || !lv[2].includes(q[4].id)) okBank = false; }
 t("niveaux 1, 3 et 5 tirés des bonnes familles de questions", okBank);
 // le calcul du niveau de départ
-t("aucune bonne réponse → Novice (rang 0)", placeFrom(["ko"]).rank === 0 && placeFrom(["dk"]).rank === 0 && placeFrom([]).rank === 0);
+t("aucune bonne réponse → Poussin (rang 0)", placeFrom(["ko"]).rank === 0 && placeFrom(["dk"]).rank === 0 && placeFrom([]).rank === 0);
 t("1 bonne réponse puis « je ne sais pas » → rang 1", placeFrom(["ok", "dk"]).rank === 1);
 t("2 bonnes → rang 3, 3 → rang 5, 4 → rang 7, 5 → rang 9", [2, 3, 4, 5].map(n => placeFrom(Array(n).fill("ok")).rank).join() === "3,5,7,9");
 t("seules les bonnes réponses D'AFFILÉE comptent (ok, ko, ok, ok → 1)", placeFrom(["ok", "ko", "ok", "ok"]).passes === 1);

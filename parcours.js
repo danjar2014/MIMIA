@@ -1,10 +1,10 @@
-// « Mon parcours » : 11 rangs à débloquer, de Novice (on ne sait rien) à Expert (on écrit du vrai code).
+// « Mon parcours » : 11 rangs à débloquer, de Poussin (on ne sait rien) à Expert (on écrit du vrai code).
 // Un rang se débloque quand le précédent est terminé. À l'intérieur d'un rang, on avance étape par étape.
 import { S, isDone } from "./util.js";
 
 const st = (sec, id) => ({ sec, id });
 export const RANKS = [
-  { icon: "🌱", name: "Novice", goal: "Tu ne sais rien ? C'est parfait ! On te montre de quoi il s'agit : c'est quoi un robot, un ordre, un programme, et cet écran.", steps: ["l1", "l2", "l3", "l4", "l5", "l6"].map(i => st("learn", i)), unlocks: "la carte « Découvrir le robot »" },
+  { icon: "🐣", name: "Poussin", goal: "Tu ne sais rien ? C'est parfait ! On te montre de quoi il s'agit : c'est quoi un robot, un ordre, un programme, et cet écran.", steps: ["l1", "l2", "l3", "l4", "l5", "l6"].map(i => st("learn", i)), unlocks: "la carte « Découvrir le robot »" },
   { icon: "🔍", name: "Curieux", goal: "Tu découvres les parties du robot : ses yeux, son cerveau, ses moteurs. Et tu commences à le guider avec des blocs.", steps: [st("disc", "d1"), st("disc", "d2"), st("disc", "d3"), st("disc", "d4"), st("prog", "a1"), st("prog", "a2")] , unlocks: "les cartes « Programmer » et « Construire »" },
   { icon: "🛠️", name: "Apprenti", goal: "Tu guides le robot sur des chemins plus longs et tu construis ta première carte électronique.", steps: [st("prog", "a3"), st("prog", "a4"), st("prog", "a5"), st("prog", "a6"), st("build", "e1"), st("build", "e2"), st("build", "e3")], unlocks: "la carte « Capteurs »" },
   { icon: "⚡", name: "Bricoleur", goal: "Tu apprends à répéter, et à donner des yeux au robot avec des capteurs.", steps: [st("lab", "k1"), st("lab", "k2"), st("prog", "b1"), st("prog", "b2"), st("build", "e4"), st("build", "e5"), st("build", "e6")], unlocks: "la carte « Créer »" },
