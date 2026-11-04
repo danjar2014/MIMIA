@@ -1,6 +1,7 @@
 import { S, markDone, hooks, chime } from "./util.js";
 import { currentKey, addSeconds, noteOpen, noteFail, noteDone, noteStart, summary, summaryText, limitState, extendLimit, dayKey, resetStats, statKey, track, fmtMin, categoryOf } from "./stats.js";
-import { RANKS } from "./parcours.js";
+import { RANKS , FLAGS } from "./parcours.js";
+FLAGS.testUnlock = false;
 let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(72), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
 const DAY = 86400000, NOW = new Date("2026-11-04T15:00:00").getTime();
 S.progress = {}; S.startRank = 0; S.unlockAll = false; resetStats();

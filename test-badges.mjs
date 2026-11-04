@@ -1,7 +1,8 @@
 import { S, markDone } from "./util.js";
 import { BADGES, softStreak, checkBadges, playDays, recordDaily, markFlag, badgeList } from "./badges.js";
 import { addSeconds, resetStats, dayKey } from "./stats.js";
-import { RANKS } from "./parcours.js";
+import { RANKS , FLAGS } from "./parcours.js";
+FLAGS.testUnlock = false;
 let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(74), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
 const DAY = 86400000, NOW = new Date("2026-11-10T12:00:00").getTime(), D = back => dayKey(NOW - back * DAY), set = (...b) => new Set(b.map(D));
 // 1. la série douce

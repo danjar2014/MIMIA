@@ -2,6 +2,9 @@
 // Une aventure se débloque quand la précédente est terminée. À l'intérieur d'une aventure, on avance étape par étape.
 import { S, isDone } from "./util.js";
 
+// ⚠️ MODE TEST : tant que testUnlock est vrai, tout est débloqué (aventures, étapes, cartes de l'accueil). Pour remettre le vrai blocage : testUnlock: false.
+export const FLAGS = { testUnlock: true };
+const allOpen = () => FLAGS.testUnlock || !!S.unlockAll;
 const st = (sec, id) => ({ sec, id });
 export const RANKS = [
   { icon: "🐣", name: "Poussin", goal: "Tu ne sais rien ? C'est parfait ! On te montre de quoi il s'agit : c'est quoi un robot, un ordre, un programme, et cet écran.", steps: ["l1", "l2", "l3", "l4", "l5", "l6"].map(i => st("learn", i)), unlocks: "la carte « Découvrir le robot »" },
@@ -22,13 +25,13 @@ export const stepDone = s => isDone(s.sec, s.id);
 const startRank = () => (S.startRank == null ? 0 : S.startRank);
 export const rankDone = i => RANKS[i].steps.every(stepDone);
 export const rankProgress = i => ({ done: RANKS[i].steps.filter(stepDone).length, total: RANKS[i].steps.length });
-export const rankUnlocked = i => i === 0 || !!S.unlockAll || i <= startRank() || rankDone(i - 1);
+export const rankUnlocked = i => i === 0 || allOpen() || i <= startRank() || rankDone(i - 1);
 export const highestUnlocked = () => { let h = 0; RANKS.forEach((_, i) => { if (rankUnlocked(i)) h = i; }); return h; };
 export const currentRank = () => { const i = RANKS.findIndex((_, k) => rankUnlocked(k) && !rankDone(k)); return i < 0 ? RANKS.length - 1 : i; };
 // étape à faire : dans une aventure, on avance dans l'ordre
-export const stepUnlocked = (i, j) => !!S.unlockAll || i <= startRank() - 1 || RANKS[i].steps.slice(0, j).every(stepDone);
+export const stepUnlocked = (i, j) => allOpen() || i <= startRank() - 1 || RANKS[i].steps.slice(0, j).every(stepDone);
 export const nextStep = () => { const i = currentRank(), j = RANKS[i].steps.findIndex(s => !stepDone(s)); return j < 0 ? null : { rank: i, index: j, step: RANKS[i].steps[j] }; };
 // les cartes de l'accueil : aventure minimum pour les ouvrir
 export const CARD_RANK = { disc: 1, prog: 2, build: 2, lab: 3, create: 4, code: 6, adv: 8 };
-export const cardLocked = key => !S.unlockAll && highestUnlocked() < (CARD_RANK[key] ?? 0);
+export const cardLocked = key => !allOpen() && highestUnlocked() < (CARD_RANK[key] ?? 0);
 export const lockReason = key => { const need = CARD_RANK[key] ?? 0, r = RANKS[need - 1]; return r ? `Pour débloquer cette carte, termine l'aventure « ${RANKS[need - 1].name} » ${RANKS[need - 1].icon} dans Mon parcours.` : ""; };

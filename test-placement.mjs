@@ -1,7 +1,8 @@
 import { S } from "./util.js";
 import { placementQuestions, placeFrom, PLACEMENT_START, PLACEMENT_TOPICS, walk, CONCEPTS } from "./dailyq.js";
 import { runSpec } from "./codeengine.js";
-import { RANKS, highestUnlocked, rankUnlocked, cardLocked, stepUnlocked } from "./parcours.js";
+import { RANKS, highestUnlocked, rankUnlocked, cardLocked, stepUnlocked , FLAGS } from "./parcours.js";
+FLAGS.testUnlock = false;
 let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(76), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
 let sound = true, why = "", kinds = [0, 0, 0, 0, 0].map(() => ({}));
 const fail = m => { sound = false; if (!why) why = m; };

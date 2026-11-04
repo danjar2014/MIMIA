@@ -71,3 +71,8 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - « Mes badges » : un compteur (🏅 4 sur 38 · 🔥 2) et des médailles ; l'explication d'un badge s'affiche en le touchant.
 - Mots à l'écran (mesure sur l'écran de départ) : Coder 628 → 222, Badges 420 → 186, Parcours 356 → 110, Construire 341 → 79, Aller plus loin 261 → 153.
 - Vocabulaire : « rang » devient « aventure » ; l'aventure 1 s'appelle « Poussin » 🐣.
+
+## Mode test (tout débloqué)
+
+- `parcours.js` : `FLAGS.testUnlock = true` débloque toutes les aventures, étapes et cartes, et affiche le bandeau « 🧪 Mode test : tout est débloqué » sur l'accueil.
+- **Pour la mise en production : passer `testUnlock` à `false`** (le blocage réel revient). Les tests le coupent eux-mêmes.

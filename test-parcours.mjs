@@ -1,9 +1,10 @@
 import { S, markDone } from "./util.js";
-import { RANKS, rankUnlocked, rankDone, stepUnlocked, highestUnlocked, currentRank, nextStep, cardLocked, CARD_RANK } from "./parcours.js";
+import { RANKS, rankUnlocked, rankDone, stepUnlocked, highestUnlocked, currentRank, nextStep, cardLocked, CARD_RANK , FLAGS } from "./parcours.js";
 import { LEVELS } from "./levels.js";
 import { BUILD } from "./boardlogic.js";
 import { FLAT } from "./codemissions.js";
 import { LESSONS } from "./learn.js";
+FLAGS.testUnlock = false;
 let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(70), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
 // 1. toutes les étapes existent vraiment
 const known = { learn: id => LESSONS.some(l => l.id === id) || id === "l7", prog: id => !!(LEVELS[id[0]] && LEVELS[id[0]][+id.slice(1) - 1]), build: id => BUILD.some(l => l.id === id), code: id => FLAT.some(m => m.id === id), project: id => id === "pj", disc: id => ["d1", "d2", "d3", "d4"].includes(id), lab: id => ["k1", "k2", "k3", "k4"].includes(id) };

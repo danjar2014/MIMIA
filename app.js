@@ -1,5 +1,5 @@
 import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, sleep } from "./util.js";
-import { RANKS, stepDone, rankDone, rankProgress, rankUnlocked, highestUnlocked, currentRank, stepUnlocked, nextStep, cardLocked, lockReason } from "./parcours.js";
+import { RANKS, stepDone, rankDone, rankProgress, rankUnlocked, highestUnlocked, currentRank, stepUnlocked, nextStep, cardLocked, lockReason, FLAGS } from "./parcours.js";
 import { mountLearn, LESSONS } from "./learn.js";
 import { mountProject } from "./project.js";
 import { initStats, track, limitState, extendLimit } from "./stats.js";
@@ -137,6 +137,7 @@ function home() {
   gear.onpointerdown = () => { longTimer = setTimeout(() => { longTimer = null; openSettings(); }, 1200); };
   gear.onpointerup = gear.onpointerleave = () => { if (longTimer) { clearTimeout(longTimer); longTimer = null; toast("Maintiens appuyé pour ouvrir les réglages (parents)"); } };
   const body = el("div", "homebody"); app.append(body);
+  if (FLAGS.testUnlock) body.append(el("div", "testflag", "🧪 Mode test : tout est débloqué"));
   // 1. la prochaine étape : un seul grand bouton
   const ns = nextStep(), info = ns ? stepInfo(ns.step) : null, hero = el("section", "hero");
   hero.innerHTML = `<div class="hface">${faceSvg("happy")}</div><div class="htxt"><small>${ns ? `Aventure ${ns.rank + 1} · ${RANKS[ns.rank].icon} ${esc(RANKS[ns.rank].name)}` : "Parcours terminé"}</small><b>${esc(info ? info.title : "Bravo, tu as tout terminé !")}</b></div>`;
