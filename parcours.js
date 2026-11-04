@@ -1,5 +1,5 @@
-// « Mon parcours » : 11 rangs à débloquer, de Poussin (on ne sait rien) à Expert (on écrit du vrai code).
-// Un rang se débloque quand le précédent est terminé. À l'intérieur d'un rang, on avance étape par étape.
+// « Mon parcours » : 11 aventures à débloquer, de Poussin (on ne sait rien) à Expert (on écrit du vrai code).
+// Une aventure se débloque quand la précédente est terminée. À l'intérieur d'une aventure, on avance étape par étape.
 import { S, isDone } from "./util.js";
 
 const st = (sec, id) => ({ sec, id });
@@ -16,7 +16,7 @@ export const RANKS = [
   { icon: "🤖", name: "Roboticien", goal: "Tu pilotes un robot avec du code intelligent et tu donnes de la mémoire à son cerveau.", steps: [st("code", "r5"), st("code", "r6"), st("code", "r7"), st("code", "r8"), st("code", "r9"), st("code", "r10"), st("build", "m1"), st("build", "m2")], unlocks: "les missions du cerveau en code" },
   { icon: "🏆", name: "Expert", goal: "Tu écris le programme complet du cerveau du robot, avec de la mémoire, puis tu relèves les défis d'expert et tu réalises ton Grand Projet : un robot complet, de l'idée jusqu'à la fiche finale.", steps: [...["c1", "c2", "c3", "c4", "c5", "c6", "c7", "x1", "x2", "x3"].map(i => st("code", i)), st("project", "pj")], unlocks: "ton diplôme d'expert" }
 ];
-// la 7e étape du rang « Traducteur » est une activité spéciale (blocs affichés en code)
+// la 7e étape de l'aventure « Traducteur » est une activité spéciale (blocs affichés en code)
 export const stepKey = s => s.sec + ":" + s.id;
 export const stepDone = s => isDone(s.sec, s.id);
 const startRank = () => (S.startRank == null ? 0 : S.startRank);
@@ -25,10 +25,10 @@ export const rankProgress = i => ({ done: RANKS[i].steps.filter(stepDone).length
 export const rankUnlocked = i => i === 0 || !!S.unlockAll || i <= startRank() || rankDone(i - 1);
 export const highestUnlocked = () => { let h = 0; RANKS.forEach((_, i) => { if (rankUnlocked(i)) h = i; }); return h; };
 export const currentRank = () => { const i = RANKS.findIndex((_, k) => rankUnlocked(k) && !rankDone(k)); return i < 0 ? RANKS.length - 1 : i; };
-// étape à faire : dans un rang, on avance dans l'ordre
+// étape à faire : dans une aventure, on avance dans l'ordre
 export const stepUnlocked = (i, j) => !!S.unlockAll || i <= startRank() - 1 || RANKS[i].steps.slice(0, j).every(stepDone);
 export const nextStep = () => { const i = currentRank(), j = RANKS[i].steps.findIndex(s => !stepDone(s)); return j < 0 ? null : { rank: i, index: j, step: RANKS[i].steps[j] }; };
-// les cartes de l'accueil : rang minimum pour les ouvrir
+// les cartes de l'accueil : aventure minimum pour les ouvrir
 export const CARD_RANK = { disc: 1, prog: 2, build: 2, lab: 3, create: 4, code: 6, adv: 8 };
 export const cardLocked = key => !S.unlockAll && highestUnlocked() < (CARD_RANK[key] ?? 0);
-export const lockReason = key => { const need = CARD_RANK[key] ?? 0, r = RANKS[need - 1]; return r ? `Pour débloquer cette carte, termine le rang « ${RANKS[need - 1].name} » ${RANKS[need - 1].icon} dans Mon parcours.` : ""; };
+export const lockReason = key => { const need = CARD_RANK[key] ?? 0, r = RANKS[need - 1]; return r ? `Pour débloquer cette carte, termine l'aventure « ${RANKS[need - 1].name} » ${RANKS[need - 1].icon} dans Mon parcours.` : ""; };

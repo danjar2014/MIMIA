@@ -86,5 +86,5 @@ export function summary(now = Date.now()) {
 }
 // texte lu à voix haute / copiable
 export function summaryText(sum, who = "Votre enfant") {
-  return `${who} est au rang ${sum.rank.i + 1} sur ${RANKS.length} : ${sum.rank.name}. ${sum.doneSteps} étapes réussies sur ${sum.totalSteps}. Temps de jeu : ${fmtMin(sum.todaySec)} aujourd'hui, ${fmtMin(sum.weekSec)} cette semaine. ${sum.streak ? sum.streak + " jours d'affilée. " : ""}${sum.stuck.length ? "À surveiller : " + sum.stuck.map(x => x.title).join(", ") + ". " : "Rien à signaler. "}${sum.tips[0]}`;
+  return `${who} est à l'aventure ${sum.rank.i + 1} sur ${RANKS.length} : ${sum.rank.name}. ${sum.doneSteps} étapes réussies sur ${sum.totalSteps}. Temps de jeu : ${fmtMin(sum.todaySec)} aujourd'hui, ${fmtMin(sum.weekSec)} cette semaine. ${sum.streak ? sum.streak + " jours d'affilée. " : ""}${sum.stuck.length ? "À surveiller : " + sum.stuck.map(x => x.title).join(", ") + ". " : "Rien à signaler. "}${sum.tips[0]}`;
 }

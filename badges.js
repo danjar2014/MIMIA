@@ -38,7 +38,7 @@ export const BADGES = [
   step("code", "r5", "🤖", "Je pilote en code", "Fais avancer le robot avec une boucle while."),
   step("code", "c6", "💻", "Cerveau en code", "Écris la mémoire du cerveau en vrai code."),
   step("project", "pj", "🏆", "Ingénieur Expert", "Termine le Grand Projet."),
-  ...RANKS.map((r, i) => ({ id: `rank${i}`, icon: r.icon, name: `Rang ${i + 1} · ${r.name}`, how: `Termine tout le rang ${r.name}.`, test: () => rankDone(i) })),
+  ...RANKS.map((r, i) => ({ id: `rank${i}`, icon: r.icon, name: `Aventure ${i + 1} · ${r.name}`, how: `Termine toute l'aventure ${r.name}.`, test: () => rankDone(i) })),
   { id: "days3", icon: "🌱", name: "3 jours de jeu", how: "Joue pendant 3 jours (pas forcément de suite).", test: c => c.days >= 3 },
   { id: "days7", icon: "🌿", name: "7 jours de jeu", how: "Joue pendant 7 jours.", test: c => c.days >= 7 },
   { id: "days14", icon: "🌳", name: "14 jours de jeu", how: "Joue pendant 14 jours.", test: c => c.days >= 14 },

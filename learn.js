@@ -1,4 +1,4 @@
-// Rang « Poussin » : pour quelqu'un qui ne sait rien. On montre de quoi il s'agit : « ceci est… », « cela veut dire… »,
+// Aventure « Poussin » : pour quelqu'un qui ne sait rien. On montre de quoi il s'agit : « ceci est… », « cela veut dire… »,
 // puis on essaie pas à pas. Une idée par page, la voix lit tout, aucune erreur n'est grave.
 import { el, S, sleep, chime, speak } from "./util.js";
 import { robotSvg } from "./robot.js";

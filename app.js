@@ -29,9 +29,9 @@ import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
 
 const app = $("#app"), overlay = $("#overlay");
-// chaque étape terminée peut débloquer un nouveau rang : on le fête
+// chaque étape terminée peut débloquer une nouvelle aventure : on le fête
 function announceBadges() { const fresh = checkBadges(); if (fresh.length) { const t = fresh.slice(0, 3).map(b => `${b.icon} ${b.name}`).join("  ·  ") + (fresh.length > 3 ? ` (+${fresh.length - 3})` : ""); toast("🏅 Nouveau badge : " + t, 5500); speak("Nouveau badge : " + fresh.slice(0, 3).map(b => b.name).join(", ")); } }
-// les écrans de récompense s'enchaînent l'un après l'autre : série, objectif du jour, nouveau rang…
+// les écrans de récompense s'enchaînent l'un après l'autre : série, objectif du jour, nouvelle aventure…
 const ovQueue = []; let ovBusy = false;
 function pushOverlay(fn) { ovQueue.push(fn); if (!ovBusy) { ovBusy = true; setTimeout(showNextOverlay, 0); } }
 function showNextOverlay() { const f = ovQueue.shift(); if (!f) { ovBusy = false; overlay.style.display = "none"; return; } overlay.style.display = "flex"; f(showNextOverlay, () => { ovQueue.length = 0; ovBusy = false; overlay.style.display = "none"; }); }
@@ -58,7 +58,7 @@ function celebrate(i) {
   pushOverlay((next, closeAll) => {
     const r = RANKS[i];
     if (i === RANKS.length - 1) { overlay.innerHTML = `<div class="panel diplome"><h1>🏆 Diplôme d'expert</h1><p class="sub">Félicitations <b>${S.name || "petit roboticien"}</b> !<br>Tu as parcouru tout le chemin : du premier « c'est quoi un robot ? » jusqu'au code du cerveau d'un robot, avec de la mémoire.${S.project && S.project.name ? `<br>Ton grand projet : le robot « <b>${S.project.name}</b> » !` : ""}</p><p class="sub">${new Date().toLocaleDateString("fr-FR")} · Petits Robots</p><div class="agebtns"><button class="big-btn" id="cel0">🖨️ Imprimer mon diplôme</button><button class="big-btn alt" id="cel2">Fermer</button></div></div>`; $("#cel0").onclick = () => window.print(); }
-    else overlay.innerHTML = `<div class="panel"><h1>🎉 Rang ${i + 1} terminé !</h1><p class="sub">${r.icon} Tu es maintenant <b>${r.name}</b>.<br>Tu viens de débloquer : ${r.unlocks}.</p><div class="agebtns"><button class="big-btn" id="cel1">🗺️ Voir mon parcours</button><button class="big-btn alt" id="cel2">Continuer</button></div></div>`;
+    else overlay.innerHTML = `<div class="panel"><h1>🎉 Aventure ${i + 1} terminée !</h1><p class="sub">${r.icon} Tu es maintenant <b>${r.name}</b>.<br>Tu viens de débloquer : ${r.unlocks}.</p><div class="agebtns"><button class="big-btn" id="cel1">🗺️ Voir mon parcours</button><button class="big-btn alt" id="cel2">Continuer</button></div></div>`;
     const c1 = $("#cel1"); if (c1) c1.onclick = () => { closeAll(); parcours(); };
     $("#cel2").onclick = next;
   });
@@ -139,13 +139,13 @@ function home() {
   const body = el("div", "homebody"); app.append(body);
   // 1. la prochaine étape : un seul grand bouton
   const ns = nextStep(), info = ns ? stepInfo(ns.step) : null, hero = el("section", "hero");
-  hero.innerHTML = `<div class="hface">${faceSvg("happy")}</div><div class="htxt"><small>${ns ? `Rang ${ns.rank + 1} · ${RANKS[ns.rank].icon} ${esc(RANKS[ns.rank].name)}` : "Parcours terminé"}</small><b>${esc(info ? info.title : "Bravo, tu as tout terminé !")}</b></div>`;
+  hero.innerHTML = `<div class="hface">${faceSvg("happy")}</div><div class="htxt"><small>${ns ? `Aventure ${ns.rank + 1} · ${RANKS[ns.rank].icon} ${esc(RANKS[ns.rank].name)}` : "Parcours terminé"}</small><b>${esc(info ? info.title : "Bravo, tu as tout terminé !")}</b></div>`;
   const go = el("button", "big-btn herobtn", `${icon("play")}<span>${ns ? "Continuer" : "Défi du jour"}</span>`); go.onclick = () => (ns ? launchStep(ns.step) : playDaily(false)); hero.append(go); body.append(hero);
   { const ss = softStreak(playDays()), tx = todayXP(), g = goalXP(); const strip = el("div", "xpstrip", `<span>${icon("bolt", "mini")} ${tx} / ${g} XP aujourd'hui${tx >= g ? " ✅" : ""}</span><span>🔥 ${ss.streak} jour${ss.streak > 1 ? "s" : ""} de série</span>`); strip.dataset.say = `Aujourd'hui tu as ${tx} points d'expérience sur ${g}. Série : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}.`; body.append(strip); }
   // 2. des tuiles dessinées (le nom porte le sens ; l'icône est décorative)
   const tile = (ic, nm, sub, hue, fn, lock) => { const locked = lock && cardLocked(lock), b = el("button", "tile" + (locked ? " locked" : ""), `<span class="tic">${locked ? icon("lock") : ic.startsWith("<svg") ? ic : icon(ic)}</span><b>${esc(nm)}</b><small>${esc(locked ? "à débloquer" : sub)}</small>`); b.style.setProperty("--tc", hue); b.onclick = locked ? () => { toast(lockReason(lock), 4500); speak(lockReason(lock)); } : fn; return b; };
   const quick = el("div", "quick"), cr = currentRank(), nb = badgeList().filter(b => b.date).length;
-  quick.append(tile("target", "Défi du jour", dailyDoneToday() ? "fait aujourd'hui ✅" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Mon parcours", `Rang ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Mes badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges)); body.append(quick);
+  quick.append(tile("target", "Défi du jour", dailyDoneToday() ? "fait aujourd'hui ✅" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Mon parcours", `Aventure ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Mes badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges)); body.append(quick);
   // 3. toutes les autres activités, repliées pour ne pas tout montrer d'un coup
   const more = el("details", "more"), grid = el("div", "mgrid"); more.open = !!S.homeMore; more.innerHTML = "<summary>Toutes les activités</summary>"; more.ontoggle = () => { S.homeMore = more.open; save(); };
   grid.append(
@@ -219,11 +219,11 @@ function launchStep(s) {
 }
 function parcours() {
   const ns = nextStep();
-  const groups = [{ header: "🗺️ Ton chemin, du tout début jusqu'à Expert. Termine un rang pour ouvrir le suivant. Touche l'étape qui brille pour continuer, ou refais une étape d'un rang déjà terminé !", items: [] }];
+  const groups = [{ header: "🗺️ Ton chemin, du tout début jusqu'à Expert. Termine une aventure pour ouvrir la suivante. Touche l'étape qui brille pour continuer, ou refais une étape d'une aventure déjà terminée !", items: [] }];
   RANKS.forEach((r, i) => {
     const p = rankProgress(i), un = rankUnlocked(i), fin = rankDone(i);
-    const header = `${r.icon} Rang ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"} — ${un ? r.goal : "Termine le rang d'avant pour l'ouvrir."}`;
-    if (!un) { groups.push({ header, items: [] }); return; }  // un rang terminé reste ouvert : on peut refaire ses étapes
+    const header = `${r.icon} Aventure ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"} — ${un ? r.goal : "Termine l'aventure d'avant pour l'ouvrir."}`;
+    if (!un) { groups.push({ header, items: [] }); return; }  // une aventure terminée reste ouverte : on peut refaire ses étapes
     groups.push({ header, items: r.steps.map((s, j) => { const info = stepInfo(s), ok = stepUnlocked(i, j); return { icon: info.icon, title: info.title, sub: info.sub, done: stepDone(s), rec: !!ns && ns.rank === i && ns.index === j, locked: !ok, go: ok ? () => launchStep(s) : () => { toast("Termine d'abord l'étape d'avant 🙂"); speak("Termine d'abord l'étape d'avant."); } }; }) });
   });
   menu("Mon parcours", groups, home);
@@ -352,7 +352,7 @@ function settings() {
    <div class="row"><span>Abonnement</span><small>Version gratuite · gestion bientôt disponible</small></div>
    <div class="row"><span>Suivi et temps de jeu</span><button class="big-btn alt" id="sdb" style="padding:8px 16px;font-size:18px">📊 Tableau de bord</button></div>
    <div class="row"><span>Tout débloquer (parcours)</span><button class="tog ${S.unlockAll ? "on" : ""}" data-k="unlockAll"></button></div>
-   <div class="row"><span>Niveau de départ</span><select id="ss">${sel(S.startRank ?? 0, RANKS.map((r, i) => [i, `Rang ${i + 1} · ${r.name}`]))}</select></div>
+   <div class="row"><span>Niveau de départ</span><select id="ss">${sel(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
    <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt" id="sdt" style="padding:8px 16px;font-size:18px">🎯 Refaire le test</button></div>
    <div class="row"><span>Objectif du jour</span><select id="sg">${sel(S.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>
    <div class="row"><span>Grand affichage</span><button class="tog ${S.big ? "on" : ""}" data-k="big"></button></div>
@@ -363,7 +363,7 @@ function settings() {
   const pb = $("#pinbtns"), pbtn = (t, fn) => { const b = el("button", "gb", t); b.onclick = () => { grab(); fn(); }; pb.append(b); };
   pbtn("Changer", () => createPin({ onDone: settings, onCancel: settings }));
   $("#sdb").onclick = () => { $("#cl").onclick(); dashboard(); };
-  $("#sdt").onclick = () => { grab(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : rang ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); home(); }); };
+  $("#sdt").onclick = () => { grab(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : aventure ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); home(); }); };
   let armed = false; $("#rs").onclick = e => { if (!armed) { armed = true; e.target.textContent = "✔ ?"; setTimeout(() => { armed = false; e.target.textContent = "↺"; }, 3000); } else { resetJourney(); e.target.textContent = "✔"; } };
   $("#cl").onclick = () => { S.name = $("#sn").value.trim(); S.age = $("#sa").value; S.reminder = +$("#sr").value; S.startRank = +$("#ss").value; S.dailyGoalXP = +$("#sg").value; S.voiceMode = $("#sv").value; S.voiceModeSet = S.voiceMode !== "auto"; S.placed = true; save(); overlay.style.display = "none"; home(); };
 }

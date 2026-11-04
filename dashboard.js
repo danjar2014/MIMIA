@@ -16,10 +16,10 @@ export function renderDashboard(host, { onBack, onNext } = {}) {
   // 1. résumé
   const pctAll = Math.round(100 * sm.doneSteps / sm.totalSteps);
   card(`👋 ${esc(who)}${S.age ? " · " + BANDS[S.age].name : ""}`, `
-    <div class="dhero"><div class="dbig">${sm.rank.icon}</div><div><b>Rang ${sm.rank.i + 1} sur 11 : ${esc(sm.rank.name)}</b><div class="dsmall">${sm.rank.done}/${sm.rank.total} étapes dans ce rang</div></div></div>
+    <div class="dhero"><div class="dbig">${sm.rank.icon}</div><div><b>Aventure ${sm.rank.i + 1} sur 11 : ${esc(sm.rank.name)}</b><div class="dsmall">${sm.rank.done}/${sm.rank.total} étapes dans cette aventure</div></div></div>
     ${bar(pctAll, `${pctAll} pour cent du parcours`, "#4caf6a")}<div class="dsmall">${sm.doneSteps} étape${sm.doneSteps > 1 ? "s" : ""} réussie${sm.doneSteps > 1 ? "s" : ""} sur ${sm.totalSteps} (${pctAll} % du parcours)</div>
     <div class="dstats"><div><b>${fmtMin(sm.todaySec)}</b><span>aujourd'hui</span></div><div><b>${fmtMin(sm.weekSec)}</b><span>cette semaine</span></div><div><b>${sm.streak}</b><span>jour${sm.streak > 1 ? "s" : ""} d'affilée</span></div><div><b>${sm.sessions}</b><span>séance${sm.sessions > 1 ? "s" : ""}</span></div></div>
-    ${S.placementResult ? `<div class="dsmall">🎯 Test de niveau du ${esc(S.placementResult.date)} : ${S.placementResult.passes} bonne${S.placementResult.passes > 1 ? "s" : ""} réponse${S.placementResult.passes > 1 ? "s" : ""} d'affilée sur 5, départ au rang ${S.placementResult.rank + 1}.</div>` : ""}
+    ${S.placementResult ? `<div class="dsmall">🎯 Test de niveau du ${esc(S.placementResult.date)} : ${S.placementResult.passes} bonne${S.placementResult.passes > 1 ? "s" : ""} réponse${S.placementResult.passes > 1 ? "s" : ""} d'affilée sur 5, départ à l'aventure ${S.placementResult.rank + 1}.</div>` : ""}
     ${sm.next ? `<div class="dsmall">Prochaine étape conseillée : <b>${esc(onNext ? onNext(sm.next) : sm.next.id)}</b></div>` : ""}`);
 
   // 2. semaine
@@ -31,7 +31,7 @@ export function renderDashboard(host, { onBack, onNext } = {}) {
   card("🧠 Compétences", sm.cats.map(c => { const p = Math.round(100 * c.done / c.total); return `<div class="drow"><span>${esc(c.name)}</span><span class="dsmall">${c.done}/${c.total}</span></div>${bar(p, `${c.name} : ${p} pour cent`, p === 100 ? "#4caf6a" : "#3f7fd6")}`; }).join(""));
 
   // 4. parcours
-  card("🗺️ Les 11 rangs", `<div class="dranks">${sm.ranks.map((r, i) => `<div class="drank${r.complete ? " ok" : i === sm.rank.i ? " cur" : ""}"><span>${r.icon}</span><b>${esc(r.name)}</b><small>${r.done}/${r.total}${r.complete ? " ✅" : ""}</small></div>`).join("")}</div>`);
+  card("🗺️ Les 11 aventures", `<div class="dranks">${sm.ranks.map((r, i) => `<div class="drank${r.complete ? " ok" : i === sm.rank.i ? " cur" : ""}"><span>${r.icon}</span><b>${esc(r.name)}</b><small>${r.done}/${r.total}${r.complete ? " ✅" : ""}</small></div>`).join("")}</div>`);
 
   // 4 bis. motivation
   { const L = badgeList(), got = L.filter(b => b.date).length, ss = softStreak(playDays());

@@ -55,6 +55,6 @@ S.dailyLimit = 0; t("sans limite : jamais bloqué", !limitState(NOW).over && lim
 resetStats(); S.progress = {}; track("code", "k1", "Dire bonjour"); chime("no"); chime("no"); chime("ok");
 hooks.fail = () => noteFail(currentKey()); chime("no"); chime("no"); chime("ok");
 t("chime('no') compte un essai raté sur l'activité en cours, chime('ok') non", S.stats.acts["code:k1"].fails === 2 + 0, JSON.stringify(S.stats.acts["code:k1"]));
-sm = summary(NOW); t("le bilan parlé mentionne le rang et le temps", /rang 1 sur 11/.test(summaryText(sm)) && /aujourd'hui/.test(summaryText(sm)));
+sm = summary(NOW); t("le bilan parlé mentionne l'aventure et le temps", /aventure 1 sur 11/.test(summaryText(sm)) && /aujourd'hui/.test(summaryText(sm)));
 t("limite de l'historique : 300 jours → 120 conservés", (() => { resetStats(); for (let i = 0; i < 300; i++) addSeconds(60, null, NOW - i * DAY); return Object.keys(S.stats.days).length <= 150; })());
 console.log(bad ? "PROBLEMES: " + bad : "LE SUIVI PARENTS FONCTIONNE");

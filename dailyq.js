@@ -12,7 +12,7 @@ export function rng(seed) { let h = 2166136261; for (const c of String(seed)) { 
 const shuffle = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const C = (id, rank, text, good, bad, why) => ({ id, rank, text, good, bad, why });
 
-// ----- questions de compréhension, par rang -----
+// ----- questions de compréhension, par aventure -----
 export const CONCEPTS = [
   C("c1", 0, "Un robot obéit à…", "des ordres", ["la météo", "ses rêves"], "Un robot ne décide de rien tout seul : il fait ce qu'on lui demande."),
   C("c2", 0, "Un programme, c'est…", "une liste d'ordres, les uns après les autres", ["un seul ordre", "un dessin"], "Un programme est une suite d'ordres que le robot lit dans l'ordre."),
