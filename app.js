@@ -219,11 +219,11 @@ function launchStep(s) {
 }
 function parcours() {
   const ns = nextStep();
-  const groups = [{ header: "🗺️ Ton chemin, du tout début jusqu'à Expert. Termine un rang pour ouvrir le suivant. Touche l'étape qui brille pour continuer !", items: [] }];
+  const groups = [{ header: "🗺️ Ton chemin, du tout début jusqu'à Expert. Termine un rang pour ouvrir le suivant. Touche l'étape qui brille pour continuer, ou refais une étape d'un rang déjà terminé !", items: [] }];
   RANKS.forEach((r, i) => {
     const p = rankProgress(i), un = rankUnlocked(i), fin = rankDone(i);
     const header = `${r.icon} Rang ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"} — ${un ? r.goal : "Termine le rang d'avant pour l'ouvrir."}`;
-    if (!un || fin) { groups.push({ header, items: [] }); return; }
+    if (!un) { groups.push({ header, items: [] }); return; }  // un rang terminé reste ouvert : on peut refaire ses étapes
     groups.push({ header, items: r.steps.map((s, j) => { const info = stepInfo(s), ok = stepUnlocked(i, j); return { icon: info.icon, title: info.title, sub: info.sub, done: stepDone(s), rec: !!ns && ns.rank === i && ns.index === j, locked: !ok, go: ok ? () => launchStep(s) : () => { toast("Termine d'abord l'étape d'avant 🙂"); speak("Termine d'abord l'étape d'avant."); } }; }) });
   });
   menu("Mon parcours", groups, home);

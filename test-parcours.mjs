@@ -30,4 +30,6 @@ S.startRank = 0; S.unlockAll = true;
 t("tout débloquer (parents) : rien n'est verrouillé", highestUnlocked() === RANKS.length - 1 && !cardLocked("adv") && stepUnlocked(5, 6));
 S.unlockAll = false;
 t("11 rangs, de Poussin à Expert", RANKS.length === 11 && RANKS[0].name === "Poussin" && RANKS[10].name === "Expert");
+import { readFileSync } from "node:fs";
+t("un rang terminé reste ouvert : ses étapes se refont (écran Mon parcours)", /if \(!un\) \{ groups\.push/.test(readFileSync("./app.js", "utf8")) && !/if \(!un \|\| fin\)/.test(readFileSync("./app.js", "utf8")));
 console.log(bad ? "PROBLEMES: " + bad : "LE PARCOURS EST COHERENT");
