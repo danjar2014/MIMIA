@@ -16,7 +16,7 @@ export function renderDashboard(host, { onBack, onNext } = {}) {
 
   // 1. résumé
   const pctAll = Math.round(100 * sm.doneSteps / sm.totalSteps);
-  card(`👋 ${esc(who)}${S.age ? " · " + BANDS[S.age].name : ""}`, `
+  card(`👋 ${esc(who)}${S.age ? " · " + (BANDS[S.age] || { name: "3 – 6 ans" }).name : ""}`, `
     <div class="dhero"><div class="dbig">${sm.rank.icon}</div><div><b>Aventure ${sm.rank.i + 1} sur 11 : ${esc(sm.rank.name)}</b><div class="dsmall">${sm.rank.done}/${sm.rank.total} étapes dans cette aventure</div></div></div>
     ${bar(pctAll, `${pctAll} pour cent du parcours`, "#4caf6a")}<div class="dsmall">${sm.doneSteps} étape${sm.doneSteps > 1 ? "s" : ""} réussie${sm.doneSteps > 1 ? "s" : ""} sur ${sm.totalSteps} (${pctAll} % du parcours)</div>
     <div class="dstats"><div><b>${fmtMin(sm.todaySec)}</b><span>aujourd'hui</span></div><div><b>${fmtMin(sm.weekSec)}</b><span>cette semaine</span></div><div><b>${sm.streak}</b><span>jour${sm.streak > 1 ? "s" : ""} d'affilée</span></div><div><b>${sm.sessions}</b><span>séance${sm.sessions > 1 ? "s" : ""}</span></div></div>

@@ -2,18 +2,20 @@
 // un seul geste, de gros boutons, un seul mot à retenir, la voix dit tout). 5 petites manches par activité, sans texte à lire.
 import { el, S, chime, tone, speak, rnd } from "./util.js";
 import { robotSvg } from "./robot.js";
+import { PARTS } from "./parts.js";
 
 export const NUMS = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix"];
 export const DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
 export const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-export const COUNT_OBJ = [["⚙️", "d'engrenages"], ["🔋", "de piles"], ["💡", "de lampes"], ["🤖", "de robots"], ["🔩", "de vis"]];
-export const LETTER_OBJ = [["🤖", "robot", "R"], ["🔋", "pile", "P"], ["💡", "lampe", "L"], ["🔩", "vis", "V"], ["📡", "antenne", "A"], ["🚀", "fusée", "F"], ["⚙️", "moteur", "M"]];
+// compter, nommer les lettres, relier : on utilise les pièces d'un vrai robot (roue, moteur, capteurs, haut-parleur, laser, wifi, contrôleur…)
+export const COUNT_OBJ = PARTS.filter(p => p.plural).map(p => [p.svg, p.plural]);
+export const LETTER_OBJ = PARTS.filter(p => p.letter).map(p => [p.svg, p.word, p.letter]);
 export const COLORS = [["rouge", "#e24b4b"], ["bleu", "#3f7fd6"], ["vert", "#4caf6a"], ["jaune", "#f4c430"], ["orange", "#f08a24"], ["violet", "#8e5bd6"], ["rose", "#ec6aa5"]];
-export const MATCH_OBJ = ["🤖", "🔋", "💡", "⚙️", "🚀", "🛰️", "🔩"];
+export const MATCH_OBJ = PARTS.filter(p => ["roue", "moteur", "pile", "lampe", "haut-parleur", "camera", "antenne", "controleur", "bras", "ventilateur", "horloge", "satellite", "capteur-distance", "pince"].includes(p.id)).map(p => p.svg);
 export const SPACE_OBJ = [["🌙", "la lune"], ["☀️", "le soleil"], ["🌍", "la Terre"], ["⭐", "l'étoile"], ["🚀", "la fusée"], ["🪐", "la planète"]];
 export const POSITIONS = [["⬆️", "en haut", "top"], ["⬇️", "en bas", "bottom"], ["⬅️", "à gauche", "left"], ["➡️", "à droite", "right"]];
 // les activités de l'accueil des petits : [id, icône, nom (un seul mot), couleur de fond]
-export const PETITS = [["chiffres", "🔢", "Chiffres", "#ffe0ec"], ["lettres", "🔤", "Lettres", "#d6ecff"], ["couleurs", "🎨", "Couleurs", "#fff1b8"], ["jours", "📅", "Jours", "#d9f5d3"],
+export const PETITS = [["chiffres", "🔢", "Chiffres", "#ffe0ec"], ["lettres", "🔤", "Lettres", "#d6ecff"], ["couleurs", "🎨", "Couleurs", "#fff1b8"], ["pieces", "🔧", "Pièces", "#e3f1f1"], ["jours", "📅", "Jours", "#d9f5d3"],
   ["mois", "🗓️", "Mois", "#eadcff"], ["relier", "🔗", "Relier", "#ffe9c7"], ["espace", "🚀", "Espace", "#d2f1ef"]];
 
 const shuffle = (a, r = rnd) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = r(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -51,7 +53,20 @@ export function positionRound(r) {
   const [arrow, label, side] = POSITIONS[r(4)], wrong = distinct(POSITIONS.filter(p => p[2] !== side), 2, r);
   return { type: "quiz", side, say: "Où est la fusée ?", show: `<span class="ptsky ${side}"><i>🚀</i></span>`, options: three({ html: `${arrow} ${label}`, label }, wrong.map(([a, l]) => ({ html: `${a} ${l}`, label: l })), r) };
 }
+// « Touche la roue. » : reconnaître une pièce parmi trois
+export function piecesRound(r, used = []) {
+  const pool = PARTS.filter(p => !used.includes(p.id)), p = pool[r(pool.length)], wrong = distinct(PARTS.filter(x => x.id !== p.id), 2, r);
+  return { type: "quiz", part: p.id, say: `Touche ${p.name}.`, show: "", options: three({ html: `<span class="ptbig">${p.svg}</span>`, label: p.word }, wrong.map(w => ({ html: `<span class="ptbig">${w.svg}</span>`, label: w.word })), r) };
+}
+// « À quoi sert la roue ? » : le rôle d'une pièce parmi trois (pour les plus grands)
+export function roleRound(r, used = []) {
+  const pool = PARTS.filter(p => !used.includes(p.id)), p = pool[r(pool.length)], wrong = distinct(PARTS.filter(x => x.id !== p.id && x.role !== p.role), 2, r);
+  return { type: "quiz", part: p.id, say: `À quoi sert ${p.name} ?`, show: `<span class="ptbig">${p.svg}</span>`, options: three({ html: `<span class="ptrole">${p.role}</span>`, label: p.role }, wrong.map(w => ({ html: `<span class="ptrole">${w.role}</span>`, label: w.role })), r) };
+}
+const distinctRounds = (make, n, r) => { const used = [], out = []; for (let i = 0; i < n; i++) { const x = make(r, used); used.push(x.part); out.push(x); } return out; };
 export const ROUNDS = {
+  pieces: r => distinctRounds(piecesRound, 5, r),
+  roles: r => distinctRounds(roleRound, 5, r),
   chiffres: r => [countRound(r, 4), countRound(r, 5), countRound(r, 6), countRound(r, 9), countRound(r, 9)],
   lettres: r => { const used = [], out = []; for (let i = 0; i < 5; i++) { const x = letterRound(r, used); used.push(x.L); out.push(x); } return out; },
   couleurs: r => Array.from({ length: 5 }, () => colorRound(r)),
@@ -65,6 +80,7 @@ export function petitsPhrases() {
   const out = new Set(["Essaie encore.", "Compte encore.", "Cherche encore."]);
   COUNT_OBJ.forEach(([, w]) => out.add(`Combien ${w} ?`)); LETTER_OBJ.forEach(([, w, L]) => out.add(`Touche la lettre ${L}, comme ${w}.`)); COLORS.forEach(([n]) => out.add(`Touche le robot ${n}.`));
   DAYS.slice(0, 6).forEach(d => out.add(`Quel jour vient après ${d} ?`)); MONTHS.slice(0, 11).forEach(m => out.add(`Quel mois vient après ${m} ?`));
+  PARTS.forEach(p => { out.add(`Touche ${p.name}.`); out.add(`À quoi sert ${p.name} ?`); out.add(p.role); });
   out.add("Touche les jours dans l'ordre."); out.add("Touche les mois dans l'ordre."); out.add("Relie chaque objet à son ombre."); out.add("Où est la fusée ?"); SPACE_OBJ.forEach(([, n]) => out.add(`Touche ${n}.`));
   return [...out];
 }

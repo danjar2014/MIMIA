@@ -63,8 +63,10 @@ const choiceTail = () => { if (S.age !== "a" || modeOf() !== "guide") return "";
 const overlayShown = () => { const ov = document.getElementById("overlay"); return ov && ov.style.display && ov.style.display !== "none" && ov.children.length ? ov : null; };
 // l'essentiel de l'écran qui vient d'apparaître : le titre et la consigne, pas le reste
 export function pageBrief() {
-  const ov = overlayShown(); if (ov) { const b = ov.querySelector(".obbubbles"); if (b) return textOf(b); const h = ov.querySelector("h1"), p = ov.querySelector(".sub"); return joinSay([h && textOf(h), p && textOf(p)]); }
+  const ov = overlayShown(); if (ov) { if (ov.querySelector("[data-silent]")) return ""; const b = ov.querySelector(".obbubbles");   // les écrans des parents ne sont jamais lus
+     if (b) return textOf(b); const h = ov.querySelector("h1"), p = ov.querySelector(".sub"); return joinSay([h && textOf(h), p && textOf(p)]); }
   const app = document.getElementById("app"), home = app.querySelector(".homebody");
+  if (app.querySelector(".ptbody")) return "";   // les activités des petits disent elles-mêmes leur consigne
   if (home) { const g = app.querySelector(".greet"), hero = app.querySelector(".herotile b"); return joinSay([g ? textOf(g) : hello(), hero && "Ta prochaine étape : " + textOf(hero)]); }   // « Bonjour Léa ! » avec le prénom
   const ttl = app.querySelector(".ttl"), t = ttl ? textOf(ttl) : "";
   if (app.querySelector(".levels") || app.querySelector(".badgegrid")) return t;
@@ -112,7 +114,7 @@ export function initVoice() {
   // 3. chaque nouvel écran : le titre et la consigne (jamais toute la page)
   const pageChanged = () => {
     pageAt = Date.now(); clearTimeout(pageT);
-    pageT = setTimeout(() => { if (!S.voice) return; document.querySelectorAll(".gmsg").forEach(n => seen.set(n, textOf(n))); const t = modeOf() === "complet" ? pageText() : pageBrief(); if (t) speak(t, { prio: 1, interrupt: true }); if (modeOf() === "demande" && !S.voiceHintShown && S.voice && app.querySelector(".astage")) { S.voiceHintShown = true; save(); toast("🔊 Touche le haut-parleur pour écouter la consigne.", 4500); } }, 550);
+    pageT = setTimeout(() => { if (!S.voice) return; document.querySelectorAll(".gmsg").forEach(n => seen.set(n, textOf(n))); const t = modeOf() === "complet" && S.age !== "z" ? pageText() : pageBrief(); if (t) speak(t, { prio: 1, interrupt: true }); /* les petits : seulement l'essentiel */ if (modeOf() === "demande" && !S.voiceHintShown && S.voice && app.querySelector(".astage")) { S.voiceHintShown = true; save(); toast("🔊 Touche le haut-parleur pour écouter la consigne.", 4500); } }, 550);
   };
   new MutationObserver(pageChanged).observe(app, { childList: true });
   new MutationObserver(() => { if (overlay.style.display !== "none" && overlay.children.length) pageChanged(); }).observe(overlay, { childList: true, attributes: true, attributeFilter: ["style"] });

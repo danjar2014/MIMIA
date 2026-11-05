@@ -133,3 +133,11 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - **Animation d'entrée** (`splash.js`) : le robot de l'enfant arrive en volant dans l'espace (étoiles, planète, lune), un toucher la passe ; en mode calme elle est presque immédiate. Pas d'animation juste après un changement de joueur.
 - **Salutations selon l'heure** : « Bonjour / Salut / Content de te revoir, Léa ! » le jour, « Bonsoir… » le soir, lues par la **voix de l'appareil** (marqueur invisible `DEVICE` dans `util.js`) pour éviter la cassure entre deux voix.
 - La voix de l'appareil remplace aussi les mots seuls (les clips d'un mot seul étaient ratés) : `voice/gen.py` n'en génère plus.
+
+## Pièces de robot, voix à la création d'un joueur
+
+- **30 pièces dessinées** (`parts.js`) : roue, moteur, engrenage, pile, lampe, haut-parleur, microphone, caméra, antenne, wifi, bluetooth, contrôleur, capteurs de distance / de lumière / de température, bouton, laser, bras, pince, fil, écran, chenille, hélice, panneau solaire, boussole, satellite (GPS), interrupteur, ventilateur, puce, horloge. Chacune a son nom, sa lettre (14 d'entre elles) et son rôle en une phrase.
+- Elles servent partout dans les activités des petits : **Chiffres** (compter des roues, des capteurs…), **Lettres** (« H comme haut-parleur »), **Relier** (chaque pièce à son ombre), et la nouvelle activité **Pièces** (« Touche le laser. »). Pour tous les âges, **Découvrir → « Les pièces du robot »** : « À quoi sert le capteur de distance ? » avec trois réponses. Test : `node test-parts.mjs`.
+- **Voix à la création et au renommage d'un joueur** : « Bienvenue Julien ! » / « Salut Jules ! » (voix de l'appareil) et un petit son.
+- **Changer de joueur ne recharge plus la page** (`switchProfile` remplit l'état sur place) : le navigateur n'autorise la voix et les sons qu'après un toucher, un rechargement les coupait. Le son est aussi réveillé au premier toucher.
+- **Plus de lecture « dans tous les sens »** : les écrans des parents ne sont jamais lus (`data-silent`), les petits n'entendent jamais toute la page (seulement l'essentiel), et les activités des petits disent leur consigne une seule fois.

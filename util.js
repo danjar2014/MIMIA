@@ -19,9 +19,16 @@ const G = (() => {
   if (!g.profiles.includes(g.active)) g.active = g.profiles[0]; return g;
 })();
 const fresh = o => Object.assign({}, DEFAULTS, o, { robot: Object.assign({}, DEFAULTS.robot, (o && o.robot) || {}) });
-export const S = (() => { try { const s = fresh(readJ(pkey(G.active))); for (const k of GLOBAL) if (k in G) s[k] = G[k]; return s; } catch (e) { return JSON.parse(JSON.stringify(DEFAULTS)); } })();
-// un réglage « guidé » enregistré avant le choix selon l'âge n'était pas un vrai choix des parents : on le remet en automatique
-if (S.voiceMode === "guide" && !S.voiceModeSet) S.voiceMode = "auto";
+// L'état du joueur actif. On le remplit « sur place » (loadInto) quand on change de joueur : la page n'est pas rechargée, donc la voix et les sons restent autorisés.
+export const S = {};
+function loadInto() {
+  for (const k of Object.keys(S)) delete S[k];
+  try { Object.assign(S, fresh(readJ(pkey(G.active)))); } catch (e) { Object.assign(S, JSON.parse(JSON.stringify(DEFAULTS))); }
+  for (const k of GLOBAL) if (k in G) S[k] = G[k];
+  if (S.voiceMode === "guide" && !S.voiceModeSet) S.voiceMode = "auto";
+}
+loadInto();
+// (un réglage « guidé » enregistré avant le choix selon l'âge n'était pas un vrai choix des parents : loadInto() le remet en automatique)
 // la voix selon l'âge : les 6-8 ans lisent encore mal (consigne, réponses et résultat à voix haute) ;
 // les 8-10 ans lisent la consigne et le résultat ; les 10-12 ans lisent seuls (la voix ne parle que sur demande, bouton 🔊)
 export const VOICE_BY_AGE = { z: "complet", a: "guide", b: "guide", c: "demande" };
@@ -48,13 +55,15 @@ export function updateProfile(id, fields) {
 export function removeProfile(id) {
   if (G.profiles.length < 2 || !G.profiles.includes(id)) return false;
   const wasActive = id === G.active; G.profiles = G.profiles.filter(x => x !== id); try { localStorage.removeItem(pkey(id)); } catch (e) {}
-  if (wasActive) { G.active = G.profiles[0]; persistG(); sessionStorage.setItem("rj-go", "1"); location.reload(); } else persistG(); return true;
+  if (wasActive) { G.active = G.profiles[0]; persistG(); loadInto(); } else persistG();
+  return true;
 }
-// change de joueur : on enregistre l'actuel, puis on recharge l'appli sur le nouveau (directement à l'accueil)
+// change de joueur : on enregistre l'actuel puis on charge l'autre dans le même état S (sans recharger la page)
 export function switchProfile(id) {
-  if (!G.profiles.includes(id)) return; if (id === G.active) return;
-  save(); G.active = id; persistG(); try { sessionStorage.setItem("rj-go", "1"); } catch (e) {} location.reload();
+  if (!G.profiles.includes(id) || id === G.active) return false;
+  save(); G.active = id; persistG(); loadInto(); return true;
 }
+
 
 export const isDone = (sec, id) => !!(S.progress[sec] && S.progress[sec][id]);
 // le suivi pour les parents (stats.js) s'accroche ici, sans que util.js le connaisse
@@ -62,7 +71,9 @@ export const hooks = { fail: null, done: null };
 export const markDone = (sec, id) => { (S.progress[sec] = S.progress[sec] || {})[id] = true; save(); if (hooks.done) { try { hooks.done(sec, id); } catch (e) {} } };
 
 let actx;
-const ctx = () => (actx = actx || new (window.AudioContext || window.webkitAudioContext)());
+const ctx = () => { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") { try { actx.resume(); } catch (e) {} } return actx; };
+// un son créé avant le premier toucher reste « suspendu » : on le réveille au premier toucher
+if (typeof document !== "undefined" && document.addEventListener) document.addEventListener("pointerdown", () => { try { if (actx && actx.state === "suspended") actx.resume(); } catch (e) {} }, true);
 export function tone(freq, dur = 0.35, type = "sine", gain = 0.18, delay = 0) {
   if (!S.sound) return;
   try { const c = ctx(), o = c.createOscillator(), g = c.createGain(), t = c.currentTime + delay; o.type = type; o.frequency.value = freq;

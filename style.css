@@ -396,3 +396,9 @@ body.calm .hface svg{animation:none}
 .ptsky{position:relative;display:block;width:min(70vw,300px);height:170px;border-radius:24px;background:radial-gradient(circle at 30% 20%,#2a2a6a,#0e0e2c)}
 .ptsky i{position:absolute;font-style:normal;font-size:52px;transform:translate(-50%,-50%)}.ptsky.top i{left:50%;top:20%}.ptsky.bottom i{left:50%;top:80%}.ptsky.left i{left:16%;top:50%}.ptsky.right i{left:84%;top:50%}
 @keyframes ptshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* pièces de robot dessinées */
+.ptcount i svg{width:44px;height:44px;display:block}.ptbig svg,.ptshow .ptbig svg{width:68px;height:68px;display:block}
+.ptopt .ptbig{display:block}
+.ptrole{display:block;font-size:20px;font-weight:700;line-height:1.25;text-align:center}
+.ptopt:has(.ptrole){width:100%;min-height:64px}

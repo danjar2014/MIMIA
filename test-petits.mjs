@@ -6,7 +6,7 @@ const P = await import("./petits.js"), U = await import("./util.js"), { S } = U;
 const src = f => readFileSync("./" + f, "utf8"), app = src("app.js"), sw = src("sw.js");
 const rnd = n => Math.floor(Math.random() * n);
 
-t("7 activités aux noms d'un seul mot", P.PETITS.length === 7 && P.PETITS.every(p => !/\s/.test(p[2])), P.PETITS.map(p => p[2]).join());
+t("8 activités aux noms d'un seul mot", P.PETITS.length === 8 && P.PETITS.every(p => !/\s/.test(p[2])), P.PETITS.map(p => p[2]).join());
 t("les jours (7) et les mois (12) sont dans l'ordre", P.DAYS.length === 7 && P.DAYS[0] === "lundi" && P.DAYS[6] === "dimanche" && P.MONTHS.length === 12 && P.MONTHS[0] === "janvier" && P.MONTHS[11] === "décembre");
 // 300 tirages de chaque activité : une seule bonne réponse, jamais deux réponses identiques
 let ok = true, why = "";

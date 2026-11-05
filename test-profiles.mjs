@@ -18,10 +18,12 @@ t("la progression de Léa reste à Léa, le son est commun", !("progress" in JSO
 t("le code n'est pas recopié dans le profil de l'enfant", !("pin" in JSON.parse(store["robotique-junior-v1"])));
 U.updateProfile("p2", { name: "Jules", age: "b" });
 t("on modifie un autre joueur sans toucher au joueur actif", U.profileData("p2").name === "Jules" && U.profileData("p2").age === "b" && S.name === "Léa");
-U.switchProfile("p2");
-t("changer de joueur recharge l'appli et mémorise « directement l'accueil »", reloads === 1 && store["s:rj-go"] === "1" && JSON.parse(store["robotique-junior-global"]).active === "p2");
-// on repasse sur p1 pour la suite (l'état en mémoire est celui de p1)
-const g = JSON.parse(store["robotique-junior-global"]); g.active = "p1"; store["robotique-junior-global"] = JSON.stringify(g);
+const before = S.name; const sw = U.switchProfile("p2");
+t("changer de joueur : l'état est rechargé sur place, la page n'est PAS rechargée (la voix reste autorisée)", sw === true && reloads === 0 && S.name === "Jules" && S.age === "b" && U.activeId() === "p2" && JSON.parse(store["robotique-junior-global"]).active === "p2");
+t("le joueur quitté est bien enregistré, le code parent reste visible pour le nouveau", JSON.parse(store["robotique-junior-v1"]).name === before && S.pin && S.pin.hash === "h" && !("progress" in {}) && Object.keys(S.progress).length === 0);
+t("changer vers le joueur déjà actif ne fait rien", U.switchProfile("p2") === false);
+U.switchProfile("p1");   // on repasse sur p1 pour la suite
+t("retour sur le premier joueur : sa progression est revenue", S.name === "Léa" && S.progress.learn.l2 === true);
 t("on ne peut pas retirer le dernier joueur", (() => { U.removeProfile("p2"); return U.profileIds().join() === "p1" && !U.removeProfile("p1"); })());
 for (let i = 0; i < 12; i++) U.addProfile({ name: "N" + i, sex: "f" });
 t("au plus " + U.MAX_PROFILES + " joueurs", U.profileIds().length === U.MAX_PROFILES);

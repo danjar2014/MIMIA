@@ -4,7 +4,7 @@ let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(84), c ? "ok" : "BUG 
 const src = f => readFileSync("./" + f, "utf8"), app = src("app.js"), css = src("style.css"), util = src("util.js"), grid = src("grid.js"), dance = src("dance.js"), vc = src("voiceclips.js"), voice = src("voice.js"), sw = src("sw.js");
 const dart = src("flutter_app/lib/main.dart"), kt = readFileSync("./flutter_app/android/app/src/main/kotlin/com/petitsrobots/petits_robots/MainActivity.kt", "utf8");
 
-t("le suivi (tableau de bord) revient à l'espace parents, comme les autres rubriques", /topbar\("Tableau de bord des parents", settings, false\)/.test(app));
+t("le suivi (tableau de bord) revient à l'espace parents ET s'affiche (la boîte du tableau est bien créée)", /topbar\("Tableau de bord des parents", settings, false\)[^\n]*const box = el\("div", "astage dash"\); app\.append\(box\);/.test(app));
 t("le cadenas parents est figé (position fixe) en haut, hors du cadre des cartes", /#app>\.wlock,#app\.home>\.wlock\{position:fixed;right:12px;top:76px/.test(css));
 t("plein écran verrouillé : réglage parent dans « Écran », enregistré pour tous les joueurs", /togRow\("Plein écran verrouillé", "kiosk", S\.kiosk\)/.test(app) && /"reminder", "kiosk"\]/.test(util));
 t("plein écran : Android (épinglage d'écran) ou plein écran du navigateur", /callHandler\("kiosk"/.test(app) && /requestFullscreen/.test(app));
@@ -16,7 +16,11 @@ t("les compliments s'activent au démarrage et le robot dit le prénom", /initVo
 t("fille / garçon obligatoire dans la configuration parent et dans l'édition d'un joueur", /validProfile = p =>[^\n]*SEXES/.test(src("parentsetup.js")) && /Choisissez : fille ou garçon/.test(app));
 t("le puzzle est sur l'accueil et connu du service worker", /tile\("puzzle", "Puzzle"/.test(app) && /puzzle\.js/.test(sw) && /praise\.js/.test(sw));
 t("le puzzle rapporte un petit nombre fixe de points", /sec === "puzzle" \? 20/.test(app));
-t("animation d'entrée : le robot arrive dans l'espace, une fois par ouverture, pas après un changement de joueur", /splashShown = true; showSplash\(\(\) => enterApp\(null\)\)/.test(app) && /if \(go \|\| splashShown\) return enterApp\(go\)/.test(app) && /sp-bot/.test(css) && /splash\.js/.test(sw));
+t("animation d'entrée : le robot arrive dans l'espace, une fois par ouverture (jamais en changeant de joueur : la page n'est pas rechargée)", /splashShown = true; showSplash\(\(\) => enterApp\(\)\)/.test(app) && /if \(splashShown\) return enterApp\(\)/.test(app) && /sp-bot/.test(css) && /splash\.js/.test(sw) && !/location\.reload/.test(util));
 t("les parents bloquent / ouvrent chaque carte (auto, ouvert, bloqué)", /cartes: \(\) => \(\{ title: "Cartes"/.test(app) && /CARD_NEXT = \{ auto: "open", open: "blocked", blocked: "auto" \}/.test(app) && /bloquée par tes parents/.test(app));
 t("le mode test « tout est débloqué » est retiré", /testUnlock: false/.test(src("parcours.js")));
+t("créer ou renommer un joueur : il est salué par son prénom (voix de l'appareil) et un son confirme", /chime\("done"\); toast\(isNew \? "Joueur ajouté" : "Enregistré"\); speak\(DEVICE \+ \(isNew \? `Bienvenue \$\{name\} !` : `Salut \$\{name\} !`\), \{ force: true, full: true \}\)/.test(app));
+t("les écrans des parents ne sont jamais lus à voix haute (aucune lecture « dans tous les sens »)", (app.match(/data-silent/g) || []).length >= 4 && /ov\.querySelector\("\[data-silent\]"\)\) return ""/.test(voice));
+t("les petits : la voix ne lit jamais toute la page, et pas de consigne en double dans les activités", /modeOf\(\) === "complet" && S\.age !== "z" \? pageText\(\)/.test(voice) && /app\.querySelector\("\.ptbody"\)\) return ""/.test(voice));
+t("le son est réveillé au premier toucher (contexte audio « suspendu »)", /actx\.resume\(\)/.test(util) && /addEventListener\("pointerdown"/.test(util));
 console.log(bad ? "PROBLEMES: " + bad : "LES NOUVEAUTES FONCTIONNENT");

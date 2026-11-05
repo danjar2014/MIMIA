@@ -1,4 +1,4 @@
-import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, sleep, profileIds, activeId, profileData, addProfile, updateProfile, removeProfile, switchProfile, MAX_PROFILES } from "./util.js";
+import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, sleep, DEVICE, profileIds, activeId, profileData, addProfile, updateProfile, removeProfile, switchProfile, MAX_PROFILES } from "./util.js";
 import { RANKS, stepDone, rankDone, rankProgress, rankUnlocked, highestUnlocked, currentRank, stepUnlocked, nextStep, cardLocked, lockReason, FLAGS } from "./parcours.js";
 import { mountLearn, LESSONS } from "./learn.js";
 import { mountProject } from "./project.js";
@@ -143,7 +143,8 @@ function playAdv(item) {
 
 // ---------- listes d'activités ----------
 const DISC = [{ id: "d1", icon: "🤖", title: "Découvre ton robot", sub: "Touche chaque partie pour apprendre son nom et son rôle", bands: "abc" }, { id: "d2", icon: "👂", title: "Touche la partie", sub: "On te dit un nom, tu touches la bonne partie", bands: "abc" },
-  { id: "d3", icon: "🧠", title: "À quoi ça sert ?", sub: "On te dit un rôle, tu retrouves la partie", bands: "abc" }, { id: "d4", icon: "🔗", title: "Du capteur au moteur", sub: "Sentir, penser, agir : remets les étapes dans l'ordre", bands: "bc" }];
+  { id: "d3", icon: "🧠", title: "À quoi ça sert ?", sub: "On te dit un rôle, tu retrouves la partie", bands: "abc" }, { id: "d4", icon: "🔗", title: "Du capteur au moteur", sub: "Sentir, penser, agir : remets les étapes dans l'ordre", bands: "bc" },
+  { id: "d5", icon: "🔧", title: "Les pièces du robot", sub: "À quoi sert chaque pièce : roue, capteurs, laser, wifi…", bands: "abc" }];
 const LABS = [{ id: "k1", icon: "🌗", title: "Le capteur de lumière", sub: "Observe comment le robot réagit à la lumière", bands: "abc" }, { id: "k2", icon: "💡", title: "Écris la règle de la lampe", sub: "Compose une règle « si… alors »", bands: "bc" },
   { id: "k3", icon: "📏", title: "Le capteur de distance", sub: "Les yeux du robot mesurent la distance au mur", bands: "abc" }, { id: "k4", icon: "🚧", title: "Freine avant le mur", sub: "Règle le seuil comme un ingénieur", bands: "c" }];
 const isRec = (bands) => !S.age || bands.includes(S.age);
@@ -195,7 +196,7 @@ function levelChooser() {
   [["🐣 Je ne connais rien : je veux tout apprendre depuis le début", 0], ["🧩 J'ai déjà joué avec des blocs de programmation", 3], ["⌨️ Je sais déjà écrire un peu de code", 6]].forEach(([t, v]) => { const b = el("button", "big-btn", t); b.onclick = () => { S.startRank = v; S.placed = true; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(b); });
 }
 function dashboard() {
-  leave(); if (sceneApi) sceneApi.set("calm"); app.innerHTML = ""; app.append(topbar("Tableau de bord des parents", settings, false));   // retour : l'espace parents, comme les autres rubriques const box = el("div", "astage dash"); app.append(box);
+  leave(); if (sceneApi) sceneApi.set("calm"); app.innerHTML = ""; app.append(topbar("Tableau de bord des parents", settings, false)); /* retour : l'espace parents */ const box = el("div", "astage dash"); app.append(box);
   renderDashboard(box, { onNext: s => stepInfo(s).title });
 }
 // fin de séance : la limite du jour est atteinte. Seul un adulte peut accorder 15 minutes de plus.
@@ -284,7 +285,7 @@ function menu(title, groups, back) {
   app.append(box);
 }
 const firstTodo = list => list.findIndex(i => !i.done);
-function discItems() { const items = DISC.filter(d => okBand(d.bands)).map(d => ({ ...d, done: isDone("disc", d.id), rec: false, go: () => activity(d.title, "disc", d.id, s => mountDiscover(s, d.id, hooksFor("disc", d.id, () => menu("Découvrir le robot", discItems(), home))), () => menu("Découvrir le robot", discItems(), home)) }));
+function discItems() { const items = DISC.filter(d => okBand(d.bands)).map(d => ({ ...d, done: isDone("disc", d.id), rec: false, go: d.id === "d5" ? () => playRoles() : () => activity(d.title, "disc", d.id, s => mountDiscover(s, d.id, hooksFor("disc", d.id, () => menu("Découvrir le robot", discItems(), home))), () => menu("Découvrir le robot", discItems(), home)) }));
   const k = items.findIndex(i => !i.done && i.bands.includes(S.age || "a")); if (k >= 0) items[k].rec = true; return [{ items }]; }
 function labItems() { const items = LABS.filter(d => okBand(d.bands)).map(d => ({ ...d, done: isDone("lab", d.id), go: () => activity(d.title, "lab", d.id, s => mountLab(s, d.id, hooksFor("lab", d.id, () => menu("Les capteurs", labItems(), home))), () => menu("Les capteurs", labItems(), home)) }));
   const k = items.findIndex(i => !i.done && i.bands.includes(S.age || "a")); if (k >= 0) items[k].rec = true; return [{ items }]; }
@@ -321,6 +322,11 @@ function littleHome(body, esc) {
   const mk = (ic, nm, hue, fn, done) => { const pb = (S.cards || {})[nm] === "blocked", b = el("button", "tile" + (pb ? " locked" : ""), `<span class="tic emo" aria-hidden="true">${pb ? icon("lock") : ic}</span><b>${esc(nm)}</b>${done && !pb ? '<i class="tdone" aria-hidden="true">⭐</i>' : ""}`); b.setAttribute("aria-label", pb ? `${nm} : bloqué` : nm); b.style.setProperty("--tc", hue); b.onclick = pb ? () => { toast("Cette carte est bloquée par tes parents.", 4000); speak("Cette carte est bloquée par tes parents."); } : fn; return b; };
   grid.append(...PETITS.map(([id, ic, nm, hue]) => mk(ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
   body.append(grid);
+}
+// « Les pièces du robot » : à quoi sert chaque pièce (30 pièces, 5 questions à chaque fois)
+function playRoles() {
+  const back = () => menu("Découvrir le robot", discItems(), home);
+  activity("Les pièces du robot", "disc", "d5", s => mountPetit(s, "roles", { onWin: () => { markDone("disc", "d5"); winBar(() => playRoles(), back, "☰ Découvrir", "▶ Encore !", false); } }), back);
 }
 function createMenu() {
   const age = S.age || "a";
@@ -409,7 +415,7 @@ function welcome() {
   profileIds().forEach(id => {
     const p = profileData(id), who = el("button", "wchild" + (id === activeId() ? " on" : ""), `<span class="wavatar">${robotSvg(p.robot)}</span><span class="wname">${esc(p.name || "Moi")}</span>`);
     who.setAttribute("aria-label", `Jouer : ${p.name || "moi"}`); who.dataset.say = p.name ? `Salut ${p.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer.";
-    who.onclick = () => { chime("step"); if (id === activeId()) home(); else switchProfile(id); };   // un autre joueur : on recharge sur son profil
+    who.onclick = () => { chime("step"); if (id !== activeId()) switchProfile(id); home(); };   // un autre joueur : on charge son profil (la page ne se recharge pas : la voix reste active)
     wrap.append(who);
   });
   app.append(wrap, parentLock());
@@ -417,12 +423,11 @@ function welcome() {
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
 let splashShown = false;
 function startApp() {
-  let go = null; try { go = sessionStorage.getItem("rj-go"); sessionStorage.removeItem("rj-go"); } catch (e) {}
-  if (go || splashShown) return enterApp(go);   // juste après un changement de joueur : pas d'animation
-  splashShown = true; showSplash(() => enterApp(null));   // à l'ouverture : le robot arrive dans l'espace
+  if (splashShown) return enterApp();
+  splashShown = true; showSplash(() => enterApp());   // à l'ouverture : le robot arrive dans l'espace
 }
-function enterApp(go) {
-  if (go && !needsParentSetup()) home(); else if (!needsParentSetup() && S.age && S.placed) welcome(); else home();   // juste après un changement de joueur : directement l'accueil
+function enterApp() {
+  if (!needsParentSetup() && S.age && S.placed) welcome(); else home();
 }
 const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; onWelcome ? welcome() : home(); };
 
@@ -465,13 +470,13 @@ const escH = t => String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g
 // la liste des joueurs : un seul ou plusieurs ; le parent les ajoute, les règle (prénom, fille/garçon, âge, objectif) ou les retire
 function profilesScreen() {
   overlay.style.display = "flex"; const ids = profileIds();
-  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>Joueurs</h1></div><div class="plist">${ids.map(id => { const p = profileData(id); return `<button class="pcard" data-id="${id}" aria-label="${escH(p.name || "Joueur")}"><span class="wavatar">${robotSvg(p.robot)}</span><b>${escH(p.name || "?")}</b></button>`; }).join("")}${ids.length < MAX_PROFILES ? `<button class="pcard add" data-id="new" aria-label="Ajouter un joueur"><span class="plus" aria-hidden="true">➕</span></button>` : ""}</div></div>`;
+  overlay.innerHTML = `<div class="panel" data-silent><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>Joueurs</h1></div><div class="plist">${ids.map(id => { const p = profileData(id); return `<button class="pcard" data-id="${id}" aria-label="${escH(p.name || "Joueur")}"><span class="wavatar">${robotSvg(p.robot)}</span><b>${escH(p.name || "?")}</b></button>`; }).join("")}${ids.length < MAX_PROFILES ? `<button class="pcard add" data-id="new" aria-label="Ajouter un joueur"><span class="plus" aria-hidden="true">➕</span></button>` : ""}</div></div>`;
   $("#pback").onclick = settings; overlay.querySelectorAll(".pcard").forEach(b => b.onclick = () => profileEdit(b.dataset.id));
 }
 function profileEdit(id) {
   const isNew = id === "new", p = isNew ? { name: "", sex: "", age: "a", dailyGoalXP: 100 } : profileData(id), many = profileIds().length > 1;
   overlay.style.display = "flex";
-  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${isNew ? "Nouveau joueur" : "Joueur"}</h1></div>
+  overlay.innerHTML = `<div class="panel" data-silent><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${isNew ? "Nouveau joueur" : "Joueur"}</h1></div>
     <div class="row"><span>Prénom</span><input id="pn" value="${escH(p.name)}" maxlength="20" autocomplete="off" aria-label="Prénom"></div>
     <div class="row"><span>Fille ou garçon</span><select id="px" aria-label="Fille ou garçon"><option value="">Choisir…</option>${optList(p.sex, SEXES)}</select></div>
     <div class="row"><span>Âge</span><select id="pa">${optList(p.age || "a", AGES)}</select></div>
@@ -479,19 +484,19 @@ function profileEdit(id) {
     <div class="pinmsg gmsg" id="pm" aria-live="polite"></div>
     <div class="cfmbtns">${!isNew && many ? '<button class="cfmno" id="pdel" aria-label="Supprimer ce joueur">🗑</button>' : ""}<button class="cfmyes" id="pok" aria-label="Enregistrer">✔</button></div></div>`;
   $("#pback").onclick = profilesScreen;
-  const del = $("#pdel"); if (del) del.onclick = () => askConfirm(overlay, { title: "Supprimer ce joueur ?", sub: "Sa progression sera effacée.", onYes: () => { removeProfile(id); profilesScreen(); }, onNo: () => profileEdit(id) });
+  const del = $("#pdel"); if (del) del.onclick = () => askConfirm(overlay, { title: "Supprimer ce joueur ?", sub: "Sa progression sera effacée.", onYes: () => { const was = activeId(); removeProfile(id); if (activeId() !== was) { overlay.style.display = "none"; overlay.innerHTML = ""; welcome(); } else profilesScreen(); }, onNo: () => profileEdit(id) });
   $("#pok").onclick = () => {
     const q = k => overlay.querySelector(k).value, name = q("#pn").trim().slice(0, 20), sex = q("#px"), m = $("#pm");
     if (!name || !sex) { m.className = "pinmsg gmsg warn"; m.textContent = !name ? "Écrivez le prénom." : "Choisissez : fille ou garçon."; overlay.querySelector(!name ? "#pn" : "#px").focus(); return; }
     const f = { name, sex, age: q("#pa"), dailyGoalXP: +q("#pg") > 0 ? +q("#pg") : 100 };
     if (isNew) addProfile(f); else updateProfile(id, f);
-    applySettings(); toast(isNew ? "Joueur ajouté" : "Enregistré"); profilesScreen();
+    applySettings(); chime("done"); toast(isNew ? "Joueur ajouté" : "Enregistré"); speak(DEVICE + (isNew ? `Bienvenue ${name} !` : `Salut ${name} !`), { force: true, full: true }); profilesScreen();
   };
 }
 function parentScreen(id) {
   if (id === "profil") return profilesScreen();
   const sc = PARENT_SCREENS[id](); overlay.style.display = "flex";
-  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
+  overlay.innerHTML = `<div class="panel" data-silent><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
   $("#pback").onclick = () => { grabParent(); settings(); };
   overlay.querySelectorAll(".cardst").forEach(b => b.onclick = () => {
@@ -504,7 +509,7 @@ function parentScreen(id) {
 }
 function settings() {
   overlay.style.display = "flex";
-  overlay.innerHTML = `<div class="panel parentpanel"><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
+  overlay.innerHTML = `<div class="panel parentpanel" data-silent><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
   overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
   $("#pclose").onclick = closeSettings;
 }
