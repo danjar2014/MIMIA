@@ -136,27 +136,28 @@ function home() {
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const bar = el("div", "bar homebar"), chip = el("button", "pchip", `<span class="pcav">${robotSvg(S.robot)}</span><b>${esc(S.name || "Moi")}</b>`); chip.setAttribute("aria-label", "Changer de joueur");
   chip.onclick = () => askConfirm(overlay, { title: "Changer de joueur ?", onYes: () => { overlay.style.display = "none"; overlay.innerHTML = ""; welcome(); }, onNo: () => { overlay.style.display = "none"; overlay.innerHTML = ""; } });
-  bar.append(chip); app.append(bar, parentLock());
+  const ss = softStreak(playDays()), tx = todayXP(), gx = goalXP(), stats = el("div", "hstats");
+  stats.innerHTML = `<span class="hstat" aria-label="Points aujourd'hui : ${tx} sur ${gx}">${icon("bolt", "mini")} ${tx}/${gx}${tx >= gx ? " ✅" : ""}</span><span class="hstat" aria-label="Série : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}">🔥 ${ss.streak}</span>`;
+  stats.dataset.say = `Aujourd'hui tu as ${tx} points sur ${gx}. Série : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}.`;
+  bar.append(chip, stats); app.append(bar, parentLock());
   const body = el("div", "homebody"); app.append(body);
   if (FLAGS.testUnlock) body.append(el("div", "testflag", "🧪 Mode test : tout est débloqué"));
-  // 1. la prochaine étape : un seul grand bouton
-  const ns = nextStep(), info = ns ? stepInfo(ns.step) : null, hero = el("section", "hero");
-  hero.innerHTML = `<div class="hface">${faceSvg("happy")}</div><div class="htxt"><small>${ns ? `Aventure ${ns.rank + 1} · ${RANKS[ns.rank].icon} ${esc(RANKS[ns.rank].name)}` : "Parcours terminé"}</small><b>${esc(info ? info.title : "Bravo, tu as tout terminé !")}</b></div>`;
-  const go = el("button", "big-btn herobtn", `${icon("play")}<span>${ns ? "Continuer" : "Défi du jour"}</span>`); go.onclick = () => (ns ? launchStep(ns.step) : playDaily(false)); hero.append(go); body.append(hero);
-  { const ss = softStreak(playDays()), tx = todayXP(), g = goalXP(); const strip = el("div", "xpstrip", `<span>${icon("bolt", "mini")} ${tx} / ${g} XP aujourd'hui${tx >= g ? " ✅" : ""}</span><span>🔥 ${ss.streak} jour${ss.streak > 1 ? "s" : ""} de série</span>`); strip.dataset.say = `Aujourd'hui tu as ${tx} points d'expérience sur ${g}. Série : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}.`; body.append(strip); }
-  // 2. des tuiles dessinées (le nom porte le sens ; l'icône est décorative)
-  const tile = (ic, nm, sub, hue, fn, lock) => { const locked = lock && cardLocked(lock), b = el("button", "tile" + (locked ? " locked" : ""), `<span class="tic">${locked ? icon("lock") : ic.startsWith("<svg") ? ic : icon(ic)}</span><b>${esc(nm)}</b><small>${esc(locked ? "à débloquer" : sub)}</small>`); b.style.setProperty("--tc", hue); b.onclick = locked ? () => { toast(lockReason(lock), 4500); speak(lockReason(lock)); } : fn; return b; };
-  const quick = el("div", "quick"), cr = currentRank(), nb = badgeList().filter(b => b.date).length;
-  quick.append(tile("target", "Défi du jour", dailyDoneToday() ? "fait aujourd'hui ✅" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Mon parcours", `Aventure ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Mes badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges)); body.append(quick);
-  // 3. toutes les autres activités, repliées pour ne pas tout montrer d'un coup
-  const more = el("details", "more"), grid = el("div", "mgrid"); more.open = !!S.homeMore; more.innerHTML = "<summary>Toutes les activités</summary>"; more.ontoggle = () => { S.homeMore = more.open; save(); };
+  // 1. la prochaine étape : une grande tuile (le titre de l'étape, rien d'autre)
+  const ns = nextStep(), info = ns ? stepInfo(ns.step) : null, hero = el("button", "herotile");
+  hero.innerHTML = `<span class="hface">${faceSvg("happy")}</span><b>${esc(info ? info.title : "Défi du jour")}</b><span class="hplay">${icon("play")}</span>`;
+  hero.setAttribute("aria-label", ns ? `Continuer : ${info.title}` : "Défi du jour"); hero.onclick = () => (ns ? launchStep(ns.step) : playDaily(false)); body.append(hero);
+  // 2. de grosses icônes, un seul mot chacune (le détail reste pour les lecteurs d'écran et la voix)
+  const tile = (ic, nm, sub, hue, fn, lock) => { const locked = lock && cardLocked(lock), b = el("button", "tile" + (locked ? " locked" : ""), `<span class="tic">${locked ? icon("lock") : ic.startsWith("<svg") ? ic : icon(ic)}</span><b>${esc(nm)}</b>`); b.setAttribute("aria-label", locked ? `${nm} : à débloquer` : sub ? `${nm}. ${sub}` : nm); b.style.setProperty("--tc", hue); b.onclick = locked ? () => { toast(lockReason(lock), 4500); speak(lockReason(lock)); } : fn; return b; };
+  const grid = el("div", "igrid"), cr = currentRank(), nb = badgeList().filter(b => b.date).length, age = S.age || "a";
   grid.append(
-    tile("magnifier", "Découvrir le robot", "ses parties", "#d6ecff", () => menu("Découvrir le robot", discItems(), home), "disc"), tile("gear", "Construire", "la carte du robot", "#e2dcff", buildMenu, "build"),
-    tile("blocks", "Programmer", "avec des blocs", "#d9f5d3", progMenu, "prog"), tile("code", "Coder pour de vrai", "Python et JavaScript", "#d4e4ff", codeMenu, "code"),
+    tile("target", "Défi", dailyDoneToday() ? "fait aujourd'hui" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Parcours", `Aventure ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges),
+    tile("dice", "S'entraîner", "un parcours surprise", "#ffe9c7", () => playPractice(age, 0), "prog"),
+    tile("magnifier", "Découvrir", "les parties du robot", "#d6ecff", () => menu("Découvrir le robot", discItems(), home), "disc"), tile("blocks", "Programmer", "avec des blocs", "#d9f5d3", progMenu, "prog"),
+    tile("gear", "Construire", "la carte du robot", "#e2dcff", buildMenu, "build"), tile("code", "Coder", "Python et JavaScript", "#d4e4ff", codeMenu, "code"),
     tile("sensor", "Capteurs", "lumière, distance", "#fff0c2", () => menu("Les capteurs", labItems(), home), "lab"), tile("palette", "Créer", "dessiner, danser", "#ffe0d2", createMenu, "create"),
-    tile("rocket", "Aller plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv"), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
-    tile("star", "Mes créations", `${S.creations.length} gardée${S.creations.length > 1 ? "s" : ""}`, "#e3f1f1", creations));
-  more.append(grid); body.append(more);
+    tile("rocket", "Plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv"), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
+    tile("star", "Créations", `${S.creations.length} gardée${S.creations.length > 1 ? "s" : ""}`, "#e3f1f1", creations));
+  body.append(grid);
 }
 function ageChooser() {
   overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel"><h1>Quel âge as-tu ?</h1><p class="sub">Je te propose les activités qui conviennent le mieux. Tu pourras tout essayer quand tu veux.</p><div class="agebtns"></div></div>`;

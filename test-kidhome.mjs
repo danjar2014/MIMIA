@@ -1,0 +1,21 @@
+// L'accueil enfant : une grande tuile « Continuer » et de grosses icônes à un seul mot (vérifications sur le code source).
+import { readFileSync } from "node:fs";
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(84), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+const app = readFileSync("./app.js", "utf8"), css = readFileSync("./style.css", "utf8"), ico = readFileSync("./icons.js", "utf8"), sw = readFileSync("./sw.js", "utf8");
+const home = app.slice(app.indexOf("function home()"), app.indexOf("function ageChooser"));
+const tiles = [...home.matchAll(/tile\("([^"<]+)", "([^"]+)", /g)].map(m => ({ icon: m[1], name: m[2] }));
+const withFace = (home.match(/tile\(faceSvg/g) || []).length;
+t("13 tuiles d'activités (dont « Mon robot » avec son visage)", tiles.length + withFace === 13, String(tiles.length + withFace));
+t("chaque nom de tuile tient en 1 ou 2 mots (un seul pour la plupart)", tiles.every(x => x.name.split(/\s+/).length <= 2) && tiles.filter(x => !/\s/.test(x.name)).length >= 11, tiles.map(x => x.name).join(" | "));
+t("chaque tuile a une icône dessinée qui existe", tiles.filter(x => !/faceSvg/.test(x.icon)).every(x => new RegExp(`\n  ${x.icon}: wrap`).test(ico) || x.icon === "dice"), tiles.map(x => x.icon).join());
+t("l'icône du dé (S'entraîner) existe", /\n  dice: wrap/.test(ico));
+t("plus de sous-titres affichés sur les tuiles (ils passent en aria-label)", !/<small>/.test(home) && /setAttribute\("aria-label", locked/.test(home));
+t("plus de menu « Toutes les activités » replié ni de bandeau de texte", !/Toutes les activités/.test(home) && !/xpstrip/.test(home) && !/<details/.test(home));
+t("une grande tuile « Continuer » : le titre de l'étape seulement", /herotile/.test(home) && !/Aventure \$\{ns\.rank/.test(home));
+t("compteurs en chiffres (points du jour, série), détaillés pour la voix", /hstat/.test(home) && /stats\.dataset\.say/.test(home));
+t("les tuiles verrouillées gardent leur raison (message + voix)", /lockReason\(lock\)/.test(home));
+t("S'entraîner est dans l'accueil", /playPractice\(age, 0\)/.test(home));
+t("le même cadenas parents et le prénom (retour à « Qui joue ? »)", /parentLock\(\)/.test(home) && /Changer de joueur/.test(home));
+t("grille de grosses icônes : au moins 72 px", /\.igrid \.tile \.tic\{width:72px;height:72px\}/.test(css));
+t("service worker à jour (icônes, accueil)", /petits-robots-v(29|[3-9]\d)/.test(sw));
+console.log(bad ? "PROBLEMES: " + bad : "L'ACCUEIL ENFANT EST EPURE");

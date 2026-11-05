@@ -100,3 +100,10 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 
 - **Un seul bouton parents** (`parentLock()`), le même cadenas sur « Qui joue ? » et sur l'accueil ; l'ancien bouton ⚙️ à appui long est supprimé. Sur l'accueil, le prénom (en haut à gauche) ramène à « Qui joue ? » après confirmation ✖/✔.
 - **Déploiement Render** : le déploiement automatique ne s'est pas déclenché après les envois sur GitHub (un seul déploiement existait). Il faut le lancer à la main depuis Render (Manual Deploy) ou rebrancher le webhook GitHub.
+
+## Accueil enfant en grosses icônes (inspiré d'iwawa)
+
+- L'accueil n'a plus de paragraphes ni de menu replié : en haut, le prénom (retour à « Qui joue ? ») et deux compteurs en chiffres (⚡ points du jour, 🔥 série) ; puis une grande tuile « Continuer » (le titre de l'étape) ; puis 13 grosses icônes à un seul mot : Défi, Parcours, Badges, S'entraîner, Découvrir, Programmer, Construire, Coder, Capteurs, Créer, Plus loin, Mon robot, Créations. En bas à gauche, le cadenas des parents.
+- Le détail de chaque tuile (« 3 questions », « Aventure 2 sur 11 »…) n'est plus écrit : il reste dans le nom lu par les lecteurs d'écran et par la voix. Les tuiles verrouillées gardent leur message « pourquoi » au toucher.
+- Mots à l'écran de l'accueil : environ 200 → 33.
+- Nouvelle icône dessinée : le dé (🎲 S'entraîner). Test : `node test-kidhome.mjs`.
