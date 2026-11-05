@@ -2,7 +2,7 @@ import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, slee
 import { RANKS, stepDone, rankDone, rankProgress, rankUnlocked, highestUnlocked, currentRank, stepUnlocked, nextStep, cardLocked, lockReason, FLAGS } from "./parcours.js";
 import { mountLearn, LESSONS } from "./learn.js";
 import { mountProject } from "./project.js";
-import { initStats, track, limitState, extendLimit } from "./stats.js";
+import { initStats, track, limitState, extendLimit, dayKey } from "./stats.js";
 import { renderDashboard } from "./dashboard.js";
 import { hasPin, askPin, createPin } from "./pin.js";
 import { mountDaily, dailyDoneToday } from "./daily.js";
@@ -16,6 +16,7 @@ import { addXP, stepXP, todayXP, goalXP, totalXP, GOALS } from "./xp.js";
 import { robotSvg, COLORS } from "./robot.js";
 import { LEVELS, BANDS } from "./levels.js";
 import { mountGrid } from "./grid.js";
+import { makePractice, trainReward } from "./practice.js";
 import { mountDraw, DEFIS } from "./draw.js";
 import { mountDance } from "./dance.js";
 import { mountLab } from "./labs.js";
@@ -267,7 +268,13 @@ function progItems(band) { return LEVELS[band].map((lv, i) => ({ icon: String(i 
 function progMenu() {
   const order = [S.age || "a", ...["a", "b", "c"].filter(b => b !== (S.age || "a"))];
   const groups = order.map(b => { const items = progItems(b); if (b === (S.age || "a")) { const k = firstTodo(items); if (k >= 0) items[k].rec = true; } return { header: `${BANDS[b].name}${b === (S.age || "a") ? " · pour toi" : ""}`, items }; });
+  const band = S.age || "a"; groups.unshift({ header: "🎲 S'entraîner", info: "Un parcours surprise à chaque fois, toujours possible à réussir. Il devient plus difficile au fil des réussites.", items: [{ icon: "🎲", title: "Parcours surprise", sub: "un nouveau parcours à chaque fois", go: () => playPractice(band, 0) }] });
   menu("Programmer le robot", groups, home);
+}
+// S'entraîner : des parcours au hasard (practice.js), de plus en plus difficiles ; 5 XP par réussite, 30 XP au plus par jour
+function playPractice(band, n = 0) {
+  const lv = makePractice(band, n), next = () => playPractice(band, n + 1);
+  activity(`🎲 ${lv.title}`, "prog", "train", s => mountGrid(s, lv, { onWin: () => { const xp = trainReward(S, dayKey(Date.now())); if (xp) { const r = addXP(xp); setTimeout(() => { const st = document.querySelector(".astage"); if (st) { const chip = el("div", "xpchip", `⚡ +${xp} XP · aujourd'hui ${r.after}/${r.goal}`), wb = st.querySelector(".winbar"); wb ? st.insertBefore(chip, wb) : st.append(chip); } }, 450); } else toast("Bravo ! Tu as déjà gagné tes points d'entraînement du jour 🌟", 3500); winBar(next, progMenu); }, speakIntro: false }), progMenu);
 }
 function playGrid(band, i, opts = {}) {
   const lv = LEVELS[band][i], id = band + (i + 1), nextLv = i + 1 < LEVELS[band].length ? () => playGrid(band, i + 1) : null;
@@ -387,5 +394,5 @@ initVoice();
 mascotApi = initMascot();
 sceneApi = initScene();
 initStats({ onLimit: () => { if (overlay.style.display !== "flex") showLimit(); } });
-window.__app = { get mascot() { return mascotApi; }, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
+window.__app = { get mascot() { return mascotApi; }, playPractice, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
 home();

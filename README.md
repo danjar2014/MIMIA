@@ -82,3 +82,11 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - `hints.js` : le bouton 💡 de la grille de blocs donne 4 indices de plus en plus précis, calculés sur ce que l'enfant a déjà posé : ① où est le but (« 2 cases vers le bas et 3 cases vers la droite »), ② ce que fait SON programme (cogne un caillou, tourne en rond, s'arrête à N cases du drapeau, étoile oubliée, « il marche déjà : lance-le »), ③ le prochain bloc à changer (« Au bloc 2, essaie tourner à droite »), ④ une solution regroupée (« avancer 3 fois, tourner à droite… »).
 - Une solution est calculée automatiquement (plus court chemin) : l'indice marche aussi sur « Dessine ton parcours », qui n'a pas de solution écrite (le bouton 💡 y plantait avant).
 - Test : `node test-hints.mjs`.
+
+## S'entraîner : parcours aléatoires (inspiré du « Skill Mode » de CodeMonkey)
+
+- Menu « Programmer le robot » → 🎲 **Parcours surprise** : un parcours tiré au hasard (`practice.js`), toujours réalisable (le plus court chemin est calculé avant de le proposer, avec au moins un virage), puis un autre à chaque réussite (« Niveau suivant »).
+- La difficulté monte d'un cran toutes les 2 réussites (6 niveaux) : grille plus grande, plus de cailloux et d'étoiles, chemin plus long. 6-8 ans : avancer et tourner ; 8-10 ans : + répéter ; 10-12 ans : tous les blocs, avec « ramasser l'étoile » à la main.
+- Les indices 💡 (`hints.js`) marchent aussi sur ces parcours.
+- Récompense : 5 XP par réussite, 30 XP au plus par jour (l'objectif du jour ne se remplit pas sans apprendre). Ces parcours ne comptent pas dans « Mon parcours ».
+- Test : `node test-practice.mjs` (720 parcours vérifiés : bien formés, réalisables, solution juste, difficulté croissante).
