@@ -5,6 +5,7 @@ import { robotSvg } from "./robot.js";
 import { CONDS } from "./levels.js";
 import { attachCodeView } from "./codeview.js";
 import { gridToCode } from "./blockcode.js";
+import { hintFor, hintStage } from "./hints.js";
 
 import { parseScenario, DIRS } from "./scenario.js";
 export { parseScenario };
@@ -43,7 +44,7 @@ export function mountGrid(stage, level, hooks = {}) {
   wrap.append(gridEl); gridEl.append(bot);
   const ctl = el("div", "gctl"), mkb = (cls, txt, fn) => { const b = el("button", "gb " + cls, txt); b.onclick = fn; ctl.append(b); return b; };
   const bRun = mkb("go", "▶ Lancer", () => run()), bReset = mkb("", "⟲ Recommencer", () => resetScene(true)), bSpeed = mkb("", "🐢 Lent", () => { fast = !fast; bSpeed.textContent = fast ? "🐇 Rapide" : "🐢 Lent"; }),
-    bClear = mkb("", "🗑 Effacer", () => { editor.clear(); resetScene(true); say("Programme effacé. Touche les blocs pour recommencer."); }), bHint = mkb("", "💡 Indice", () => hint());
+    bClear = mkb("", "🗑 Effacer", () => { presses = 0; editor.clear(); resetScene(true); say("Programme effacé. Touche les blocs pour recommencer."); }), bHint = mkb("", "💡 Indice", () => hint());
   stage.append(intro, wrap, msg, ctl, editor.el);
   view = attachCodeView(stage, { gen: lang => gridToCode(editor.lists, lang), open: !!hooks.codeOpen, onOpen: hooks.onOpenCode ? (code, lang) => hooks.onOpenCode({ kind: "robot", level, code, lang }) : null, note: hooks.codeOpen ? "👀 Regarde : pendant que tu poses des blocs, le code s'écrit tout seul ! Chaque bloc = une ligne." : null });
   // la consigne est lue une seule fois, à l'arrivée sur l'écran (voice.js)
@@ -61,7 +62,9 @@ export function mountGrid(stage, level, hooks = {}) {
   function place(anim = true) { bot.style.transition = anim && !S.calm ? "transform .3s" : "none"; bot.style.transform = `translate(${pos.c * cs}px,${pos.r * cs}px)`; bot.querySelector(".ring").style.transform = `rotate(${pos.dir * 90}deg)`; }
   const cellAt = (r, c) => cells[r * sc.w + c];
   function resetScene(clearMsg) { runId++; running = false; bRun.disabled = false; build(0); editor.highlight(null); if (clearMsg) say("&nbsp;"); }
-  function hint() { const n = level.sol.main[0]; const d = D[n.t]; say(`💡 Indice : commence par le bloc « ${d.label} ».`, "hint"); speak(`Indice : commence par le bloc ${d.label}.`); }
+  // indices progressifs et personnalisés (hints.js) : le but, ce que fait mon programme, le prochain bloc, une solution
+  let presses = 0;
+  function hint() { const h = hintFor(level, editor.lists, hintStage(editor.lists, presses++)); say(h.text, "hint"); speak(h.say, { force: true }); }
 
   async function run() {
     if (running) return; if (!editor.lists.main.length) { say("Ton programme est vide. Touche des blocs ci-dessus pour les ajouter 👆", "warn"); return; }
@@ -74,7 +77,7 @@ export function mountGrid(stage, level, hooks = {}) {
       if (!r.ok) { fail(r); running = false; bRun.disabled = false; return; }
       if (i < scs.length - 1) { say(`✔ Parcours ${i + 1} réussi ! Je teste le suivant…`, "ok"); chime("ok"); await sleep(900); }
     }
-    running = false; bRun.disabled = false; editor.highlight(null); chime("done"); say("🎉 Bravo ! Ton programme a marché" + (scs.length > 1 ? " sur tous les parcours !" : " !"), "ok"); speak("Bravo ! Ton programme a marché."); hooks.onWin && hooks.onWin();
+    running = false; bRun.disabled = false; editor.highlight(null); presses = 0; chime("done"); say("🎉 Bravo ! Ton programme a marché" + (scs.length > 1 ? " sur tous les parcours !" : " !"), "ok"); speak("Bravo ! Ton programme a marché."); hooks.onWin && hooks.onWin();
   }
   async function simulateLive(my) {
     const lists = editor.lists, res = { ok: false, bump: null, limit: false, atFlag: true, missing: 0 };

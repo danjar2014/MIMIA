@@ -76,3 +76,9 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 
 - `parcours.js` : `FLAGS.testUnlock = true` débloque toutes les aventures, étapes et cartes, et affiche le bandeau « 🧪 Mode test : tout est débloqué » sur l'accueil.
 - **Pour la mise en production : passer `testUnlock` à `false`** (le blocage réel revient). Les tests le coupent eux-mêmes.
+
+## Indices qui s'adaptent (inspiré de l'analyse de CodeMonkey)
+
+- `hints.js` : le bouton 💡 de la grille de blocs donne 4 indices de plus en plus précis, calculés sur ce que l'enfant a déjà posé : ① où est le but (« 2 cases vers le bas et 3 cases vers la droite »), ② ce que fait SON programme (cogne un caillou, tourne en rond, s'arrête à N cases du drapeau, étoile oubliée, « il marche déjà : lance-le »), ③ le prochain bloc à changer (« Au bloc 2, essaie tourner à droite »), ④ une solution regroupée (« avancer 3 fois, tourner à droite… »).
+- Une solution est calculée automatiquement (plus court chemin) : l'indice marche aussi sur « Dessine ton parcours », qui n'a pas de solution écrite (le bouton 💡 y plantait avant).
+- Test : `node test-hints.mjs`.
