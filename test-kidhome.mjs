@@ -5,7 +5,7 @@ const app = readFileSync("./app.js", "utf8"), css = readFileSync("./style.css", 
 const home = app.slice(app.indexOf("function home()"), app.indexOf("function ageChooser"));
 const tiles = [...home.matchAll(/tile\("([^"<]+)", "([^"]+)", /g)].map(m => ({ icon: m[1], name: m[2] }));
 const withFace = (home.match(/tile\(faceSvg/g) || []).length;
-t("13 tuiles d'activités (dont « Mon robot » avec son visage)", tiles.length + withFace === 13, String(tiles.length + withFace));
+t("14 tuiles d'activités (dont « Mon robot » avec son visage)", tiles.length + withFace === 14, String(tiles.length + withFace));
 t("chaque nom de tuile tient en 1 ou 2 mots (un seul pour la plupart)", tiles.every(x => x.name.split(/\s+/).length <= 2) && tiles.filter(x => !/\s/.test(x.name)).length >= 11, tiles.map(x => x.name).join(" | "));
 t("chaque tuile a une icône dessinée qui existe", tiles.filter(x => !/faceSvg/.test(x.icon)).every(x => new RegExp(`\n  ${x.icon}: wrap`).test(ico) || x.icon === "dice"), tiles.map(x => x.icon).join());
 t("l'icône du dé (S'entraîner) existe", /\n  dice: wrap/.test(ico));

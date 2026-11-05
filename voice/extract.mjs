@@ -26,5 +26,7 @@ for (const f of readdirSync(".").filter(f => f.endsWith(".js") && !skip.test(f))
   for (const m of src.matchAll(/"((?:[^"\\\n]|\\.)*)"|`((?:[^`\\$]|\\.)*)`/g)) { const t = (m[1] ?? m[2] ?? "").replace(/\\n/g, " ").replace(/\\(["'`])/g, "$1"); for (const x of split(t)) if (ok(x)) sentences.add(x); }
 }
 const list = [...sentences].sort();
+// compliments avec le prénom : morceaux sans le prénom (le prénom a ses propres clips, voice/phrases_names.json)
+{ const { fragments } = await import(pathToFileURL(resolve("praise.js")).href); const fr = fragments(); writeFileSync("voice/phrases_praise.json", JSON.stringify(fr, null, 1)); console.log("compliments:", fr.length); }
 writeFileSync("voice/phrases.json", JSON.stringify(list, null, 1));
 console.log(rep); console.log("total phrases:", list.length, " caractères:", list.reduce((a, s) => a + s.length, 0));

@@ -5,6 +5,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 // L'appli web (HTML/JS/CSS) est embarquée dans assets/www et servie en local :
 // les modules ES, le worker du code et le stockage fonctionnent comme sur un site, sans internet.
 const int kPort = 8089;
+// plein écran verrouillé, demandé par l'appli web (réglage des parents) : épinglage de l'écran Android
+const MethodChannel kiosk = MethodChannel('petitsrobots/kiosk');
 final InAppLocalhostServer server =
     InAppLocalhostServer(documentRoot: 'assets/www', port: kPort);
 
@@ -74,7 +76,19 @@ class _ShellState extends State<Shell> {
                     cacheMode: CacheMode.LOAD_NO_CACHE,
                     transparentBackground: false,
                   ),
-                  onWebViewCreated: (c) => ctrl = c,
+                  onWebViewCreated: (c) {
+                    ctrl = c;
+                    c.addJavaScriptHandler(
+                      handlerName: 'kiosk',
+                      callback: (args) async {
+                        final on = args.isNotEmpty && args[0] == true;
+                        try {
+                          await kiosk.invokeMethod(on ? 'start' : 'stop');
+                        } catch (_) {}
+                        return null;
+                      },
+                    );
+                  },
                   // les liens externes ne sortent jamais de l'appli (enfants)
                   shouldOverrideUrlLoading: (c, action) async {
                     final host = action.request.url?.host ?? '';

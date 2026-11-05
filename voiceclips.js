@@ -1,7 +1,7 @@
 // Voix enregistrée : une femme (F5), la seule voix de l'appli. Pas de choix à faire.
 // Chaque phrase de l'appli a un petit clip mp3 (voice/clips/f5/<clé>.mp3, créé par voice/gen.py).
 // La phrase est retrouvée par sa « clé » (même calcul que voice/gen.py) ; une phrase sans clip est lue par la voix de l'appareil.
-import { S, setClipHooks } from "./util.js";
+import { S, setClipHooks, profileIds, profileData } from "./util.js";
 
 // clé d'une phrase : lettres et chiffres seulement, en minuscules, puis empreinte FNV-1a 32 bits (identique à gen.py)
 export function voiceKey(s) {
@@ -11,10 +11,19 @@ export function voiceKey(s) {
 }
 export const splitSentences = t => (String(t).replace(/\s+/g, " ").trim().match(/[^.!?…]+[.!?…]*/g) || []).map(s => s.trim()).filter(s => /[\p{L}\p{N}]/u.test(s));
 export const VOICE_DIR = "f5";
+// le prénom d'un joueur n'a pas de clip (il peut être n'importe lequel) : on découpe le texte autour des prénoms, et le prénom est lu par la voix de l'appareil
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+export function segmentsOf(text) {
+  const t = String(text).replace(/\s+/g, " ").trim(), names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
+  const plain = x => splitSentences(x).map(p => [p, false]); if (!names.length) return plain(t);
+  const re = new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(esc).join("|") + ")(?![\\p{L}\\p{N}])", "giu"), out = []; let last = 0, m;
+  while ((m = re.exec(t))) { out.push(...plain(t.slice(last, m.index)), [m[0], true]); last = m.index + m[0].length; }
+  return out.concat(plain(t.slice(last)));
+}
 
 let man = null, loading = null;
 export const ready = () => loading || (loading = fetch("voice/manifest.json", { cache: "no-cache" }).then(r => r.json()).then(m => { man = new Set(m.f5 || []); }).catch(() => { man = new Set(); }));
-export const hasClip = text => !!(man && splitSentences(text).some(p => man.has(voiceKey(p))));
+export const hasClip = text => !!(man && segmentsOf(text).some(([p, isName]) => !isName && man.has(voiceKey(p))));
 
 let token = 0, audio = null;
 export function stopClips() { token++; if (audio) { try { audio.pause(); } catch (e) {} audio = null; } }
@@ -23,14 +32,14 @@ function tts(text, done) { try { const u = new SpeechSynthesisUtterance(text); u
 // lit le texte avec les clips ; renvoie false s'il n'y a rien d'enregistré (l'appli utilise alors la voix de l'appareil)
 export function playClips(text, onEnd) {
   if (!man) { ready(); return false; }
-  const parts = splitSentences(text).map(p => [p, voiceKey(p)]);
-  if (!parts.some(([, k]) => man.has(k))) return false;
+  const parts = segmentsOf(text).map(([p, isName]) => [p, voiceKey(p), isName]);
+  if (!parts.some(([, k, nm]) => !nm && man.has(k))) return false;
   const my = ++token; let i = 0;
   const next = () => {
     if (my !== token) return;
     if (i >= parts.length) { audio = null; onEnd && onEnd(); return; }
-    const [p, k] = parts[i++];
-    if (!man.has(k)) { tts(p, next); return; }
+    const [p, k, nm] = parts[i++];
+    if (nm || !man.has(k)) { tts(p, next); return; }   // le prénom, ou une phrase sans clip : voix de l'appareil
     const a = audio = new Audio(`voice/clips/${VOICE_DIR}/${k}.mp3`); a.playbackRate = S.age === "a" ? 0.92 : 1;
     a.onended = next; a.onerror = () => tts(p, next); const pr = a.play(); if (pr && pr.catch) pr.catch(() => tts(p, next));
   };

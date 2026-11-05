@@ -8,6 +8,7 @@
 //  - 🔊 en bas à droite : « lire la page » ; 🔈/🔇 : voix oui ou non.
 import { S, save, speak, el, voiceMode, toast, brief } from "./util.js";
 import { stopClips } from "./voiceclips.js";
+import { hello } from "./praise.js";
 
 const SYMBOLS = { "▲": "monter", "▼": "descendre", "✕": "supprimer", "↶": "tourner à gauche", "↷": "tourner à droite", "−": "moins", "+": "plus", "▶": "lancer", "⬅": "retour", "↺": "recommencer", "✔": "validé", "❌": "erreur" };
 export function clean(t) {
@@ -64,7 +65,7 @@ const overlayShown = () => { const ov = document.getElementById("overlay"); retu
 export function pageBrief() {
   const ov = overlayShown(); if (ov) { const b = ov.querySelector(".obbubbles"); if (b) return textOf(b); const h = ov.querySelector("h1"), p = ov.querySelector(".sub"); return joinSay([h && textOf(h), p && textOf(p)]); }
   const app = document.getElementById("app"), home = app.querySelector(".homebody");
-  if (home) { const g = app.querySelector(".greet"), nx = app.querySelector(".htxt b"); return joinSay([g && textOf(g), nx && "Ta prochaine étape : " + textOf(nx)]); }
+  if (home) { const g = app.querySelector(".greet"), hero = app.querySelector(".herotile b"); return joinSay([g ? textOf(g) : hello(), hero && "Ta prochaine étape : " + textOf(hero)]); }   // « Bonjour Léa ! » avec le prénom
   const ttl = app.querySelector(".ttl"), t = ttl ? textOf(ttl) : "";
   if (app.querySelector(".levels") || app.querySelector(".badgegrid")) return t;
   const lt = app.querySelector(".lbox .lt"), intro = app.querySelector(".astage .intro");

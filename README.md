@@ -111,7 +111,16 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 ## Voix enregistrée : une femme (F5)
 
 - Une seule voix française, sans accent, générée en local avec VoiceStudio : **F5 = femme** (CosyVoice 3, timbre cloné depuis `voice/tools/ref_F5.wav`). Aucun choix à faire : ni écran de choix, ni réglage de voix (la voix d'homme a été retirée). Chaque phrase de l'appli a un petit mp3 (`voice/clips/f5/<clé>.mp3`, listés dans `voice/manifest.json`).
-- Lecture : `voiceclips.js` découpe le texte en phrases et lit le clip de chaque phrase ; une phrase sans clip (prénom, chiffres, ou pas encore générée) est lue par la voix de l'appareil. 🔇 coupe aussi les clips.
+- Lecture : `voiceclips.js` découpe le texte en phrases et lit le clip de chaque phrase ; une phrase sans clip (chiffres, ou pas encore générée) est lue par la voix de l'appareil. **Le prénom de l'enfant est toujours lu par la voix de l'appareil** (pas de clips de prénoms : il peut être n'importe lequel). 🔇 coupe aussi les clips.
 - Fabrication : `node voice/extract.mjs` (extrait les phrases du code → `voice/phrases.json`, plus `voice/phrases_extra.json` écrit à la main) puis `python voice/gen.py` (VoiceStudio lancé sur le port 3900 ; reprenable). La clé d'une phrase est la même en Python (`gen.py`) et en JS (`voiceKey`).
 - La voix est aussi gardée comme skill Claude (`voix-francais-f5-m4`) pour les prochains projets.
 - Test : `node test-voiceclips.mjs`.
+
+## Joueurs, compliments, puzzle, plein écran (nouveautés)
+
+- **Plusieurs joueurs** : le parent en ajoute, règle ou retire (Espace parents → Joueurs : prénom, fille/garçon, âge, objectif). Réglages communs (code, voix, écran…) ; progression, robot et statistiques propres à chaque enfant. « Qui joue ? » montre tous les joueurs ; l'ancien joueur unique devient le joueur 1 (rien ne se perd). Test : `node test-profiles.mjs`.
+- **Fille ou garçon** (obligatoire dans la configuration parent) : `praise.js` donne des compliments avec le prénom, accordés (« tu es une championne » / « un champion ») et différents selon l'âge. Le « Bravo ! » des messages de réussite devient « Bravo, Léa ! », et le petit robot dit aussi le prénom. À l'accueil la voix dit « Bonjour Léa ! ».
+- **Bruitages du robot** : avancer, tourner, sauter, cogner (`sfx()` dans `util.js`, sons synthétisés).
+- **Puzzle du robot** (tuile « Puzzle ») : 2×2, 3×3 ou 4×4 morceaux selon l'âge, 6 dessins, 20 XP. Test : `node test-puzzle.mjs`.
+- **Suivi** : le retour ramène à l'espace parents. **Cadenas parents** : fixe en haut, hors des cartes.
+- **Plein écran verrouillé** (Espace parents → Écran) : sur Android l'écran est épinglé (la sortie demande les gestes système ; le verrou se retire avec le code parent dans l'appli) ; sur le web, plein écran.

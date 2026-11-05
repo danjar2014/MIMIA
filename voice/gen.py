@@ -16,7 +16,7 @@ def key(s):  # identique à voiceKey() dans voiceclips.js
 def speakable(s):  # ce qu'on envoie au moteur : sans emojis ni symboles
     s = re.sub(r"[\U0001F000-\U0001FFFF←-⯿☀-➿️‍]", " ", s)
     s = s.replace("«", "").replace("»", "").replace("→", ", ").replace("↔", " et ").replace("…", "...")
-    return re.sub(r"\s+", " ", s).strip()
+    return re.sub(r"^[\s,;:.!?-]+", "", re.sub(r"\s+", " ", s).strip())
 
 def multipart(fields, files):
     bd = uuid.uuid4().hex; out = io.BytesIO()
@@ -38,9 +38,8 @@ def manifest():
     json.dump(m, open(os.path.join(HERE, "manifest.json"), "w")); return m
 
 def main(voice):
-    phrases = json.load(open(os.path.join(HERE, "phrases.json"), encoding="utf-8"))
-    extra = os.path.join(HERE, "phrases_extra.json")
-    if os.path.exists(extra): phrases += json.load(open(extra, encoding="utf-8"))
+    phrases = []
+    for f in sorted(glob.glob(os.path.join(HERE, "phrases*.json"))): phrases += json.load(open(f, encoding="utf-8"))
     seen, todo = set(), []
     for p in phrases:
         k = key(p)

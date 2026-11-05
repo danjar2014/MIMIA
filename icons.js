@@ -19,6 +19,7 @@ export const ICONS = {
   lock: wrap(`<rect x="9" y="21" width="30" height="22" rx="6" fill="#c9c2dd" ${S}/><path d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" ${S} stroke-width="4"/><circle cx="24" cy="31" r="3.4" fill="${D}"/>`),
   trophy: wrap(`<path d="M13 6h22v12a11 11 0 0 1-22 0z" fill="#ffd54a" ${S}/><path d="M13 10H6c0 8 3 12 8 13M35 10h7c0 8-3 12-8 13" fill="none" ${S}/><path d="M24 29v8M16 43h16l-2-6H18z" fill="#ff9140" ${S}/>`),
   bolt: wrap(`<path d="M27 3L9 27h12l-3 18 21-26H26z" fill="#ffd54a" ${S}/>`),
+  puzzle: wrap(`<path d="M7 15h11a5 5 0 1 1 10 0h11v11a5 5 0 1 0 0 10v7H28a5 5 0 1 0-10 0H7V36a5 5 0 1 1 0-10z" fill="#6bbf59" ${S}/><circle cx="20" cy="26" r="2.6" fill="#fff"/><circle cx="29" cy="26" r="2.6" fill="#fff"/>`),
   dice: wrap(`<rect x="6" y="6" width="36" height="36" rx="9" fill="#fff" ${S}/><circle cx="16" cy="16" r="3.4" fill="#e24b4b"/><circle cx="32" cy="16" r="3.4" fill="#e24b4b"/><circle cx="24" cy="24" r="3.4" fill="#e24b4b"/><circle cx="16" cy="32" r="3.4" fill="#e24b4b"/><circle cx="32" cy="32" r="3.4" fill="#e24b4b"/>`)
 };
 export const icon = (name, cls = "") => (ICONS[name] || ICONS.star).replace('class="ico"', `class="ico ${cls}"`);

@@ -1,5 +1,5 @@
 // Simulateur : le robot se déplace sur une grille quand on exécute le programme
-import { el, S, sleep, chime, speak } from "./util.js";
+import { el, S, sleep, chime, speak, sfx } from "./util.js";
 import { createEditor, runProgram, Limit, D } from "./blocks.js";
 import { robotSvg } from "./robot.js";
 import { CONDS } from "./levels.js";
@@ -90,8 +90,8 @@ export function mountGrid(stage, level, hooks = {}) {
       for (const n of runProgram(lists, env)) {
         if (!alive || my !== runId) throw new Error("cancel");
         editor.highlight(n); await sleep(window.__turbo ? 2 : fast ? 130 : 420);
-        if (n.t === "fd") { if (blocked()) { res.bump = [pos.r, pos.c]; break; } const [dr, dc] = DIRS[pos.dir]; pos.r += dr; pos.c += dc; place(); foot(); if (level.auto) take(); }
-        else if (n.t === "tl") { pos.dir = (pos.dir + 3) % 4; place(); } else if (n.t === "tr") { pos.dir = (pos.dir + 1) % 4; place(); }
+        if (n.t === "fd") { if (blocked()) { res.bump = [pos.r, pos.c]; sfx("bump"); break; } const [dr, dc] = DIRS[pos.dir]; pos.r += dr; pos.c += dc; sfx("move"); place(); foot(); if (level.auto) take(); }
+        else if (n.t === "tl") { pos.dir = (pos.dir + 3) % 4; sfx("turn"); place(); } else if (n.t === "tr") { pos.dir = (pos.dir + 1) % 4; sfx("turn"); place(); }
         else if (n.t === "pick") { const before = picked.size; take(); if (picked.size === before) say("Il n'y a pas d'étoile ici, le robot ne ramasse rien.", "warn"); }
       }
     } catch (e) { if (e instanceof Limit) res.limit = true; else throw e; }

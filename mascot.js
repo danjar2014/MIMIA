@@ -1,6 +1,7 @@
 // Le petit robot qui réagit : un visage (celui du robot de l'enfant) qui sourit, s'inquiète, réfléchit ou fait la fête
 // selon les messages de l'appli (bravo, « pas tout à fait », indice…). Il se glisse partout sans que chaque écran ait à s'en occuper.
 import { S, speak } from "./util.js";
+import { praise, encourage } from "./praise.js";
 
 export const MOODS = ["neutral", "happy", "worried", "thinking", "celebrate"];
 // quelle humeur pour ce message ? (null = message neutre : on ne change rien)
@@ -12,7 +13,12 @@ export function moodFor(cls, text) {
   return null;
 }
 const WORDS = { happy: ["Super !", "Bien joué !", "Exact !", "Bravo !"], worried: ["Pas tout à fait…", "Presque !", "On réessaie ?", "Pas grave !"], thinking: ["Regarde bien…", "Un petit indice !", "Réfléchissons…"], celebrate: ["Quel exploit !", "Incroyable !", "Tu as réussi !"] };
-export const wordFor = (mood, n = 0) => { const a = WORDS[mood]; return a ? a[n % a.length] : ""; };
+// de temps en temps, le petit robot dit le prénom : « Bravo Léa ! », « Courage Léa, essaie encore ! »
+const firstSentence = t => (String(t).match(/[^.!?…]+[.!?…]*/) || [t])[0].trim();
+export const wordFor = (mood, n = 0) => {
+  if (S.name && n % 3 === 0) { if (mood === "happy" || mood === "celebrate") return firstSentence(praise()); if (mood === "worried") return firstSentence(encourage()); }
+  const a = WORDS[mood]; return a ? a[n % a.length] : "";
+};
 const LED = { neutral: "#bbb", happy: "#7CFC9A", worried: "#ffb347", thinking: "#8ec5ff", celebrate: "#ffd54a" };
 
 // le visage : la tête du robot de l'enfant (forme et couleur), l'écran change selon l'humeur

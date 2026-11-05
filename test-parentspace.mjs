@@ -9,12 +9,12 @@ const screens = [...app.slice(app.indexOf("const PARENT_SCREENS")).matchAll(/^  
 t("espace parents : 2 blocs (Mon enfant, Compte) et 8 icônes", /title: "Mon enfant"/.test(block) && /title: "Compte"/.test(block) && tiles.length === 8, tiles.join());
 t("chaque icône (sauf « Suivi », qui ouvre le tableau de bord) a son écran de réglages", tiles.filter(i => i !== "suivi").every(i => screens.includes(i)), screens.join());
 t("les noms des icônes sont courts (un mot)", [...block.matchAll(/\["\w+", "[^"]+", "([^"]+)"/g)].every(m => !/\s/.test(m[1])));
-t("tous les anciens réglages restent accessibles", ["#sn", "#sa", "#sg", "#sv", "#ss", "#sr", "#sl", "#sdt", "#rs", "#pc"].every(k => app.includes('id="' + k.slice(1) + '"')) && ["voice", "sound", "scene", "mascot", "calm", "big", "unlockAll"].every(k => app.includes(`, "${k}", `)), "un réglage a disparu");
+t("tous les anciens réglages restent accessibles", ["#pn", "#px", "#pa", "#pg", "#sv", "#ss", "#sr", "#sl", "#sdt", "#rs", "#pc"].every(k => app.includes('id="' + k.slice(1) + '"')) && ["voice", "sound", "scene", "mascot", "calm", "big", "unlockAll"].every(k => app.includes(`, "${k}", `)), "un réglage a disparu");
 t("les réglages ne s'enregistrent qu'avec les champs présents (pas d'erreur sur un autre écran)", /const v = id => \{ const e = overlay\.querySelector\(id\); return e \? e\.value : null; \}/.test(app));
 t("un objectif vide n'est jamais enregistré", /\+g > 0\) S\.dailyGoalXP/.test(app));
 t("le niveau de départ ne « place » l'enfant que si on le choisit (pas de test sauté)", /if \(ss !== null\) \{ S\.startRank = \+ss; S\.placed = true; \}/.test(app));
 
-t("« Qui joue ? » : s'affiche à l'ouverture si tout est réglé, sinon la configuration parent", /function startApp\(\) \{ if \(!needsParentSetup\(\) && S\.age && S\.placed\) welcome\(\); else home\(\); \}/.test(app) && /\nstartApp\(\);\n?$/.test(app));
+t("« Qui joue ? » : s'affiche à l'ouverture si tout est réglé, sinon la configuration parent ; après un changement de joueur, directement l'accueil", /function startApp\(\) \{/.test(app) && /if \(go && !needsParentSetup\(\)\) home\(\); else if \(!needsParentSetup\(\) && S\.age && S\.placed\) welcome\(\); else home\(\);/.test(app) && /\nstartApp\(\);\n?$/.test(app));
 t("« Qui joue ? » : le robot, le prénom, et le cadenas des parents", /wchild/.test(app) && /wname/.test(app) && /wlock/.test(app) && /parentLock\(\)/.test(app.slice(app.indexOf("function welcome"), app.indexOf("function startApp"))) && /function parentLock\(\)[^\n]*openSettings\(\)/.test(app));
 t("accueil : plus d'ancien bouton ⚙️ (appui long), le même cadenas que « Qui joue ? », et le prénom ramène à « Qui joue ? »", !/Maintiens appuyé pour ouvrir les réglages/.test(app) && (app.match(/parentLock\(\)/g) || []).length >= 3 && /title: "Changer de joueur \?"/.test(app));
 t("fermer les réglages revient à « Qui joue ? » quand on en vient", /onWelcome \? welcome\(\) : home\(\)/.test(app));

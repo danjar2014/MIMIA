@@ -1,4 +1,4 @@
-import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, sleep } from "./util.js";
+import { $, el, S, save, isDone, markDone as baseMark, chime, speak, toast, sleep, profileIds, activeId, profileData, addProfile, updateProfile, removeProfile, switchProfile, MAX_PROFILES } from "./util.js";
 import { RANKS, stepDone, rankDone, rankProgress, rankUnlocked, highestUnlocked, currentRank, stepUnlocked, nextStep, cardLocked, lockReason, FLAGS } from "./parcours.js";
 import { mountLearn, LESSONS } from "./learn.js";
 import { mountProject } from "./project.js";
@@ -8,7 +8,7 @@ import { hasPin, askPin, createPin } from "./pin.js";
 import { mountDaily, dailyDoneToday } from "./daily.js";
 import { checkBadges, badgeList, playDays, softStreak } from "./badges.js";
 import { mountOnboarding, mountPlacement } from "./onboard.js";
-import { needsParentSetup, startParentSetup, AGES, VOICES, LIMITS } from "./parentsetup.js";
+import { needsParentSetup, startParentSetup, AGES, VOICES, LIMITS, SEXES } from "./parentsetup.js";
 import { askConfirm } from "./confirm.js";
 import { initMascot, faceSvg } from "./mascot.js";
 import { initScene, sceneFor } from "./scene.js";
@@ -20,6 +20,7 @@ import { mountGrid } from "./grid.js";
 import { makePractice, trainReward } from "./practice.js";
 import { mountDraw, DEFIS } from "./draw.js";
 import { mountDance } from "./dance.js";
+import { mountPuzzle, PUZZLES } from "./puzzle.js";
 import { mountLab } from "./labs.js";
 import { mountDiscover } from "./discover.js";
 import { mountBuild } from "./build.js";
@@ -27,6 +28,7 @@ import { BUILD } from "./boardlogic.js";
 import { ADV, mountAdv } from "./advgames.js";
 import { initVoice } from "./voice.js";
 import "./voiceclips.js";
+import { initPraise } from "./praise.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -49,10 +51,10 @@ const goalScreen = (r, earned) => next => {
   overlay.innerHTML = `<div class="panel rew"><div class="goalring" style="--p:${Math.min(100, Math.round(100 * r.after / r.goal))}"><span>⚡<small>${r.after} / ${r.goal} XP</small></span></div><h1>Objectif du jour atteint !</h1><p class="sub">Bravo${S.name ? " " + S.name : ""} ! Cette étape t'a rapporté <b>${earned} XP</b>. Reviens demain pour continuer ta série.</p><button class="big-btn" id="rwc">Récupérer</button></div>`;
   $("#rwc").onclick = next;
 };
-const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily"]);
+const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily", "puzzle"]);
 function rewardXP(sec, id) {
   if (!REWARD_SECS.has(sec)) return;
-  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = stepXP(a.fails), r = addXP(xp);
+  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = sec === "puzzle" ? 20 : stepXP(a.fails), r = addXP(xp);   // un puzzle rapporte un petit nombre fixe de points
   setTimeout(() => { const st = document.querySelector(".astage"); if (st) { const chip = el("div", "xpchip", `⚡ +${xp} XP${a.fails === 0 ? " · sans aucune erreur !" : ""} · aujourd'hui ${r.after}/${r.goal}`), wb = st.querySelector(".winbar"); wb ? st.insertBefore(chip, wb) : st.append(chip); } }, 450);
   setTimeout(() => { if (r.firstOfDay) pushOverlay(streakScreen); if (r.crossed) pushOverlay(goalScreen(r, xp)); }, 800);
 }
@@ -69,7 +71,21 @@ function celebrate(i) {
 let cleanup = null, longTimer;
 const leave = () => { app.className = ""; track(null); if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; } window.__cur = null; };
 let mascotApi = null, sceneApi = null;
-const applySettings = () => { document.body.classList.toggle("calm", S.calm); document.body.classList.toggle("big", S.big); if (mascotApi) mascotApi.refresh(); if (sceneApi) sceneApi.refresh(); };
+// plein écran verrouillé (choix des parents) : dans l'appli Android, l'écran est épinglé (pas de sortie sans le code parent) ; sur le web, plein écran
+let kioskArm = false;
+function applyKiosk() {
+  try {
+    const fi = window.flutter_inappwebview;
+    if (fi && fi.callHandler) { fi.callHandler("kiosk", !!S.kiosk); return; }
+    const d = document.documentElement;
+    if (S.kiosk && d.requestFullscreen && !document.fullscreenElement) {
+      d.requestFullscreen().catch(() => { if (kioskArm) return; kioskArm = true; document.addEventListener("click", () => { kioskArm = false; if (S.kiosk && !document.fullscreenElement) d.requestFullscreen().catch(() => {}); }, { once: true }); });
+    } else if (!S.kiosk && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  } catch (e) {}
+}
+document.addEventListener("fullscreenchange", () => { if (S.kiosk && !document.fullscreenElement && !kioskArm) { kioskArm = true; document.addEventListener("click", () => { kioskArm = false; applyKiosk(); }, { once: true }); } });
+setTimeout(applyKiosk, 800);
+const applySettings = () => { document.body.classList.toggle("calm", S.calm); document.body.classList.toggle("big", S.big); if (mascotApi) mascotApi.refresh(); if (sceneApi) sceneApi.refresh(); applyKiosk(); };
 
 
 // ---------- coder pour de vrai ----------
@@ -154,7 +170,7 @@ function home() {
     tile("target", "Défi", dailyDoneToday() ? "fait aujourd'hui" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Parcours", `Aventure ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges),
     tile("dice", "S'entraîner", "un parcours surprise", "#ffe9c7", () => playPractice(age, 0), "prog"),
     tile("magnifier", "Découvrir", "les parties du robot", "#d6ecff", () => menu("Découvrir le robot", discItems(), home), "disc"), tile("blocks", "Programmer", "avec des blocs", "#d9f5d3", progMenu, "prog"),
-    tile("gear", "Construire", "la carte du robot", "#e2dcff", buildMenu, "build"), tile("code", "Coder", "Python et JavaScript", "#d4e4ff", codeMenu, "code"),
+    tile("puzzle", "Puzzle", "remets le robot en ordre", "#e6f5d0", () => playPuzzle()), tile("gear", "Construire", "la carte du robot", "#e2dcff", buildMenu, "build"), tile("code", "Coder", "Python et JavaScript", "#d4e4ff", codeMenu, "code"),
     tile("sensor", "Capteurs", "lumière, distance", "#fff0c2", () => menu("Les capteurs", labItems(), home), "lab"), tile("palette", "Créer", "dessiner, danser", "#ffe0d2", createMenu, "create"),
     tile("rocket", "Plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv"), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
     tile("star", "Créations", `${S.creations.length} gardée${S.creations.length > 1 ? "s" : ""}`, "#e3f1f1", creations));
@@ -174,7 +190,7 @@ function levelChooser() {
   [["🐣 Je ne connais rien : je veux tout apprendre depuis le début", 0], ["🧩 J'ai déjà joué avec des blocs de programmation", 3], ["⌨️ Je sais déjà écrire un peu de code", 6]].forEach(([t, v]) => { const b = el("button", "big-btn", t); b.onclick = () => { S.startRank = v; S.placed = true; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(b); });
 }
 function dashboard() {
-  leave(); if (sceneApi) sceneApi.set("calm"); app.innerHTML = ""; app.append(topbar("Tableau de bord des parents", home, false)); const box = el("div", "astage dash"); app.append(box);
+  leave(); if (sceneApi) sceneApi.set("calm"); app.innerHTML = ""; app.append(topbar("Tableau de bord des parents", settings, false));   // retour : l'espace parents, comme les autres rubriques const box = el("div", "astage dash"); app.append(box);
   renderDashboard(box, { onNext: s => stepInfo(s).title });
 }
 // fin de séance : la limite du jour est atteinte. Seul un adulte peut accorder 15 minutes de plus.
@@ -282,6 +298,12 @@ function playGrid(band, i, opts = {}) {
   const lv = LEVELS[band][i], id = band + (i + 1), nextLv = i + 1 < LEVELS[band].length ? () => playGrid(band, i + 1) : null;
   activity(`${BANDS[band].short} · ${lv.title}`, "prog", id, s => mountGrid(s, lv, { onWin: () => { markDone("prog", id); if (opts.mark) markDone(...opts.mark); winBar(nextLv, opts.mark ? parcours : progMenu); }, speakIntro: S.age === "a", codeOpen: opts.codeOpen, onOpenCode: openCodeFromBlocks }), opts.mark ? parcours : progMenu);
 }
+// puzzle du robot : un dessin à remettre en ordre ; on commence par le premier pas encore réussi
+function playPuzzle(band = S.age || "a", idx) {
+  if (idx == null) { idx = PUZZLES.findIndex((p, i) => !isDone("puzzle", band + (i + 1))); if (idx < 0) idx = Math.floor(Math.random() * PUZZLES.length); }
+  const id = band + ((idx % PUZZLES.length) + 1), next = () => playPuzzle(band, idx + 1);
+  activity("Puzzle", "puzzle", id, s => mountPuzzle(s, band, idx, { onWin: () => { markDone("puzzle", id); winBar(next, home, "🏠 Accueil"); } }), home);
+}
 function createMenu() {
   const age = S.age || "a";
   menu("Créer", [
@@ -301,9 +323,9 @@ function activity(title, sec, id, mount, back) {
   const c = mount(stage); cleanup = () => c && c.destroy && c.destroy(); window.__cur = c;
 }
 const hooksFor = (sec, id, back) => ({ onWin: () => { markDone(sec, id); winBar(null, back); } });
-function winBar(next, list) {
+function winBar(next, list, listLabel = "☰ Liste des niveaux") {
   document.querySelectorAll(".winbar").forEach(x => x.remove()); const w = el("div", "winbar"), stage = document.querySelector(".astage"); if (!stage) return;
-  if (next) { const b = el("button", "big-btn", "▶ Niveau suivant"); b.onclick = next; w.append(b); } const l = el("button", "big-btn alt", "☰ Liste des niveaux"); l.onclick = list; w.append(l); const pb = el("button", "big-btn alt", "🗺️ Mon parcours"); pb.onclick = parcours; w.append(pb); stage.append(w); w.scrollIntoView({ behavior: "smooth", block: "end" });
+  if (next) { const b = el("button", "big-btn", "▶ Niveau suivant"); b.onclick = next; w.append(b); } const l = el("button", "big-btn alt", listLabel); l.onclick = list; w.append(l); const pb = el("button", "big-btn alt", "🗺️ Mon parcours"); pb.onclick = parcours; w.append(pb); stage.append(w); w.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 function keep(type, title, data) { S.creations.unshift({ id: Date.now(), type, title, data, date: new Date().toLocaleDateString("fr-FR") }); S.creations = S.creations.slice(0, 40); save(); toast("✔ Gardé dans « Mes créations » !"); }
 
@@ -365,26 +387,33 @@ function parentLock() { const par = el("button", "wlock", `<span aria-hidden="tr
 function welcome() {
   onWelcome = true; leave(); overlay.style.display = "none"; if (sceneApi) sceneApi.set("sky"); app.className = "home welcome"; app.innerHTML = "";
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const who = el("button", "wchild", `<span class="wavatar">${robotSvg(S.robot)}</span><span class="wname">${esc(S.name || "Moi")}</span>`); who.setAttribute("aria-label", `Jouer : ${S.name || "moi"}`); who.dataset.say = S.name ? `Salut ${S.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer."; who.onclick = () => { chime("step"); home(); };
-  app.append(who, parentLock());
+  const wrap = el("div", "wwho");
+  profileIds().forEach(id => {
+    const p = profileData(id), who = el("button", "wchild" + (id === activeId() ? " on" : ""), `<span class="wavatar">${robotSvg(p.robot)}</span><span class="wname">${esc(p.name || "Moi")}</span>`);
+    who.setAttribute("aria-label", `Jouer : ${p.name || "moi"}`); who.dataset.say = p.name ? `Salut ${p.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer.";
+    who.onclick = () => { chime("step"); if (id === activeId()) home(); else switchProfile(id); };   // un autre joueur : on recharge sur son profil
+    wrap.append(who);
+  });
+  app.append(wrap, parentLock());
 }
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
-function startApp() { if (!needsParentSetup() && S.age && S.placed) welcome(); else home(); }
+function startApp() {
+  let go = null; try { go = sessionStorage.getItem("rj-go"); sessionStorage.removeItem("rj-go"); } catch (e) {}
+  if (go && !needsParentSetup()) home(); else if (!needsParentSetup() && S.age && S.placed) welcome(); else home();   // juste après un changement de joueur : directement l'accueil
+}
 const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; onWelcome ? welcome() : home(); };
 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
-  { title: "Mon enfant", tiles: [["profil", "🧒", "Profil", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"]] },
+  { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"]] },
   { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"]] }
 ];
 const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
 const PARENT_SCREENS = {
-  profil: () => ({ title: "Profil", html: `<div class="row"><span>Prénom</span><input id="sn" value="${String(S.name).replace(/"/g, "&quot;")}" maxlength="20"></div>
-    <div class="row"><span>Âge</span><select id="sa">${optList(S.age, AGES)}</select></div>
-    <div class="row"><span>Objectif du jour</span><select id="sg">${optList(S.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>` }),
+  profil: () => ({ title: "Joueurs", html: "" }),   // écran propre : voir profilesScreen()
   son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
-  ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
+  ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) + togRow("Plein écran verrouillé", "kiosk", S.kiosk) + `<p class="sub">Plein écran : l'enfant ne peut pas quitter l'appli sans le code parent (ici, en décochant).</p>` }),
   parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
     <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt psmall" id="sdt">🎯</button></div>` + togRow("Tout débloquer", "unlockAll", S.unlockAll) + `<div class="row"><span>Effacer la progression</span><button class="big-btn alt psmall" id="rs" aria-label="Effacer la progression">↺</button></div>` }),
   temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
@@ -404,7 +433,35 @@ function grabParent() {
   const sl = v("#sl"); if (sl !== null) { S.dailyLimit = +sl; S.limitShown = null; }
   save(); applySettings();
 }
+const escH = t => String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+// la liste des joueurs : un seul ou plusieurs ; le parent les ajoute, les règle (prénom, fille/garçon, âge, objectif) ou les retire
+function profilesScreen() {
+  overlay.style.display = "flex"; const ids = profileIds();
+  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>Joueurs</h1></div><div class="plist">${ids.map(id => { const p = profileData(id); return `<button class="pcard" data-id="${id}" aria-label="${escH(p.name || "Joueur")}"><span class="wavatar">${robotSvg(p.robot)}</span><b>${escH(p.name || "?")}</b></button>`; }).join("")}${ids.length < MAX_PROFILES ? `<button class="pcard add" data-id="new" aria-label="Ajouter un joueur"><span class="plus" aria-hidden="true">➕</span></button>` : ""}</div></div>`;
+  $("#pback").onclick = settings; overlay.querySelectorAll(".pcard").forEach(b => b.onclick = () => profileEdit(b.dataset.id));
+}
+function profileEdit(id) {
+  const isNew = id === "new", p = isNew ? { name: "", sex: "", age: "a", dailyGoalXP: 100 } : profileData(id), many = profileIds().length > 1;
+  overlay.style.display = "flex";
+  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${isNew ? "Nouveau joueur" : "Joueur"}</h1></div>
+    <div class="row"><span>Prénom</span><input id="pn" value="${escH(p.name)}" maxlength="20" autocomplete="off" aria-label="Prénom"></div>
+    <div class="row"><span>Fille ou garçon</span><select id="px" aria-label="Fille ou garçon"><option value="">Choisir…</option>${optList(p.sex, SEXES)}</select></div>
+    <div class="row"><span>Âge</span><select id="pa">${optList(p.age || "a", AGES)}</select></div>
+    <div class="row"><span>Objectif du jour</span><select id="pg">${optList(p.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>
+    <div class="pinmsg gmsg" id="pm" aria-live="polite"></div>
+    <div class="cfmbtns">${!isNew && many ? '<button class="cfmno" id="pdel" aria-label="Supprimer ce joueur">🗑</button>' : ""}<button class="cfmyes" id="pok" aria-label="Enregistrer">✔</button></div></div>`;
+  $("#pback").onclick = profilesScreen;
+  const del = $("#pdel"); if (del) del.onclick = () => askConfirm(overlay, { title: "Supprimer ce joueur ?", sub: "Sa progression sera effacée.", onYes: () => { removeProfile(id); profilesScreen(); }, onNo: () => profileEdit(id) });
+  $("#pok").onclick = () => {
+    const q = k => overlay.querySelector(k).value, name = q("#pn").trim().slice(0, 20), sex = q("#px"), m = $("#pm");
+    if (!name || !sex) { m.className = "pinmsg gmsg warn"; m.textContent = !name ? "Écrivez le prénom." : "Choisissez : fille ou garçon."; overlay.querySelector(!name ? "#pn" : "#px").focus(); return; }
+    const f = { name, sex, age: q("#pa"), dailyGoalXP: +q("#pg") > 0 ? +q("#pg") : 100 };
+    if (isNew) addProfile(f); else updateProfile(id, f);
+    applySettings(); toast(isNew ? "Joueur ajouté" : "Enregistré"); profilesScreen();
+  };
+}
 function parentScreen(id) {
+  if (id === "profil") return profilesScreen();
   const sc = PARENT_SCREENS[id](); overlay.style.display = "flex";
   overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
@@ -423,9 +480,9 @@ let lastNudge = Date.now();
 setInterval(() => { if (window.__cur && S.reminder > 0 && Date.now() - lastNudge > S.reminder * 60000) { lastNudge = Date.now(); toast("Petite pause ? 🌿 Un robot aussi a besoin de se recharger !"); speak("Petite pause ?"); } }, 20000);
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
-initVoice();
+initVoice(); initPraise();
 mascotApi = initMascot();
 sceneApi = initScene();
 initStats({ onLimit: () => { if (overlay.style.display !== "flex") showLimit(); } });
-window.__app = { get mascot() { return mascotApi; }, welcome, startApp, parentScreen, playPractice, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
+window.__app = { get mascot() { return mascotApi; }, welcome, startApp, parentScreen, playPractice, playPuzzle, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
 startApp();

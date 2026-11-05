@@ -1,5 +1,5 @@
 // Le robot danse : lumières, notes et mouvements en séquence
-import { el, S, sleep, chime, tone, speak } from "./util.js";
+import { el, S, sleep, chime, tone, speak, sfx } from "./util.js";
 import { createEditor, runProgram, Limit, D } from "./blocks.js";
 import { robotSvg } from "./robot.js";
 
@@ -28,7 +28,7 @@ export function mountDance(stage, band, hooks = {}) {
     try { for (const n of runProgram(editor.lists, { cond: () => false }, 400)) { if (!alive || my !== runId) return; editor.highlight(n);
       if (n.t === "led") { led = n.v; paint(); await sleep(350); }
       else if (n.t === "note") { tone(+n.v, 0.4, "triangle", 0.2); await anim("hop", 380); }
-      else if (n.t === "spin") { await anim("spin", 650); } else if (n.t === "jump") { await anim("jump", 450); } else if (n.t === "wait") await sleep(380 * (n.n || 1)); } }
+      else if (n.t === "spin") { sfx("spin"); await anim("spin", 650); } else if (n.t === "jump") { sfx("jump"); await anim("jump", 450); } else if (n.t === "wait") await sleep(380 * (n.n || 1)); } }
     catch (e) { if (e instanceof Limit) say("La danse ne s'arrête jamais ! Vérifie tes répétitions.", "warn"); else throw e; }
     editor.highlight(null); running = false; bRun.disabled = false; if (alive && my === runId) { say("🎉 Bravo, quelle danse !", "ok"); chime("done"); hooks.onWin && hooks.onWin(); }
   }

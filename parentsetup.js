@@ -7,17 +7,18 @@ import { GOALS } from "./xp.js";
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 export const AGES = [["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]];
+export const SEXES = [["f", "Fille"], ["m", "Garçon"]];   // sert aux compliments (« tu es une championne » / « un champion »)
 export const VOICES = [["auto", "Selon l'âge (conseillé)"], ["guide", "Consigne et résultat"], ["demande", "Seulement avec le bouton 🔊"], ["complet", "Tout ce qu'on touche"]];
 export const LIMITS = [[0, "Pas de limite"], [20, "20 minutes"], [30, "30 minutes"], [45, "45 minutes"], [60, "1 heure"], [90, "1 h 30"]];
 
 // la configuration n'est terminée que si le profil est enregistré ET qu'un code parent existe
 export const needsParentSetup = () => !(S.parentSetup && hasPin());
-export const validProfile = p => String((p && p.name) || "").trim().length > 0;
+export const validProfile = p => String((p && p.name) || "").trim().length > 0 && SEXES.some(x => x[0] === (p && p.sex));
 // enregistre le profil de l'enfant choisi par le parent
 export function applyProfile(p) {
   if (!validProfile(p)) throw new Error("prénom");
   S.name = String(p.name).trim().slice(0, 20);
-  S.age = AGES.some(a => a[0] === p.age) ? p.age : "a";
+  S.sex = p.sex; S.age = AGES.some(a => a[0] === p.age) ? p.age : "a";
   S.dailyGoalXP = +p.goal || 100;
   S.voiceMode = VOICES.some(v => v[0] === p.voiceMode) ? p.voiceMode : "auto"; S.voiceModeSet = S.voiceMode !== "auto";
   S.dailyLimit = +p.limit || 0; S.limitShown = null;
@@ -34,7 +35,7 @@ export const setupActive = () => active;
 export function startParentSetup(host, onDone) {
   // déjà ouverte : on ne la rouvre pas. Mais si l'écran a été fermé en route (annulation d'un sous-écran), on la relance : jamais de blocage
   if (active && host.style.display === "flex") return; active = true; host.style.display = "flex";
-  const profile = { name: S.name || "", age: S.age || "a", goal: S.dailyGoalXP || 100, voiceMode: S.voiceMode || "auto", limit: S.dailyLimit || 0 };
+  const profile = { name: S.name || "", sex: S.sex || "", age: S.age || "a", goal: S.dailyGoalXP || 100, voiceMode: S.voiceMode || "auto", limit: S.dailyLimit || 0 };
   const opts = (list, v) => list.map(([val, lab]) => `<option value="${val}" ${String(v) === String(val) ? "selected" : ""}>${esc(lab)}</option>`).join("");
 
   function intro() {
@@ -57,6 +58,7 @@ export function startParentSetup(host, onDone) {
     host.innerHTML = `<div class="panel" data-step="profile"><h1>🧒 Le profil de votre enfant</h1>
       <p class="sub">Vous pourrez tout modifier plus tard, avec votre code parent.</p>
       <div class="row"><span>Prénom</span><input id="pfn" value="${esc(profile.name)}" maxlength="20" autocomplete="off" aria-label="Prénom de l'enfant"></div>
+      <div class="row"><span>Fille ou garçon</span><select id="pfx" aria-label="Fille ou garçon"><option value="">Choisir…</option>${opts(SEXES, profile.sex)}</select></div>
       <div class="row"><span>Tranche d'âge</span><select id="pfa">${opts(AGES, profile.age)}</select></div>
       <div class="row"><span>Objectif du jour</span><select id="pfg">${opts(GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]), profile.goal)}</select></div>
       <div class="row"><span>Ce que la voix lit</span><select id="pfv">${opts(VOICES, profile.voiceMode)}</select></div>
@@ -65,8 +67,8 @@ export function startParentSetup(host, onDone) {
       <div class="agebtns"><button class="big-btn" id="pfok">Continuer</button></div></div>`;
     host.querySelector("#pfok").onclick = () => {
       const q = s => host.querySelector(s).value;
-      Object.assign(profile, { name: q("#pfn").trim(), age: q("#pfa"), goal: +q("#pfg"), voiceMode: q("#pfv"), limit: +q("#pfl") });
-      if (!validProfile(profile)) { const m = host.querySelector("#pfm"); m.className = "pinmsg gmsg warn"; m.textContent = "Écrivez le prénom de votre enfant."; host.querySelector("#pfn").focus(); return; }
+      Object.assign(profile, { name: q("#pfn").trim(), sex: q("#pfx"), age: q("#pfa"), goal: +q("#pfg"), voiceMode: q("#pfv"), limit: +q("#pfl") });
+      if (!validProfile(profile)) { const m = host.querySelector("#pfm"); m.className = "pinmsg gmsg warn"; m.textContent = String(profile.name).trim() ? "Choisissez : fille ou garçon." : "Écrivez le prénom de votre enfant."; host.querySelector(String(profile.name).trim() ? "#pfx" : "#pfn").focus(); return; }
       plan();
     };
   }

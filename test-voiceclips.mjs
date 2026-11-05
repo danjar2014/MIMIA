@@ -13,7 +13,7 @@ t("découpage en phrases comme le générateur", splitSentences("Bravo ! Tu as r
 t("une seule voix : la femme (F5), pas de voix d'homme", VOICE_DIR === "f5" && !existsSync("voice/clips/m4") && !existsSync("voicepick.js"));
 
 // parité avec Python : chaque clip généré porte la clé calculée ici pour sa phrase
-const phrases = [...JSON.parse(src("voice/phrases.json")), ...(existsSync("voice/phrases_extra.json") ? JSON.parse(src("voice/phrases_extra.json")) : [])];
+const phrases = readdirSync("voice").filter(f => /^phrases.*\.json$/.test(f)).flatMap(f => JSON.parse(src("voice/" + f)));
 const keys = new Set(phrases.map(voiceKey));
 const have = readdirSync("voice/clips/f5").map(f => f.replace(/\.mp3$/, ""));
 t("toutes les clés des clips existants correspondent à une phrase (parité JS / Python)", have.every(k => keys.has(k)), have.filter(k => !keys.has(k)).slice(0, 3).join());
