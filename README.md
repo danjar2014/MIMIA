@@ -90,3 +90,10 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - Les indices 💡 (`hints.js`) marchent aussi sur ces parcours.
 - Récompense : 5 XP par réussite, 30 XP au plus par jour (l'objectif du jour ne se remplit pas sans apprendre). Ces parcours ne comptent pas dans « Mon parcours ».
 - Test : `node test-practice.mjs` (720 parcours vérifiés : bien formés, réalisables, solution juste, difficulté croissante).
+
+## « Qui joue ? », confirmations ✖/✔ et espace parents en icônes (inspiré de l'observation d'iwawa)
+
+- **Qui joue ?** (`welcome()` dans `app.js`) : à chaque ouverture, quand la configuration parent est faite, l'enfant voit son robot et son prénom. Il touche le robot pour jouer. En bas à gauche, le cadenas 👨‍👩‍👧🔒 ouvre l'espace parents (code obligatoire). Fermer les réglages ramène à cet écran.
+- **Confirmations sans phrase** (`confirm.js`) : une question courte et deux grands boutons ronds ✖ (non, sélectionné d'office) et ✔ (oui), nommés « Non » / « Oui » pour les lecteurs d'écran ; Échap = non. Utilisées pour effacer la progression, effacer les statistiques et l'effacement total (code oublié, qui garde en plus la question d'adulte).
+- **Espace parents en deux blocs d'icônes** : « Mon enfant » (Profil, Son, Écran, Parcours) et « Compte » (Temps, Suivi, Code, Abonnement). Chaque icône ouvre un petit écran de quelques réglages ; « Suivi » ouvre le tableau de bord ; ✖ ferme. Le réglage de la limite de jeu par jour est maintenant dans « Temps ».
+- Test : `node test-parentspace.mjs`.

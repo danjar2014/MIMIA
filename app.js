@@ -8,7 +8,8 @@ import { hasPin, askPin, createPin } from "./pin.js";
 import { mountDaily, dailyDoneToday } from "./daily.js";
 import { checkBadges, badgeList, playDays, softStreak } from "./badges.js";
 import { mountOnboarding, mountPlacement } from "./onboard.js";
-import { needsParentSetup, startParentSetup } from "./parentsetup.js";
+import { needsParentSetup, startParentSetup, AGES, VOICES, LIMITS } from "./parentsetup.js";
+import { askConfirm } from "./confirm.js";
 import { initMascot, faceSvg } from "./mascot.js";
 import { initScene, sceneFor } from "./scene.js";
 import { icon } from "./icons.js";
@@ -130,7 +131,7 @@ const isRec = (bands) => !S.age || bands.includes(S.age);
 
 // ---------- écrans ----------
 function home() {
-  announceBadges(); leave(); applySettings(); if (sceneApi) sceneApi.set("sky"); app.className = "home"; app.innerHTML = "";
+  onWelcome = false; announceBadges(); leave(); applySettings(); if (sceneApi) sceneApi.set("sky"); app.className = "home"; app.innerHTML = "";
   if (needsParentSetup()) startSetup(); else if (!S.age || !S.placed) startOnboarding();
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const bar = el("div", "bar homebar"), gear = el("button", "iconbtn", icon("gear")); gear.setAttribute("aria-label", "Réglages pour les parents. Maintiens le doigt appuyé.");
@@ -356,35 +357,65 @@ function resetJourney() {
   S.progress = {}; S.xp = null; S.badges = null; S.badgesInit = false; S.daily = null; S.dailyDays = []; S.dailyLast = []; S.project = null; S.placementResult = null; S.flags = {}; S.startRank = 0; save();
 }
 function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
-function settings() {
-  overlay.style.display = "flex"; const sel = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
-  overlay.innerHTML = `<div class="panel"><h1>Réglages (parents)</h1>
-   <div class="row"><span>Prénom</span><input id="sn" value="${S.name.replace(/"/g, "&quot;")}" maxlength="20"></div>
-   <div class="row"><span>Tranche d'âge</span><select id="sa">${sel(S.age, [["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]])}</select></div>
-   <div class="row"><span>Voix</span><button class="tog ${S.voice ? "on" : ""}" data-k="voice"></button></div>
-   <div class="row"><span>Ce que la voix lit</span><select id="sv">${sel(S.voiceMode || "auto", [["auto", "Selon l'âge (conseillé)"], ["guide", "Consigne et résultat"], ["demande", "Seulement avec le bouton 🔊"], ["complet", "Tout ce qu'on touche"]])}</select></div>
-   <div class="row"><span>Décor animé</span><button class="tog ${S.scene !== false ? "on" : ""}" data-k="scene"></button></div>
-   <div class="row"><span>Petit robot qui réagit</span><button class="tog ${S.mascot !== false ? "on" : ""}" data-k="mascot"></button></div>
-   <div class="row"><span>Sons</span><button class="tog ${S.sound ? "on" : ""}" data-k="sound"></button></div>
-   <div class="row"><span>Mode calme (moins d'animations)</span><button class="tog ${S.calm ? "on" : ""}" data-k="calm"></button></div>
-   <div class="row"><span>Code parent ✅ obligatoire</span><div id="pinbtns" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
-   <div class="row"><span>Abonnement</span><small>Version gratuite · gestion bientôt disponible</small></div>
-   <div class="row"><span>Suivi et temps de jeu</span><button class="big-btn alt" id="sdb" style="padding:8px 16px;font-size:18px">📊 Tableau de bord</button></div>
-   <div class="row"><span>Tout débloquer (parcours)</span><button class="tog ${S.unlockAll ? "on" : ""}" data-k="unlockAll"></button></div>
-   <div class="row"><span>Niveau de départ</span><select id="ss">${sel(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
-   <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt" id="sdt" style="padding:8px 16px;font-size:18px">🎯 Refaire le test</button></div>
-   <div class="row"><span>Objectif du jour</span><select id="sg">${sel(S.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>
-   <div class="row"><span>Grand affichage</span><button class="tog ${S.big ? "on" : ""}" data-k="big"></button></div>
-   <div class="row"><span>Rappel de pause (minutes)</span><select id="sr">${sel(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
-   <div class="row"><span>Effacer la progression</span><button class="big-btn alt" id="rs" style="padding:8px 16px;font-size:18px">↺</button></div><br><button class="big-btn" id="cl">Fermer</button></div>`;
+// ----- « Qui joue ? » : à chaque ouverture, le robot et le prénom de l'enfant ; en bas à gauche, le cadenas des parents (inspiré d'iwawa) -----
+let onWelcome = false;
+function welcome() {
+  onWelcome = true; leave(); overlay.style.display = "none"; if (sceneApi) sceneApi.set("sky"); app.className = "home welcome"; app.innerHTML = "";
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const who = el("button", "wchild", `<span class="wavatar">${robotSvg(S.robot)}</span><span class="wname">${esc(S.name || "Moi")}</span>`); who.setAttribute("aria-label", `Jouer : ${S.name || "moi"}`); who.dataset.say = S.name ? `Salut ${S.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer."; who.onclick = () => { chime("step"); home(); };
+  const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings();
+  app.append(who, par);
+}
+// premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
+function startApp() { if (!needsParentSetup() && S.age && S.placed) welcome(); else home(); }
+const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; onWelcome ? welcome() : home(); };
+
+// ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
+const PARENT_BLOCKS = [
+  { title: "Mon enfant", tiles: [["profil", "🧒", "Profil", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"]] },
+  { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"]] }
+];
+const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
+const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
+const PARENT_SCREENS = {
+  profil: () => ({ title: "Profil", html: `<div class="row"><span>Prénom</span><input id="sn" value="${String(S.name).replace(/"/g, "&quot;")}" maxlength="20"></div>
+    <div class="row"><span>Âge</span><select id="sa">${optList(S.age, AGES)}</select></div>
+    <div class="row"><span>Objectif du jour</span><select id="sg">${optList(S.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>` }),
+  son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
+  ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
+  parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
+    <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt psmall" id="sdt">🎯</button></div>` + togRow("Tout débloquer", "unlockAll", S.unlockAll) + `<div class="row"><span>Effacer la progression</span><button class="big-btn alt psmall" id="rs" aria-label="Effacer la progression">↺</button></div>` }),
+  temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
+    <div class="row"><span>Jeu par jour</span><select id="sl">${optList(S.dailyLimit || 0, LIMITS)}</select></div>` }),
+  code: () => ({ title: "Code", html: `<div class="row"><span>Code parent ✅</span><button class="big-btn alt psmall" id="pc">Changer</button></div>` }),
+  abo: () => ({ title: "Abonnement", html: `<div class="row"><span>Version gratuite</span><span aria-hidden="true">⭐</span></div><p class="sub">La gestion de l'abonnement arrive bientôt.</p>` })
+};
+// enregistre les réglages affichés (seuls les champs présents sur l'écran courant)
+function grabParent() {
+  const v = id => { const e = overlay.querySelector(id); return e ? e.value : null; };
+  const n = v("#sn"); if (n !== null && n.trim()) S.name = n.trim().slice(0, 20);
+  const a = v("#sa"); if (a !== null) S.age = a;
+  const g = v("#sg"); if (g !== null && +g > 0) S.dailyGoalXP = +g;   // jamais de valeur vide
+  const sv = v("#sv"); if (sv !== null) { S.voiceMode = sv; S.voiceModeSet = sv !== "auto"; }
+  const ss = v("#ss"); if (ss !== null) { S.startRank = +ss; S.placed = true; }
+  const sr = v("#sr"); if (sr !== null) S.reminder = +sr;
+  const sl = v("#sl"); if (sl !== null) { S.dailyLimit = +sl; S.limitShown = null; }
+  save(); applySettings();
+}
+function parentScreen(id) {
+  const sc = PARENT_SCREENS[id](); overlay.style.display = "flex";
+  overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
-  const grab = () => { S.name = $("#sn").value.trim(); S.age = $("#sa").value; S.reminder = +$("#sr").value; S.startRank = +$("#ss").value; S.dailyGoalXP = +$("#sg").value; S.voiceMode = $("#sv").value; S.voiceModeSet = S.voiceMode !== "auto"; S.placed = true; save(); };
-  const pb = $("#pinbtns"), pbtn = (t, fn) => { const b = el("button", "gb", t); b.onclick = () => { grab(); fn(); }; pb.append(b); };
-  pbtn("Changer", () => createPin({ onDone: settings, onCancel: settings }));
-  $("#sdb").onclick = () => { $("#cl").onclick(); dashboard(); };
-  $("#sdt").onclick = () => { grab(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : aventure ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); home(); }); };
-  let armed = false; $("#rs").onclick = e => { if (!armed) { armed = true; e.target.textContent = "✔ ?"; setTimeout(() => { armed = false; e.target.textContent = "↺"; }, 3000); } else { resetJourney(); e.target.textContent = "✔"; } };
-  $("#cl").onclick = () => { S.name = $("#sn").value.trim(); S.age = $("#sa").value; S.reminder = +$("#sr").value; S.startRank = +$("#ss").value; S.dailyGoalXP = +$("#sg").value; S.voiceMode = $("#sv").value; S.voiceModeSet = S.voiceMode !== "auto"; S.placed = true; save(); overlay.style.display = "none"; home(); };
+  $("#pback").onclick = () => { grabParent(); settings(); };
+  const sdt = $("#sdt"); if (sdt) sdt.onclick = () => { grabParent(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : aventure ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); closeSettings(); }); };
+  const rs = $("#rs"); if (rs) rs.onclick = () => { grabParent(); askConfirm(overlay, { title: "Effacer la progression ?", sub: "Le parcours de l'enfant repart de zéro.", onYes: () => { resetJourney(); toast("Progression effacée"); parentScreen("parcours"); }, onNo: () => parentScreen("parcours") }); };
+  const pc = $("#pc"); if (pc) pc.onclick = () => createPin({ onDone: settings, onCancel: () => parentScreen("code") });
+}
+function settings() {
+  overlay.style.display = "flex";
+  overlay.innerHTML = `<div class="panel parentpanel"><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
+  overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
+  $("#pclose").onclick = closeSettings;
 }
 let lastNudge = Date.now();
 setInterval(() => { if (window.__cur && S.reminder > 0 && Date.now() - lastNudge > S.reminder * 60000) { lastNudge = Date.now(); toast("Petite pause ? 🌿 Un robot aussi a besoin de se recharger !"); speak("Petite pause ?"); } }, 20000);
@@ -394,5 +425,5 @@ initVoice();
 mascotApi = initMascot();
 sceneApi = initScene();
 initStats({ onLimit: () => { if (overlay.style.display !== "flex") showLimit(); } });
-window.__app = { get mascot() { return mascotApi; }, playPractice, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
-home();
+window.__app = { get mascot() { return mascotApi; }, welcome, startApp, parentScreen, playPractice, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
+startApp();

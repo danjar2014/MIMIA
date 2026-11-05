@@ -1,5 +1,6 @@
 // Tableau de bord des parents : où en est l'enfant, combien de temps il joue, où il bloque, quoi faire.
 import { el, S, save, speak, toast } from "./util.js";
+import { askConfirm } from "./confirm.js";
 import { summary, summaryText, fmtMin, resetStats, limitState } from "./stats.js";
 import { BANDS } from "./levels.js";
 import { badgeList, playDays, softStreak } from "./badges.js";
@@ -54,7 +55,7 @@ export function renderDashboard(host, { onBack, onNext } = {}) {
   mk("🔊 Lire le résumé", () => speak(summaryText(sm, who), { force: true }));
   mk("🖨️ Imprimer le rapport", () => { document.body.classList.add("print-dash"); window.print(); setTimeout(() => document.body.classList.remove("print-dash"), 500); });
   mk("📋 Copier le résumé", async () => { try { await navigator.clipboard.writeText(summaryText(sm, who)); toast("Résumé copié ✔"); } catch (e) { toast("Copie impossible sur cet appareil"); } });
-  let armed = false; const rs = mk("🗑 Effacer les statistiques", () => { if (!armed) { armed = true; rs.textContent = "Sûr ? Touche encore pour effacer"; setTimeout(() => { armed = false; rs.textContent = "🗑 Effacer les statistiques"; }, 4000); return; } resetStats(); renderDashboard(host, { onBack, onNext }); toast("Statistiques effacées (la progression est gardée)"); });
+  mk("🗑 Effacer les statistiques", () => { const ov = document.getElementById("overlay"), shut = () => { ov.style.display = "none"; ov.innerHTML = ""; }; askConfirm(ov, { title: "Effacer les statistiques ?", sub: "La progression de l'enfant est gardée.", onYes: () => { shut(); resetStats(); renderDashboard(host, { onBack, onNext }); toast("Statistiques effacées (la progression est gardée)"); }, onNo: shut }); });
   set.append(acts); card("⚙️ Réglages et outils", set, "no-print-card");
   host.append(el("div", "dsmall dprivacy", "🔒 Ces informations restent sur cet appareil. Rien n'est envoyé sur Internet."));
   return sm;
