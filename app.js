@@ -26,7 +26,7 @@ import { mountBuild } from "./build.js";
 import { BUILD } from "./boardlogic.js";
 import { ADV, mountAdv } from "./advgames.js";
 import { initVoice } from "./voice.js";
-import { pickVoice, voiceChoice } from "./voicepick.js";
+import "./voiceclips.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -158,7 +158,7 @@ function home() {
     tile("sensor", "Capteurs", "lumière, distance", "#fff0c2", () => menu("Les capteurs", labItems(), home), "lab"), tile("palette", "Créer", "dessiner, danser", "#ffe0d2", createMenu, "create"),
     tile("rocket", "Plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv"), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
     tile("star", "Créations", `${S.creations.length} gardée${S.creations.length > 1 ? "s" : ""}`, "#e3f1f1", creations));
-  body.append(grid); maybePickVoice();
+  body.append(grid);
 }
 function ageChooser() {
   overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel"><h1>Quel âge as-tu ?</h1><p class="sub">Je te propose les activités qui conviennent le mieux. Tu pourras tout essayer quand tu veux.</p><div class="agebtns"></div></div>`;
@@ -329,7 +329,7 @@ function robotBuilder() {
   const name = el("input", "rinput"); name.value = S.robot.name; name.maxLength = 14; name.oninput = () => { S.robot.name = name.value; save(); }; row("Son prénom", name);
   const sw = el("div", "rsw"); COLORS.forEach(c => { const b = el("button", "swb" + (c === S.robot.color ? " on" : "")); b.style.background = c; b.onclick = () => { S.robot.color = c; save(); draw(); sw.querySelectorAll(".swb").forEach(x => x.classList.toggle("on", x === b)); }; sw.append(b); }); row("Sa couleur", sw);
   const choice = (key, opts) => { const w = el("div", "rch"); opts.forEach(([v, t]) => { const b = el("button", "chip" + (S.robot[key] === v ? " on" : ""), t); b.onclick = () => { S.robot[key] = v; save(); draw(); w.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x === b)); }; w.append(b); }); return w; };
-  row("Sa tête", choice("head", [["round", "Ronde"], ["square", "Carrée"]])); row("Ses yeux", choice("eyes", [["dots", "Ronds"], ["visor", "Visière"]])); row("Son antenne", choice("antenna", [[true, "Oui"], [false, "Non"]])); row("Sa voix", voiceChoice());
+  row("Sa tête", choice("head", [["round", "Ronde"], ["square", "Carrée"]])); row("Ses yeux", choice("eyes", [["dots", "Ronds"], ["visor", "Visière"]])); row("Son antenne", choice("antenna", [[true, "Oui"], [false, "Non"]]));
   const ok = el("button", "big-btn", "✔ C'est mon robot !"); ok.onclick = () => { chime("done"); home(); }; box.append(ok);
 }
 
@@ -360,9 +360,6 @@ function resetJourney() {
 function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
 // ----- « Qui joue ? » : à chaque ouverture, le robot et le prénom de l'enfant ; en bas à gauche, le cadenas des parents (inspiré d'iwawa) -----
 let onWelcome = false;
-// premier jeu : l'enfant choisit une voix de femme ou d'homme (une seule fois ; modifiable dans « Mon robot » et par les parents)
-let voicePickShown = false;
-function maybePickVoice() { if (voicePickShown || !S.voice || S.voiceG || needsParentSetup() || !S.age) return; voicePickShown = true; pickVoice(overlay, () => { overlay.style.display = "none"; overlay.innerHTML = ""; }); }
 // le bouton des parents : le même sur « Qui joue ? » et sur l'accueil (cadenas en bas à gauche, code obligatoire)
 function parentLock() { const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings(); return par; }
 function welcome() {
@@ -386,7 +383,7 @@ const PARENT_SCREENS = {
   profil: () => ({ title: "Profil", html: `<div class="row"><span>Prénom</span><input id="sn" value="${String(S.name).replace(/"/g, "&quot;")}" maxlength="20"></div>
     <div class="row"><span>Âge</span><select id="sa">${optList(S.age, AGES)}</select></div>
     <div class="row"><span>Objectif du jour</span><select id="sg">${optList(S.dailyGoalXP || 100, GOALS.map(g => [g.xp, `${g.name} · ${g.xp} XP`]))}</select></div>` }),
-  son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Qui parle</span><select id="svg">${optList(S.voiceG || "", [["", "Voix de l'appareil"], ["f", "Une femme 👩"], ["m", "Un homme 👨"]])}</select></div><div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
+  son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
   ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
   parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
     <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt psmall" id="sdt">🎯</button></div>` + togRow("Tout débloquer", "unlockAll", S.unlockAll) + `<div class="row"><span>Effacer la progression</span><button class="big-btn alt psmall" id="rs" aria-label="Effacer la progression">↺</button></div>` }),
@@ -401,7 +398,6 @@ function grabParent() {
   const n = v("#sn"); if (n !== null && n.trim()) S.name = n.trim().slice(0, 20);
   const a = v("#sa"); if (a !== null) S.age = a;
   const g = v("#sg"); if (g !== null && +g > 0) S.dailyGoalXP = +g;   // jamais de valeur vide
-  const svg = v("#svg"); if (svg !== null) { if (svg) S.voiceG = svg; else delete S.voiceG; }
   const sv = v("#sv"); if (sv !== null) { S.voiceMode = sv; S.voiceModeSet = sv !== "auto"; }
   const ss = v("#ss"); if (ss !== null) { S.startRank = +ss; S.placed = true; }
   const sr = v("#sr"); if (sr !== null) S.reminder = +sr;

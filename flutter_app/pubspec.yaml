@@ -57,7 +57,6 @@ flutter:
     - assets/www/
     - assets/www/voice/
     - assets/www/voice/clips/f5/
-    - assets/www/voice/clips/m4/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -108,11 +108,10 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - Mots à l'écran de l'accueil : environ 200 → 33.
 - Nouvelle icône dessinée : le dé (🎲 S'entraîner). Test : `node test-kidhome.mjs`.
 
-## Voix enregistrées : une femme ou un homme, au choix de l'enfant
+## Voix enregistrée : une femme (F5)
 
-- Deux voix françaises sans accent, générées en local avec VoiceStudio : **F5 = femme** (CosyVoice 3, timbre cloné depuis `voice/tools/ref_F5.wav`) et **M4 = homme** (Supertonic-3, pauses resserrées). Chaque phrase de l'appli a un petit mp3 (`voice/clips/<voix>/<clé>.mp3`, listés dans `voice/manifest.json`).
-- **Choix de l'enfant** : au premier jeu, un écran à deux gros boutons 👩 / 👨 (échantillon parlé, puis ✔). Modifiable à tout moment dans « Mon robot » (ligne « Sa voix ») et par les parents (Espace parents → Son → « Qui parle »). Tant que rien n'est choisi, l'appli garde la voix de l'appareil.
-- Lecture : `voiceclips.js` découpe le texte en phrases et lit le clip de chaque phrase ; une phrase sans clip (prénom, chiffres…) est lue par la voix de l'appareil. 🔇 coupe aussi les clips.
-- Fabrication : `node voice/extract.mjs` (extrait les phrases du code → `voice/phrases.json`, plus `voice/phrases_extra.json` écrit à la main) puis `python voice/gen.py m4` et `python voice/gen.py f5` (VoiceStudio lancé sur le port 3900 ; une voix après l'autre, reprenable). La clé d'une phrase est la même en Python (`gen.py`) et en JS (`voiceKey`).
-- Les deux voix sont aussi gardées comme skill Claude (`voix-francais-f5-m4`) pour les prochains projets.
+- Une seule voix française, sans accent, générée en local avec VoiceStudio : **F5 = femme** (CosyVoice 3, timbre cloné depuis `voice/tools/ref_F5.wav`). Aucun choix à faire : ni écran de choix, ni réglage de voix (la voix d'homme a été retirée). Chaque phrase de l'appli a un petit mp3 (`voice/clips/f5/<clé>.mp3`, listés dans `voice/manifest.json`).
+- Lecture : `voiceclips.js` découpe le texte en phrases et lit le clip de chaque phrase ; une phrase sans clip (prénom, chiffres, ou pas encore générée) est lue par la voix de l'appareil. 🔇 coupe aussi les clips.
+- Fabrication : `node voice/extract.mjs` (extrait les phrases du code → `voice/phrases.json`, plus `voice/phrases_extra.json` écrit à la main) puis `python voice/gen.py` (VoiceStudio lancé sur le port 3900 ; reprenable). La clé d'une phrase est la même en Python (`gen.py`) et en JS (`voiceKey`).
+- La voix est aussi gardée comme skill Claude (`voix-francais-f5-m4`) pour les prochains projets.
 - Test : `node test-voiceclips.mjs`.

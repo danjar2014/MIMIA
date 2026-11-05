@@ -1,11 +1,8 @@
 """Génère les clips audio des phrases de l'appli avec VoiceStudio (http://127.0.0.1:3900).
-  python voice/gen.py f5   -> voix FEMME  : CosyVoice 3, timbre cloné depuis voice/tools/ref_F5.wav (Supertonic F5)
-  python voice/gen.py m4   -> voix HOMME  : Supertonic-3, préréglage M4, pauses resserrées (tighten.py)
-Reprenable : les clips déjà présents sont ignorés. Écrit voice/clips/<voix>/<clé>.mp3 et voice/manifest.json."""
+  python voice/gen.py      -> voix FEMME (la seule voix de l'appli) : CosyVoice 3, timbre cloné depuis voice/tools/ref_F5.wav (Supertonic F5)
+Reprenable : les clips déjà présents sont ignorés. Écrit voice/clips/f5/<clé>.mp3 et voice/manifest.json."""
 import sys, os, json, re, io, wave, subprocess, tempfile, time, unicodedata, urllib.request, uuid, glob, shutil
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "tools"))
-from tighten import tighten  # noqa
-URL = "http://127.0.0.1:3900/generate"
+HERE = os.path.dirname(os.path.abspath(__file__)); URL = "http://127.0.0.1:3900/generate"
 REF_TEXT = "Bravo ! Tu as donné le bon ordre au robot. Il avance de trois cases."
 
 def key(s):  # identique à voiceKey() dans voiceclips.js
@@ -28,8 +25,7 @@ def multipart(fields, files):
     out.write(f"--{bd}--\r\n".encode()); return out.getvalue(), f"multipart/form-data; boundary={bd}"
 
 def synth(voice, text):
-    if voice == "m4": f, fl = {"text": text, "language": "French", "engine": "supertonic3", "preset_voice": "M4"}, {}
-    else: f, fl = {"text": text, "language": "French", "engine": "cosyvoice", "ref_text": REF_TEXT}, {"ref_audio": ("ref_F5.wav", open(os.path.join(HERE, "tools", "ref_F5.wav"), "rb").read())}
+    f, fl = {"text": text, "language": "French", "engine": "cosyvoice", "ref_text": REF_TEXT}, {"ref_audio": ("ref_F5.wav", open(os.path.join(HERE, "tools", "ref_F5.wav"), "rb").read())}
     body, ct = multipart(f, fl)
     return urllib.request.urlopen(urllib.request.Request(URL, body, {"Content-Type": ct}), timeout=600).read()
 
@@ -38,7 +34,7 @@ def ffmpeg():
     return p or os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\WinGet\Links\ffmpeg.exe")
 
 def manifest():
-    m = {v: sorted(os.path.splitext(f)[0] for f in os.listdir(os.path.join(HERE, "clips", v))) for v in ("f5", "m4")}
+    m = {"f5": sorted(os.path.splitext(f)[0] for f in os.listdir(os.path.join(HERE, "clips", "f5")))}
     json.dump(m, open(os.path.join(HERE, "manifest.json"), "w")); return m
 
 def main(voice):
@@ -56,7 +52,6 @@ def main(voice):
         for attempt in (1, 2, 3):
             try:
                 raw = synth(voice, speakable(p)); w = os.path.join(tmp, k + ".wav"); open(w, "wb").write(raw)
-                if voice == "m4": w2 = w + ".t.wav"; tighten(w, w2); w = w2
                 subprocess.run([ff, "-y", "-loglevel", "error", "-i", w, "-ac", "1", "-ar", "24000", "-c:a", "libmp3lame", "-b:a", "40k", os.path.join(HERE, "clips", voice, k + ".mp3")], check=True)
                 break
             except Exception as e:
@@ -64,4 +59,4 @@ def main(voice):
         if i % 20 == 0 or i == len(todo): manifest(); print(f"{voice}: {i}/{len(todo)}  {int(time.time()-t0)} s", flush=True)
     manifest(); print(voice, "terminé", flush=True)
 
-if __name__ == "__main__": main(sys.argv[1])
+if __name__ == "__main__": main(sys.argv[1] if len(sys.argv) > 1 else "f5")
