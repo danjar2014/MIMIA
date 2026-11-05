@@ -32,7 +32,8 @@ let active = false;
 export const setupActive = () => active;
 // host : l'élément plein écran (#overlay). onDone() est appelé quand le parent a fini : l'enfant peut commencer.
 export function startParentSetup(host, onDone) {
-  if (active) return; active = true; host.style.display = "flex";
+  // déjà ouverte : on ne la rouvre pas. Mais si l'écran a été fermé en route (annulation d'un sous-écran), on la relance : jamais de blocage
+  if (active && host.style.display === "flex") return; active = true; host.style.display = "flex";
   const profile = { name: S.name || "", age: S.age || "a", goal: S.dailyGoalXP || 100, voiceMode: S.voiceMode || "auto", limit: S.dailyLimit || 0 };
   const opts = (list, v) => list.map(([val, lab]) => `<option value="${val}" ${String(v) === String(val) ? "selected" : ""}>${esc(lab)}</option>`).join("");
 
