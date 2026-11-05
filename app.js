@@ -21,6 +21,7 @@ import { makePractice, trainReward } from "./practice.js";
 import { mountDraw, DEFIS } from "./draw.js";
 import { mountDance } from "./dance.js";
 import { mountPuzzle, PUZZLES } from "./puzzle.js";
+import { mountPetit, PETITS } from "./petits.js";
 import { mountLab } from "./labs.js";
 import { mountDiscover } from "./discover.js";
 import { mountBuild } from "./build.js";
@@ -29,6 +30,7 @@ import { ADV, mountAdv } from "./advgames.js";
 import { initVoice } from "./voice.js";
 import "./voiceclips.js";
 import { initPraise } from "./praise.js";
+import { showSplash } from "./splash.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -51,10 +53,10 @@ const goalScreen = (r, earned) => next => {
   overlay.innerHTML = `<div class="panel rew"><div class="goalring" style="--p:${Math.min(100, Math.round(100 * r.after / r.goal))}"><span>⚡<small>${r.after} / ${r.goal} XP</small></span></div><h1>Objectif du jour atteint !</h1><p class="sub">Bravo${S.name ? " " + S.name : ""} ! Cette étape t'a rapporté <b>${earned} XP</b>. Reviens demain pour continuer ta série.</p><button class="big-btn" id="rwc">Récupérer</button></div>`;
   $("#rwc").onclick = next;
 };
-const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily", "puzzle"]);
+const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily", "puzzle", "petits"]);
 function rewardXP(sec, id) {
   if (!REWARD_SECS.has(sec)) return;
-  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = sec === "puzzle" ? 20 : stepXP(a.fails), r = addXP(xp);   // un puzzle rapporte un petit nombre fixe de points
+  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = sec === "puzzle" ? 20 : sec === "petits" ? 10 : stepXP(a.fails), r = addXP(xp);   // un puzzle rapporte un petit nombre fixe de points
   setTimeout(() => { const st = document.querySelector(".astage"); if (st) { const chip = el("div", "xpchip", `⚡ +${xp} XP${a.fails === 0 ? " · sans aucune erreur !" : ""} · aujourd'hui ${r.after}/${r.goal}`), wb = st.querySelector(".winbar"); wb ? st.insertBefore(chip, wb) : st.append(chip); } }, 450);
   setTimeout(() => { if (r.firstOfDay) pushOverlay(streakScreen); if (r.crossed) pushOverlay(goalScreen(r, xp)); }, 800);
 }
@@ -91,11 +93,11 @@ const applySettings = () => { document.body.classList.toggle("calm", S.calm); do
 // ---------- coder pour de vrai ----------
 function codeMenu() {
   const band = S.age || "a", items = FLAT.map(m => ({ ...m, done: isDone("code", m.id) })); let rec = items.findIndex(i => !i.done && i.band === band); if (rec < 0) rec = items.findIndex(i => !i.done);
-  const groups = CODE.map(g => ({ header: g.title, items: g.items.map(m => { const it = items.find(i => i.id === m.id); return { icon: it.kind === "console" ? "⌨️" : it.kind === "robot" ? "🤖" : it.kind === "expert" ? "🏆" : "🧠", title: m.title, sub: m.mission.split(/[.!?]/)[0] + ".", done: it.done, rec: items.indexOf(it) === rec, go: () => playCode(m) }; }) }));
-  groups.unshift({ header: "0. Des blocs au vrai code : pose des blocs et regarde le code s'écrire", items: [["a", 1, "Le robot avance et tourne"], ["b", 0, "Répéter : la boucle for"], ["c", 0, "Tant que : la boucle while"], ["c", 4, "Décider : if / else"]].map(([b, k, t]) => ({ icon: "🔗", title: t, sub: "avec le code en direct", done: false, go: () => playGrid(b, k, { codeOpen: true }) })) });
-  groups.push({ header: "5. Le Grand Projet : concevoir un robot complet", items: [{ icon: "🏗️", title: "Le Grand Projet", sub: "choisis tes pièces, monte, programme, imprime ta fiche", done: isDone("project", "pj"), go: playProject }] });
+  const groups = CODE.map(g => ({ header: g.title, items: g.items.filter(m => okBand(items.find(i => i.id === m.id).band)).map(m => { const it = items.find(i => i.id === m.id); return { icon: it.kind === "console" ? "⌨️" : it.kind === "robot" ? "🤖" : it.kind === "expert" ? "🏆" : "🧠", title: m.title, sub: m.mission.split(/[.!?]/)[0] + ".", done: it.done, rec: items.indexOf(it) === rec, go: () => playCode(m) }; }) }));
+  groups.unshift({ header: "0. Des blocs au vrai code : pose des blocs et regarde le code s'écrire", items: [["a", 1, "Le robot avance et tourne"], ["b", 0, "Répéter : la boucle for"], ["c", 0, "Tant que : la boucle while"], ["c", 4, "Décider : if / else"]].filter(([b]) => okBand(b)).map(([b, k, t]) => ({ icon: "🔗", title: t, sub: "avec le code en direct", done: false, go: () => playGrid(b, k, { codeOpen: true }) })) });
+  if (okBand("c")) groups.push({ header: "5. Le Grand Projet : concevoir un robot complet", items: [{ icon: "🏗️", title: "Le Grand Projet", sub: "choisis tes pièces, monte, programme, imprime ta fiche", done: isDone("project", "pj"), go: playProject }] });
   groups.push({ header: "6. Mon atelier", items: [{ icon: "🧪", title: "Atelier libre", sub: "écris ce que tu veux et regarde ce qui se passe", go: () => playCode(FREE) }] });
-  menu("Coder pour de vrai", groups, home);
+  menu("Coder pour de vrai", groups.filter(g => g.items.length), home);
 }
 function playCode(m, code, lang) {
   lang = lang || S.codeLang || "py";
@@ -105,7 +107,7 @@ function playCode(m, code, lang) {
 
 // ---------- la carte du robot ----------
 function buildMenu() {
-  const band = S.age || "a", items = BUILD.map(l => ({ icon: l.id === "e9" ? "🧰" : l.prog ? "🧠" : l.id.slice(1), title: l.title, sub: l.id === "e9" ? "assemble ce que tu veux" : l.mission.split(".")[0] + ".", done: isDone("build", l.id), band: l.band, go: () => playBuild(l) }));
+  const band = S.age || "a", items = BUILD.map(l => ({ icon: l.id === "e9" ? "🧰" : l.prog ? "🧠" : l.id.slice(1), title: l.title, sub: l.id === "e9" ? "assemble ce que tu veux" : l.mission.split(".")[0] + ".", done: isDone("build", l.id), band: l.band, go: () => playBuild(l) })).filter(i => okBand(i.band));
   const k = items.findIndex(i => !i.done && i.band.includes(band) && i.band !== "abc"); if (k >= 0) items[k].rec = true;
   menu("Construire le robot", [{ header: "Assemble les éléments sur la carte, puis relie-les au cerveau avec des fils", items }], home);
 }
@@ -129,9 +131,9 @@ const ADVGROUPS = [
 ];
 const ADVFLAT = ADVGROUPS.flatMap(g => g.items);
 function advMenu() {
-  const age = S.age || "a", groups = ADVGROUPS.map(g => ({ header: g.header, items: g.items.map(i => ({ icon: i.icon, title: i.title, sub: i.sub, done: isDone("adv", i.id), rec: false, bands: i.bands, go: () => playAdv(i) })) }));
+  const age = S.age || "a", groups = ADVGROUPS.map(g => ({ header: g.header, items: g.items.filter(i => okBand(i.bands)).map(i => ({ icon: i.icon, title: i.title, sub: i.sub, done: isDone("adv", i.id), rec: false, bands: i.bands, go: () => playAdv(i) })) })).filter(g => g.items.length);
   const flat = groups.flatMap(g => g.items), k = flat.findIndex(i => !i.done && i.bands.includes(age)); if (k >= 0) flat[k].rec = true;
-  groups.unshift({ header: age === "a" ? "🚀 Cette rubrique est surtout pour les 8-12 ans. Tu peux déjà jeter un œil !" : "🚀 D'après le cours « Codage robotique » (NovaSavo), unité 12 : les idées des vrais roboticiens, adaptées pour toi.", items: [] });
+  groups.unshift({ header: "🚀 D'après le cours « Codage robotique » (NovaSavo), unité 12 : les idées des vrais roboticiens, adaptées pour toi.", items: [] });
   menu("Aller plus loin", groups, home);
 }
 function playAdv(item) {
@@ -145,6 +147,8 @@ const DISC = [{ id: "d1", icon: "🤖", title: "Découvre ton robot", sub: "Touc
 const LABS = [{ id: "k1", icon: "🌗", title: "Le capteur de lumière", sub: "Observe comment le robot réagit à la lumière", bands: "abc" }, { id: "k2", icon: "💡", title: "Écris la règle de la lampe", sub: "Compose une règle « si… alors »", bands: "bc" },
   { id: "k3", icon: "📏", title: "Le capteur de distance", sub: "Les yeux du robot mesurent la distance au mur", bands: "abc" }, { id: "k4", icon: "🚧", title: "Freine avant le mur", sub: "Règle le seuil comme un ingénieur", bands: "c" }];
 const isRec = (bands) => !S.age || bands.includes(S.age);
+// un enfant ne voit pas les niveaux des plus grands : on garde les contenus de sa tranche d'âge et des plus petites (a < b < c)
+const okBand = b => { const me = "abc".indexOf(S.age || "a"), x = "abc".indexOf(String(b)[0]); return me < 0 || x <= me; };
 
 // ---------- écrans ----------
 function home() {
@@ -158,21 +162,22 @@ function home() {
   stats.dataset.say = `Aujourd'hui tu as ${tx} points sur ${gx}. Série : ${ss.streak} jour${ss.streak > 1 ? "s" : ""}.`;
   bar.append(chip, stats); app.append(bar, parentLock());
   const body = el("div", "homebody"); app.append(body);
+  if (S.age === "z") return littleHome(body, esc);   // les petits : un accueil de gros mots-icônes
   if (FLAGS.testUnlock) body.append(el("div", "testflag", "🧪 Mode test : tout est débloqué"));
   // 1. la prochaine étape : une grande tuile (le titre de l'étape, rien d'autre)
   const ns = nextStep(), info = ns ? stepInfo(ns.step) : null, hero = el("button", "herotile");
   hero.innerHTML = `<span class="hface">${faceSvg("happy")}</span><b>${esc(info ? info.title : "Défi du jour")}</b><span class="hplay">${icon("play")}</span>`;
   hero.setAttribute("aria-label", ns ? `Continuer : ${info.title}` : "Défi du jour"); hero.onclick = () => (ns ? launchStep(ns.step) : playDaily(false)); body.append(hero);
   // 2. de grosses icônes, un seul mot chacune (le détail reste pour les lecteurs d'écran et la voix)
-  const tile = (ic, nm, sub, hue, fn, lock) => { const locked = lock && cardLocked(lock), b = el("button", "tile" + (locked ? " locked" : ""), `<span class="tic">${locked ? icon("lock") : ic.startsWith("<svg") ? ic : icon(ic)}</span><b>${esc(nm)}</b>`); b.setAttribute("aria-label", locked ? `${nm} : à débloquer` : sub ? `${nm}. ${sub}` : nm); b.style.setProperty("--tc", hue); b.onclick = locked ? () => { toast(lockReason(lock), 4500); speak(lockReason(lock)); } : fn; return b; };
+  const tile = (ic, nm, sub, hue, fn, lock) => { const ov = (S.cards || {})[nm], pb = ov === "blocked", locked = pb || (ov !== "open" && !!lock && cardLocked(lock)), b = el("button", "tile" + (locked ? " locked" : ""), `<span class="tic">${locked ? icon("lock") : ic.startsWith("<svg") ? ic : icon(ic)}</span><b>${esc(nm)}</b>`); b.setAttribute("aria-label", locked ? `${nm} : à débloquer` : sub ? `${nm}. ${sub}` : nm); b.style.setProperty("--tc", hue); b.onclick = locked ? () => { const why = pb ? "Cette carte est bloquée par tes parents." : lockReason(lock); toast(why, 4500); speak(why); } : fn; return b; };
   const grid = el("div", "igrid"), cr = currentRank(), nb = badgeList().filter(b => b.date).length, age = S.age || "a";
   grid.append(
-    tile("target", "Défi", dailyDoneToday() ? "fait aujourd'hui" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Parcours", `Aventure ${cr + 1} sur ${RANKS.length}`, "#fff1b8", parcours), tile("medal", "Badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges),
+    tile("target", "Défi", dailyDoneToday() ? "fait aujourd'hui" : "3 questions", "#ffe0ec", () => playDaily(false)), tile("path", "Parcours", `Aventure ${Math.max(1, RANKS.map((r, i) => i).filter(i => RANKS[i].steps.length).indexOf(cr) + 1)} sur ${RANKS.filter(r => r.steps.length).length}`, "#fff1b8", parcours), tile("medal", "Badges", `${nb} sur ${badgeList().length}`, "#eadcff", showBadges),
     tile("dice", "S'entraîner", "un parcours surprise", "#ffe9c7", () => playPractice(age, 0), "prog"),
     tile("magnifier", "Découvrir", "les parties du robot", "#d6ecff", () => menu("Découvrir le robot", discItems(), home), "disc"), tile("blocks", "Programmer", "avec des blocs", "#d9f5d3", progMenu, "prog"),
     tile("puzzle", "Puzzle", "remets le robot en ordre", "#e6f5d0", () => playPuzzle()), tile("gear", "Construire", "la carte du robot", "#e2dcff", buildMenu, "build"), tile("code", "Coder", "Python et JavaScript", "#d4e4ff", codeMenu, "code"),
     tile("sensor", "Capteurs", "lumière, distance", "#fff0c2", () => menu("Les capteurs", labItems(), home), "lab"), tile("palette", "Créer", "dessiner, danser", "#ffe0d2", createMenu, "create"),
-    tile("rocket", "Plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv"), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
+    ...(age === "a" ? [] : [tile("rocket", "Plus loin", "ROS, IA, métiers", "#d2f1ef", advMenu, "adv")]), tile(faceSvg("happy"), "Mon robot", "choisis son look", "#ece0f7", robotBuilder),
     tile("star", "Créations", `${S.creations.length} gardée${S.creations.length > 1 ? "s" : ""}`, "#e3f1f1", creations));
   body.append(grid);
 }
@@ -240,9 +245,11 @@ function launchStep(s) {
 function parcours() {
   const ns = nextStep();
   const groups = [];
+  const shown = RANKS.map((r, i) => i).filter(i => RANKS[i].steps.length);
   RANKS.forEach((r, i) => {
+    if (!r.steps.length) return;
     const p = rankProgress(i), un = rankUnlocked(i), fin = rankDone(i);
-    const header = `${r.icon} Aventure ${i + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"}`, info = un ? r.goal : "Termine l'aventure d'avant pour l'ouvrir.";
+    const header = `${r.icon} Aventure ${shown.indexOf(i) + 1} · ${r.name}  (${p.done}/${p.total})${fin ? " ✅" : un ? "" : " 🔒"}`, info = un ? r.goal : "Termine l'aventure d'avant pour l'ouvrir.";
     if (!un) { groups.push({ header, info, items: [] }); return; }  // une aventure terminée reste ouverte : on peut refaire ses étapes
     groups.push({ header, info, collapsed: fin, items: r.steps.map((s, j) => { const info = stepInfo(s), ok = stepUnlocked(i, j); return { icon: info.icon, title: info.title, sub: info.sub, done: stepDone(s), rec: !!ns && ns.rank === i && ns.index === j, locked: !ok, go: ok ? () => launchStep(s) : () => { toast("Termine d'abord l'étape d'avant 🙂"); speak("Termine d'abord l'étape d'avant."); } }; }) });
   });
@@ -277,14 +284,14 @@ function menu(title, groups, back) {
   app.append(box);
 }
 const firstTodo = list => list.findIndex(i => !i.done);
-function discItems() { const items = DISC.map(d => ({ ...d, done: isDone("disc", d.id), rec: false, go: () => activity(d.title, "disc", d.id, s => mountDiscover(s, d.id, hooksFor("disc", d.id, () => menu("Découvrir le robot", discItems(), home))), () => menu("Découvrir le robot", discItems(), home)) }));
+function discItems() { const items = DISC.filter(d => okBand(d.bands)).map(d => ({ ...d, done: isDone("disc", d.id), rec: false, go: () => activity(d.title, "disc", d.id, s => mountDiscover(s, d.id, hooksFor("disc", d.id, () => menu("Découvrir le robot", discItems(), home))), () => menu("Découvrir le robot", discItems(), home)) }));
   const k = items.findIndex(i => !i.done && i.bands.includes(S.age || "a")); if (k >= 0) items[k].rec = true; return [{ items }]; }
-function labItems() { const items = LABS.map(d => ({ ...d, done: isDone("lab", d.id), go: () => activity(d.title, "lab", d.id, s => mountLab(s, d.id, hooksFor("lab", d.id, () => menu("Les capteurs", labItems(), home))), () => menu("Les capteurs", labItems(), home)) }));
+function labItems() { const items = LABS.filter(d => okBand(d.bands)).map(d => ({ ...d, done: isDone("lab", d.id), go: () => activity(d.title, "lab", d.id, s => mountLab(s, d.id, hooksFor("lab", d.id, () => menu("Les capteurs", labItems(), home))), () => menu("Les capteurs", labItems(), home)) }));
   const k = items.findIndex(i => !i.done && i.bands.includes(S.age || "a")); if (k >= 0) items[k].rec = true; return [{ items }]; }
 
 function progItems(band) { return LEVELS[band].map((lv, i) => ({ icon: String(i + 1), title: lv.title, done: isDone("prog", band + (i + 1)), go: () => playGrid(band, i) })); }
 function progMenu() {
-  const order = [S.age || "a", ...["a", "b", "c"].filter(b => b !== (S.age || "a"))];
+  const order = [S.age || "a", ...["a", "b", "c"].filter(b => b !== (S.age || "a") && okBand(b))];
   const groups = order.map(b => { const items = progItems(b); if (b === (S.age || "a")) { const k = firstTodo(items); if (k >= 0) items[k].rec = true; } return { header: `${BANDS[b].name}${b === (S.age || "a") ? " · pour toi" : ""}`, items }; });
   const band = S.age || "a"; groups.unshift({ header: "🎲 S'entraîner", info: "Un parcours surprise à chaque fois, toujours possible à réussir. Il devient plus difficile au fil des réussites.", items: [{ icon: "🎲", title: "Parcours surprise", sub: "un nouveau parcours à chaque fois", go: () => playPractice(band, 0) }] });
   menu("Programmer le robot", groups, home);
@@ -302,7 +309,18 @@ function playGrid(band, i, opts = {}) {
 function playPuzzle(band = S.age || "a", idx) {
   if (idx == null) { idx = PUZZLES.findIndex((p, i) => !isDone("puzzle", band + (i + 1))); if (idx < 0) idx = Math.floor(Math.random() * PUZZLES.length); }
   const id = band + ((idx % PUZZLES.length) + 1), next = () => playPuzzle(band, idx + 1);
-  activity("Puzzle", "puzzle", id, s => mountPuzzle(s, band, idx, { onWin: () => { markDone("puzzle", id); winBar(next, home, "🏠 Accueil"); } }), home);
+  activity("Puzzle", "puzzle", id, s => mountPuzzle(s, band, idx, { onWin: () => { markDone("puzzle", id); winBar(next, home, "🏠 Accueil", "▶ Niveau suivant", S.age !== "z"); } }), home);
+}
+// les petits (3-6 ans) : chiffres, lettres, couleurs, jours, mois, relier, espace
+function playPetit(id) {
+  const info = PETITS.find(p => p[0] === id), next = () => playPetit(id);
+  activity(info[2], "petits", id, s => mountPetit(s, id, { onWin: () => { markDone("petits", id); winBar(next, home, "🏠 Accueil", "▶ Encore !", false); } }), home);
+}
+function littleHome(body, esc) {
+  const grid = el("div", "igrid little");
+  const mk = (ic, nm, hue, fn, done) => { const pb = (S.cards || {})[nm] === "blocked", b = el("button", "tile" + (pb ? " locked" : ""), `<span class="tic emo" aria-hidden="true">${pb ? icon("lock") : ic}</span><b>${esc(nm)}</b>${done && !pb ? '<i class="tdone" aria-hidden="true">⭐</i>' : ""}`); b.setAttribute("aria-label", pb ? `${nm} : bloqué` : nm); b.style.setProperty("--tc", hue); b.onclick = pb ? () => { toast("Cette carte est bloquée par tes parents.", 4000); speak("Cette carte est bloquée par tes parents."); } : fn; return b; };
+  grid.append(...PETITS.map(([id, ic, nm, hue]) => mk(ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
+  body.append(grid);
 }
 function createMenu() {
   const age = S.age || "a";
@@ -323,9 +341,9 @@ function activity(title, sec, id, mount, back) {
   const c = mount(stage); cleanup = () => c && c.destroy && c.destroy(); window.__cur = c;
 }
 const hooksFor = (sec, id, back) => ({ onWin: () => { markDone(sec, id); winBar(null, back); } });
-function winBar(next, list, listLabel = "☰ Liste des niveaux") {
+function winBar(next, list, listLabel = "☰ Liste des niveaux", nextLabel = "▶ Niveau suivant", parcoursBtn = true) {
   document.querySelectorAll(".winbar").forEach(x => x.remove()); const w = el("div", "winbar"), stage = document.querySelector(".astage"); if (!stage) return;
-  if (next) { const b = el("button", "big-btn", "▶ Niveau suivant"); b.onclick = next; w.append(b); } const l = el("button", "big-btn alt", listLabel); l.onclick = list; w.append(l); const pb = el("button", "big-btn alt", "🗺️ Mon parcours"); pb.onclick = parcours; w.append(pb); stage.append(w); w.scrollIntoView({ behavior: "smooth", block: "end" });
+  if (next) { const b = el("button", "big-btn", nextLabel); b.onclick = next; w.append(b); } const l = el("button", "big-btn alt", listLabel); l.onclick = list; w.append(l); if (parcoursBtn) { const pb = el("button", "big-btn alt", "🗺️ Mon parcours"); pb.onclick = parcours; w.append(pb); } stage.append(w); w.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 function keep(type, title, data) { S.creations.unshift({ id: Date.now(), type, title, data, date: new Date().toLocaleDateString("fr-FR") }); S.creations = S.creations.slice(0, 40); save(); toast("✔ Gardé dans « Mes créations » !"); }
 
@@ -397,21 +415,31 @@ function welcome() {
   app.append(wrap, parentLock());
 }
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
+let splashShown = false;
 function startApp() {
   let go = null; try { go = sessionStorage.getItem("rj-go"); sessionStorage.removeItem("rj-go"); } catch (e) {}
+  if (go || splashShown) return enterApp(go);   // juste après un changement de joueur : pas d'animation
+  splashShown = true; showSplash(() => enterApp(null));   // à l'ouverture : le robot arrive dans l'espace
+}
+function enterApp(go) {
   if (go && !needsParentSetup()) home(); else if (!needsParentSetup() && S.age && S.placed) welcome(); else home();   // juste après un changement de joueur : directement l'accueil
 }
 const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; onWelcome ? welcome() : home(); };
 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
-  { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"]] },
+  { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"], ["cartes", "🃏", "Cartes", "#e2dcff"]] },
   { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"]] }
 ];
 const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
+// les cartes de l'accueil que les parents peuvent bloquer ou ouvrir : « auto » = selon la progression, « open » = toujours ouverte, « blocked » = bloquée
+const CARD_NAMES = ["Défi", "Parcours", "Badges", "S'entraîner", "Découvrir", "Programmer", "Puzzle", "Construire", "Coder", "Capteurs", "Créer", "Plus loin", "Mon robot", "Créations"];
+const cardNamesFor = () => (S.age === "z" ? [...PETITS.map(p => p[2]), "Puzzle", "Mon robot"] : CARD_NAMES.filter(nm => !(nm === "Plus loin" && S.age === "a")));
+const CARD_ICON = { auto: "✨", open: "🔓", blocked: "🔒" }, CARD_LABEL = { auto: "selon la progression", open: "toujours ouverte", blocked: "bloquée" }, CARD_NEXT = { auto: "open", open: "blocked", blocked: "auto" };
 const PARENT_SCREENS = {
   profil: () => ({ title: "Joueurs", html: "" }),   // écran propre : voir profilesScreen()
+  cartes: () => ({ title: "Cartes", html: `<p class="sub">Pour <b>${escH(S.name || "cet enfant")}</b> : ✨ selon la progression · 🔓 toujours ouverte · 🔒 bloquée. Touchez pour changer.</p>` + cardNamesFor().map(nm => { const st = (S.cards || {})[nm] || "auto"; return `<div class="row"><span>${nm}</span><button class="cardst" data-nm="${escH(nm)}" aria-label="${escH(nm)} : ${CARD_LABEL[st]}">${CARD_ICON[st]}</button></div>`; }).join("") }),
   son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
   ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) + togRow("Plein écran verrouillé", "kiosk", S.kiosk) + `<p class="sub">Plein écran : l'enfant ne peut pas quitter l'appli sans le code parent (ici, en décochant).</p>` }),
   parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
@@ -466,6 +494,10 @@ function parentScreen(id) {
   overlay.innerHTML = `<div class="panel"><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
   $("#pback").onclick = () => { grabParent(); settings(); };
+  overlay.querySelectorAll(".cardst").forEach(b => b.onclick = () => {
+    const nm = b.dataset.nm, nx = CARD_NEXT[(S.cards || {})[nm] || "auto"]; S.cards = S.cards || {}; if (nx === "auto") delete S.cards[nm]; else S.cards[nm] = nx;
+    save(); b.textContent = CARD_ICON[nx]; b.setAttribute("aria-label", `${nm} : ${CARD_LABEL[nx]}`); speak(`${nm} : ${CARD_LABEL[nx]}`, { force: true, full: true });
+  });
   const sdt = $("#sdt"); if (sdt) sdt.onclick = () => { grabParent(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : aventure ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); closeSettings(); }); };
   const rs = $("#rs"); if (rs) rs.onclick = () => { grabParent(); askConfirm(overlay, { title: "Effacer la progression ?", sub: "Le parcours de l'enfant repart de zéro.", onYes: () => { resetJourney(); toast("Progression effacée"); parentScreen("parcours"); }, onNo: () => parentScreen("parcours") }); };
   const pc = $("#pc"); if (pc) pc.onclick = () => createPin({ onDone: settings, onCancel: () => parentScreen("code") });

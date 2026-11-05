@@ -25,7 +25,7 @@ t("si le code disparaît, la configuration redevient obligatoire", needsParentSe
 t("codes trop faciles refusés (0000, 1234, 1111…)", ["0000", "1234", "1111", "4321"].every(isWeakPin) && !isWeakPin("4821") && !isWeakPin("7305"));
 const q = adultQuestion(() => 0), q2 = adultQuestion(() => 0.99);
 t("question d'adulte : tables de 6 à 9, réponse juste", q.answer === 36 && q2.answer === 81 && q.a >= 6 && q2.b <= 9);
-t("trois tranches d'âge et quatre modes de voix proposés", AGES.length === 3 && VOICES.length === 4);
+t("quatre tranches d'âge (3-6, 6-8, 8-10, 10-12) et quatre modes de voix proposés", AGES.length === 4 && AGES[0][0] === "z" && VOICES.length === 4);
 const app = readFileSync("./app.js", "utf8"), pin = readFileSync("./pin.js", "utf8"), sw = readFileSync("./sw.js", "utf8");
 t("l'accueil lance la configuration parent AVANT l'accueil de l'enfant", /needsParentSetup\(\)\) startSetup\(\); else if \(!S\.age/.test(app));
 t("les réglages sans code lancent la configuration (pas d'accès direct)", /function openSettings\(\) \{ if \(needsParentSetup\(\)\) return startSetup\(\)/.test(app));

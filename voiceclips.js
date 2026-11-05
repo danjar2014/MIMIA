@@ -1,7 +1,7 @@
 // Voix enregistrée : une femme (F5), la seule voix de l'appli. Pas de choix à faire.
 // Chaque phrase de l'appli a un petit clip mp3 (voice/clips/f5/<clé>.mp3, créé par voice/gen.py).
 // La phrase est retrouvée par sa « clé » (même calcul que voice/gen.py) ; une phrase sans clip est lue par la voix de l'appareil.
-import { S, setClipHooks, profileIds, profileData } from "./util.js";
+import { S, setClipHooks, profileIds, profileData, DEVICE } from "./util.js";
 
 // clé d'une phrase : lettres et chiffres seulement, en minuscules, puis empreinte FNV-1a 32 bits (identique à gen.py)
 export function voiceKey(s) {
@@ -15,10 +15,16 @@ export const VOICE_DIR = "f5";
 const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export function segmentsOf(text) {
   const t = String(text).replace(/\s+/g, " ").trim(), names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
-  const plain = x => splitSentences(x).map(p => [p, false]); if (!names.length) return plain(t);
-  const re = new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(esc).join("|") + ")(?![\\p{L}\\p{N}])", "giu"), out = []; let last = 0, m;
-  while ((m = re.exec(t))) { out.push(...plain(t.slice(last, m.index)), [m[0], true]); last = m.index + m[0].length; }
-  return out.concat(plain(t.slice(last)));
+  const re = names.length ? new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(esc).join("|") + ")(?![\\p{L}\\p{N}])", "giu") : null, out = [], has = x => /[\p{L}\p{N}]/u.test(x);
+  for (const sent of t.match(/[^.!?…]+[.!?…]*/g) || []) {
+    const s = sent.trim(); if (!has(s)) continue;
+    if (s[0] === DEVICE) { out.push([s.slice(1).trim(), true]); continue; }   // salutation : voix de l'appareil
+    if (!re) { out.push([s, false]); continue; }
+    let last = 0, m; re.lastIndex = 0;
+    while ((m = re.exec(s))) { const pre = s.slice(last, m.index); if (has(pre)) out.push([pre.trim(), false]); out.push([m[0], true]); last = m.index + m[0].length; }
+    const post = s.slice(last); if (has(post)) out.push([post.trim(), false]);
+  }
+  return out;
 }
 
 let man = null, loading = null;

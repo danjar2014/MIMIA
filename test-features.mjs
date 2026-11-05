@@ -16,4 +16,7 @@ t("les compliments s'activent au démarrage et le robot dit le prénom", /initVo
 t("fille / garçon obligatoire dans la configuration parent et dans l'édition d'un joueur", /validProfile = p =>[^\n]*SEXES/.test(src("parentsetup.js")) && /Choisissez : fille ou garçon/.test(app));
 t("le puzzle est sur l'accueil et connu du service worker", /tile\("puzzle", "Puzzle"/.test(app) && /puzzle\.js/.test(sw) && /praise\.js/.test(sw));
 t("le puzzle rapporte un petit nombre fixe de points", /sec === "puzzle" \? 20/.test(app));
+t("animation d'entrée : le robot arrive dans l'espace, une fois par ouverture, pas après un changement de joueur", /splashShown = true; showSplash\(\(\) => enterApp\(null\)\)/.test(app) && /if \(go \|\| splashShown\) return enterApp\(go\)/.test(app) && /sp-bot/.test(css) && /splash\.js/.test(sw));
+t("les parents bloquent / ouvrent chaque carte (auto, ouvert, bloqué)", /cartes: \(\) => \(\{ title: "Cartes"/.test(app) && /CARD_NEXT = \{ auto: "open", open: "blocked", blocked: "auto" \}/.test(app) && /bloquée par tes parents/.test(app));
+t("le mode test « tout est débloqué » est retiré", /testUnlock: false/.test(src("parcours.js")));
 console.log(bad ? "PROBLEMES: " + bad : "LES NOUVEAUTES FONCTIONNENT");

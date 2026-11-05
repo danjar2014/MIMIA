@@ -124,3 +124,12 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - **Puzzle du robot** (tuile « Puzzle ») : 2×2, 3×3 ou 4×4 morceaux selon l'âge, 6 dessins, 20 XP. Test : `node test-puzzle.mjs`.
 - **Suivi** : le retour ramène à l'espace parents. **Cadenas parents** : fixe en haut, hors des cartes.
 - **Plein écran verrouillé** (Espace parents → Écran) : sur Android l'écran est épinglé (la sortie demande les gestes système ; le verrou se retire avec le code parent dans l'appli) ; sur le web, plein écran.
+
+## Les petits (3-6 ans), cartes des parents, animation d'entrée, salutations
+
+- **Catégorie « 3 – 6 ans »** (choix du parent : configuration ou Espace parents → Joueurs) : un accueil de gros mots-icônes, sans texte à lire, la voix lit tout ce qu'on touche. Sept activités (`petits.js`), toutes dans l'univers des robots, 5 petites manches chacune : **Chiffres** (compter des engrenages, piles, lampes), **Lettres** (« R comme robot »), **Couleurs** (touche le robot rouge), **Jours** et **Mois** (ce qui vient après, puis l'ordre), **Relier** (chaque objet à son ombre), **Espace** (la lune, la fusée ; haut, bas, gauche, droite), plus le **Puzzle** 2×2 et **Mon robot**. 10 XP par activité. Test : `node test-petits.mjs`.
+- **Niveaux cachés selon l'âge** : un enfant ne voit jamais les niveaux des plus grands (blocs, code, construction, capteurs, « Plus loin », Grand Projet). Le parcours ne montre que les étapes de son âge (`stepVisible` dans `parcours.js`) ; « Plus loin » n'existe pas pour les 6-8 ans. Les parents changent la tranche d'âge quand l'enfant progresse.
+- **Mode test supprimé** : plus de bandeau « tout est débloqué ». Les parents gardent **Espace parents → Cartes** : pour chaque carte de l'accueil, ✨ selon la progression, 🔓 toujours ouverte ou 🔒 bloquée (réglé par enfant), et « Tout débloquer » dans Parcours.
+- **Animation d'entrée** (`splash.js`) : le robot de l'enfant arrive en volant dans l'espace (étoiles, planète, lune), un toucher la passe ; en mode calme elle est presque immédiate. Pas d'animation juste après un changement de joueur.
+- **Salutations selon l'heure** : « Bonjour / Salut / Content de te revoir, Léa ! » le jour, « Bonsoir… » le soir, lues par la **voix de l'appareil** (marqueur invisible `DEVICE` dans `util.js`) pour éviter la cassure entre deux voix.
+- La voix de l'appareil remplace aussi les mots seuls (les clips d'un mot seul étaient ratés) : `voice/gen.py` n'en génère plus.

@@ -6,7 +6,7 @@ import { hasPin, createPin, askPin } from "./pin.js";
 import { GOALS } from "./xp.js";
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-export const AGES = [["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]];
+export const AGES = [["z", "3 – 6 ans (les petits)"], ["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]];
 export const SEXES = [["f", "Fille"], ["m", "Garçon"]];   // sert aux compliments (« tu es une championne » / « un champion »)
 export const VOICES = [["auto", "Selon l'âge (conseillé)"], ["guide", "Consigne et résultat"], ["demande", "Seulement avec le bouton 🔊"], ["complet", "Tout ce qu'on touche"]];
 export const LIMITS = [[0, "Pas de limite"], [20, "20 minutes"], [30, "30 minutes"], [45, "45 minutes"], [60, "1 heure"], [90, "1 h 30"]];
@@ -24,6 +24,7 @@ export function applyProfile(p) {
   S.dailyLimit = +p.limit || 0; S.limitShown = null;
   S.parentSetup = { date: new Date().toISOString().slice(0, 10), plan: (S.parentSetup && S.parentSetup.plan) || "free", v: 1 };
   if (!S.onboarded) S.placed = false;
+  if (S.age === "z") { S.placed = true; S.onboarded = true; }   // les petits n'ont ni test de niveau ni parcours de programmation
   save(); return S.parentSetup;
 }
 // une question d'adulte : (a × b) avec des tables qu'un enfant de 6-8 ans ne connaît pas encore

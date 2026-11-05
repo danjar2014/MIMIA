@@ -44,6 +44,7 @@ def main(voice):
     for p in phrases:
         k = key(p)
         if k in seen: continue
+        if len(p.split()) < 2: continue   # les mots seuls donnent des clips ratés (presque vides) : la voix de l'appareil les lit
         seen.add(k)
         if not os.path.exists(os.path.join(HERE, "clips", voice, k + ".mp3")): todo.append((k, p))
     print(f"{voice}: {len(todo)} clips à générer sur {len(seen)}", flush=True); ff = ffmpeg(); t0 = time.time(); tmp = tempfile.mkdtemp(prefix="vgen", dir=os.environ.get("TEMP"))

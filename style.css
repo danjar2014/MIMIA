@@ -350,3 +350,49 @@ body.calm .hface svg{animation:none}
 .pzp{position:relative;overflow:hidden;border:4px solid #fff;border-radius:12px;padding:0;aspect-ratio:1;cursor:pointer;background:#fff;min-width:44px;min-height:44px}
 .pzin{position:absolute}.pzin svg{width:100%;height:100%;display:block}
 .pzp.sel{outline:5px solid #2e8b3d;outline-offset:-3px}.pzp.ok{border-color:#34c38f}
+
+/* parents : bloquer / ouvrir les cartes */
+.cardst{min-width:56px;min-height:48px;font-size:26px;border-radius:14px;border:3px solid #d6ecff;background:#fff;cursor:pointer}
+
+/* animation d'entrée : le robot arrive dans l'espace */
+.splash{position:fixed;inset:0;z-index:300;background:radial-gradient(ellipse at 50% 115%,#4b3a9a,#15133f 58%,#090920);display:flex;align-items:center;justify-content:center;overflow:hidden;animation:spOut .45s 2.85s forwards;cursor:pointer}
+.sp-stars{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 12% 18%,#fff,transparent),radial-gradient(2px 2px at 28% 62%,#ffe9a8,transparent),radial-gradient(3px 3px at 44% 12%,#fff,transparent),radial-gradient(2px 2px at 63% 38%,#cfe8ff,transparent),radial-gradient(2px 2px at 78% 20%,#fff,transparent),radial-gradient(3px 3px at 88% 70%,#ffe9a8,transparent),radial-gradient(2px 2px at 8% 84%,#fff,transparent),radial-gradient(2px 2px at 52% 88%,#cfe8ff,transparent);animation:spTw 1.2s ease-in-out infinite alternate}
+.sp-stars2{background-image:radial-gradient(2px 2px at 20% 40%,#fff,transparent),radial-gradient(3px 3px at 36% 26%,#cfe8ff,transparent),radial-gradient(2px 2px at 70% 58%,#fff,transparent),radial-gradient(2px 2px at 92% 40%,#ffe9a8,transparent),radial-gradient(3px 3px at 58% 76%,#fff,transparent);animation-duration:1.7s}
+.sp-streak{position:absolute;width:3px;height:90px;border-radius:3px;background:linear-gradient(#fff0,#fff);opacity:0;transform:rotate(35deg);animation:spStreak 1.1s ease-in infinite}
+.sp-streak.s1{left:18%;top:-10%}.sp-streak.s2{left:62%;top:-20%;animation-delay:.4s}.sp-streak.s3{left:84%;top:-5%;animation-delay:.8s}
+.sp-planet{position:absolute;right:-70px;bottom:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#ffc98a,#e0605a 58%,#74285a);box-shadow:inset -18px -14px 30px #0006;animation:spPlanet 3s ease-out both}
+.sp-moon{position:absolute;left:10%;top:14%;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe6,#d8d2b0);animation:spMoon 3s ease-out both}
+.sp-bot{position:relative;width:min(44vw,190px);animation:spFly 3.05s cubic-bezier(.2,.8,.3,1) both}
+.sp-bot svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px #0008)}
+.sp-flame{position:absolute;left:50%;bottom:-26px;width:34px;height:54px;margin-left:-17px;border-radius:50% 50% 60% 60%/30% 30% 70% 70%;background:linear-gradient(#fff6c2,#ffb347 45%,#ff5d3a);filter:blur(1px);transform-origin:top;animation:spFlame .18s ease-in-out infinite alternate}
+.splash.calm *{animation:none!important}.splash.calm{animation:none}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+@keyframes spTw{from{opacity:.55}to{opacity:1}}
+@keyframes spStreak{0%{opacity:0;transform:translate(0,-30px) rotate(35deg)}30%{opacity:.8}100%{opacity:0;transform:translate(-90px,420px) rotate(35deg)}}
+@keyframes spFly{0%{transform:translate(-62vw,64vh) rotate(-35deg) scale(.35)}55%{transform:translate(0,-4px) rotate(10deg) scale(1.05)}72%{transform:translate(0,-16px) rotate(-7deg) scale(1)}100%{transform:translate(0,0) rotate(0) scale(1)}}
+@keyframes spFlame{from{transform:scaleY(.8)}to{transform:scaleY(1.2)}}
+@keyframes spPlanet{from{transform:translate(120px,120px)}to{transform:translate(0,0)}}
+@keyframes spMoon{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+
+/* les petits (3-6 ans) */
+.igrid.little{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.tile .tic.emo{font-size:54px;line-height:1;display:flex;align-items:center;justify-content:center;width:76px;height:76px}.tile .tic.emo svg{width:76px;height:76px}
+.tile{position:relative}.tdone{position:absolute;top:6px;right:8px;font-style:normal;font-size:22px}
+.ptbar{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
+.ptrep{min-width:64px;min-height:64px;font-size:32px;border-radius:50%;border:4px solid #fff;background:#ffffffd9;cursor:pointer}
+.ptdots i{display:inline-block;width:16px;height:16px;border-radius:50%;background:#cfd8e3;margin:0 4px}.ptdots i.ok{background:#34c38f}.ptdots i.now{background:#ffd54a;outline:3px solid #fff}
+.ptshow{display:flex;justify-content:center;align-items:center;margin:10px 0;min-height:96px}
+.ptcount{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:330px}.ptcount i{font-style:normal;font-size:44px}
+.ptbig{font-size:60px;line-height:1}.ptword{font-size:40px;font-weight:800;background:#fff;border-radius:18px;padding:8px 24px}
+.ptopts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.ptopt{min-width:96px;min-height:96px;font-size:42px;font-weight:800;border-radius:24px;border:5px solid #fff;background:#ffffffdd;cursor:pointer;padding:8px 14px;color:#38362f}
+.ptopt svg{width:92px;height:auto;display:block}.ptopt.ok{background:#d8f5d0;border-color:#34c38f}.ptopt.no{animation:ptshake .4s}.ptopt.sel{outline:5px solid #2e8b3d}
+.ptopts.n3 .ptopt{font-size:34px}
+.ptseq{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:420px;margin:10px auto}.ptseq.n12{grid-template-columns:repeat(3,1fr)}
+.ptopt.seq{font-size:22px;min-height:60px;min-width:0}.ptseq.n12 .ptopt.seq{font-size:17px}
+.ptmatch{position:relative;display:flex;justify-content:space-between;gap:70px;margin:10px auto;max-width:360px}.ptcol{display:flex;flex-direction:column;gap:14px}
+.ptopt.m{min-width:84px;min-height:84px}.ptopt.sil .ptbig{filter:brightness(0) opacity(.75)}
+.mline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.mline line{stroke:#34c38f;stroke-width:6;stroke-linecap:round}
+.ptsky{position:relative;display:block;width:min(70vw,300px);height:170px;border-radius:24px;background:radial-gradient(circle at 30% 20%,#2a2a6a,#0e0e2c)}
+.ptsky i{position:absolute;font-style:normal;font-size:52px;transform:translate(-50%,-50%)}.ptsky.top i{left:50%;top:20%}.ptsky.bottom i{left:50%;top:80%}.ptsky.left i{left:16%;top:50%}.ptsky.right i{left:84%;top:50%}
+@keyframes ptshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}

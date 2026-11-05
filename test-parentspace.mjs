@@ -6,7 +6,7 @@ const src = f => readFileSync("./" + f, "utf8"), app = src("app.js"), pin = src(
 const block = app.slice(app.indexOf("const PARENT_BLOCKS"), app.indexOf("const optList"));
 const tiles = [...block.matchAll(/\["(\w+)", "[^"]+", "([^"]+)", "#[0-9a-f]{6}"\]/g)].map(m => m[1]);
 const screens = [...app.slice(app.indexOf("const PARENT_SCREENS")).matchAll(/^  (\w+): \(\) => \(\{ title/gm)].map(m => m[1]);
-t("espace parents : 2 blocs (Mon enfant, Compte) et 8 icônes", /title: "Mon enfant"/.test(block) && /title: "Compte"/.test(block) && tiles.length === 8, tiles.join());
+t("espace parents : 2 blocs (Mon enfant, Compte) et 9 icônes", /title: "Mon enfant"/.test(block) && /title: "Compte"/.test(block) && tiles.length === 9, tiles.join());
 t("chaque icône (sauf « Suivi », qui ouvre le tableau de bord) a son écran de réglages", tiles.filter(i => i !== "suivi").every(i => screens.includes(i)), screens.join());
 t("les noms des icônes sont courts (un mot)", [...block.matchAll(/\["\w+", "[^"]+", "([^"]+)"/g)].every(m => !/\s/.test(m[1])));
 t("tous les anciens réglages restent accessibles", ["#pn", "#px", "#pa", "#pg", "#sv", "#ss", "#sr", "#sl", "#sdt", "#rs", "#pc"].every(k => app.includes('id="' + k.slice(1) + '"')) && ["voice", "sound", "scene", "mascot", "calm", "big", "unlockAll"].every(k => app.includes(`, "${k}", `)), "un réglage a disparu");

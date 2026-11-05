@@ -36,7 +36,7 @@ t("automatique : 6-8 ans = consigne et résultat à voix haute", modeFor("a") ==
 t("automatique : 8-10 ans = consigne et résultat", modeFor("b") === "guide");
 t("automatique : 10-12 ans (et plus) = seulement sur demande", modeFor("c") === "demande");
 t("automatique : âge inconnu = consigne et résultat (le plus prudent)", modeFor("") === "guide" && modeFor(undefined) === "guide");
-t("les trois tranches d'âge ont un mode", Object.keys(VOICE_BY_AGE).sort().join() === "a,b,c");
+t("les quatre tranches d'âge ont un mode (les petits : la voix lit tout)", Object.keys(VOICE_BY_AGE).sort().join() === "a,b,c,z" && VOICE_BY_AGE.z === "complet");
 S.age = "a"; t("6-8 ans : la consigne est lue toute seule", run(() => { tick(30000); speak("Place la batterie."); }).length === 1);
 S.age = "c"; t("10-12 ans : rien ne se lit tout seul", run(() => { tick(30000); speak("Place la batterie."); speak("Bravo !", { prio: 2 }); }).length === 0);
 t("10-12 ans : le bouton 🔊 lit quand même", run(() => { tick(30000); speak("Place la batterie.", { force: true }); }).length === 1);

@@ -1,9 +1,11 @@
 // « Mon parcours » : 11 aventures à débloquer, de Poussin (on ne sait rien) à Expert (on écrit du vrai code).
 // Une aventure se débloque quand la précédente est terminée. À l'intérieur d'une aventure, on avance étape par étape.
 import { S, isDone } from "./util.js";
+import { BUILD } from "./boardlogic.js";
+import { FLAT } from "./codemissions.js";
 
-// ⚠️ MODE TEST : tant que testUnlock est vrai, tout est débloqué (aventures, étapes, cartes de l'accueil). Pour remettre le vrai blocage : testUnlock: false.
-export const FLAGS = { testUnlock: true };
+// Mode test (tout débloqué) : terminé. Les parents peuvent encore tout débloquer (réglage « Tout débloquer ») ou bloquer / ouvrir chaque carte (Espace parents → Cartes).
+export const FLAGS = { testUnlock: false };
 const allOpen = () => FLAGS.testUnlock || !!S.unlockAll;
 const st = (sec, id) => ({ sec, id });
 export const RANKS = [
@@ -19,6 +21,19 @@ export const RANKS = [
   { icon: "🤖", name: "Roboticien", goal: "Tu pilotes un robot avec du code intelligent et tu donnes de la mémoire à son cerveau.", steps: [st("code", "r5"), st("code", "r6"), st("code", "r7"), st("code", "r8"), st("code", "r9"), st("code", "r10"), st("build", "m1"), st("build", "m2")], unlocks: "les missions du cerveau en code" },
   { icon: "🏆", name: "Expert", goal: "Tu écris le programme complet du cerveau du robot, avec de la mémoire, puis tu relèves les défis d'expert et tu réalises ton Grand Projet : un robot complet, de l'idée jusqu'à la fiche finale.", steps: [...["c1", "c2", "c3", "c4", "c5", "c6", "c7", "x1", "x2", "x3"].map(i => st("code", i)), st("project", "pj")], unlocks: "ton diplôme d'expert" }
 ];
+// Chaque étape a une tranche d'âge (a : 6-8 ans, b : 8-10, c : 10-12). Un enfant ne voit jamais les étapes réservées à des plus grands :
+// RANKS[i].steps ne renvoie que les étapes de son âge ; une aventure sans étape pour lui disparaît du parcours.
+const BAND_ORDER = "abc", STEP_BAND = { "disc:d4": "b", "lab:k2": "b", "lab:k4": "c", "learn:l7": "c" };
+export const bandOfStep = s => {
+  const k = s.sec + ":" + s.id; if (STEP_BAND[k]) return STEP_BAND[k];
+  if (s.sec === "prog") return s.id[0];
+  if (s.sec === "build") { const b = BUILD.find(x => x.id === s.id); return b ? b.band[0] : "a"; }
+  if (s.sec === "code") { const m = FLAT.find(x => x.id === s.id); return m ? m.band : "c"; }
+  if (s.sec === "adv" || s.sec === "project") return "c";
+  return "a";
+};
+export const stepVisible = s => { const me = S.age ? BAND_ORDER.indexOf(S.age) : -1; /* âge non renseigné : tout est visible */ return me < 0 || BAND_ORDER.indexOf(bandOfStep(s)) <= me; };
+RANKS.forEach(r => { const all = r.steps; Object.defineProperty(r, "steps", { get: () => all.filter(stepVisible), enumerable: true }); r.allSteps = all; });
 // la 7e étape de l'aventure « Traducteur » est une activité spéciale (blocs affichés en code)
 export const stepKey = s => s.sec + ":" + s.id;
 export const stepDone = s => isDone(s.sec, s.id);

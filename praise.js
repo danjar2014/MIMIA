@@ -1,7 +1,7 @@
 // Compliments et salutations avec le prénom du joueur, selon son âge et fille / garçon (réglés par les parents).
 // Un modèle s'écrit avec {n} (le prénom) et [forme féminine|forme masculine] : « {n}, tu es [une championne|un champion] ! ».
 // Les voix enregistrées lisent les morceaux (« Bravo », le prénom, « tu es une championne ») : voice/extract.mjs les liste grâce à fragments().
-import { S } from "./util.js";
+import { S, DEVICE } from "./util.js";
 
 export const BANK = {
   win: {
@@ -13,10 +13,15 @@ export const BANK = {
     a: ["Courage {n}, essaie encore !", "Tu y es presque, {n} !", "On réessaie ensemble, {n} ?"],
     b: ["Ne lâche rien, {n} !", "Tu as presque trouvé, {n} !", "Réfléchis encore un peu, {n}."],
     c: ["Presque, {n} ! Regarde bien.", "Courage {n}, tu vas y arriver !", "Cherche l'erreur, {n}."]
-  },
-  hello: { a: ["Bonjour {n} !", "Coucou {n} !", "Salut {n} !"], b: ["Bonjour {n} !", "Salut {n} !", "Ravi de te revoir, {n} !"], c: ["Bonjour {n} !", "Salut {n} !", "Ravi de te revoir, {n} !"] }
+  }
 };
-const AGES = ["a", "b", "c"], SEXES = ["f", "m"];
+// salutations : lues par la voix de l'appareil (pas de clip : le prénom change, et on n'entend pas de cassure de voix) ; elles dépendent de l'heure
+export const HELLO = { morning: ["Bonjour {n} !", "Salut {n} !", "Content de te revoir, {n} !"], day: ["Bonjour {n} !", "Salut {n} !", "Content de te revoir, {n} !"], evening: ["Bonsoir {n} !", "Salut {n} !", "Content de te revoir, {n} !"] };
+export const dayPart = (d = new Date()) => { const h = d.getHours(); return h >= 18 || h < 5 ? "evening" : h < 12 ? "morning" : "day"; };
+const AGES = ["z", "a", "b", "c"], SEXES = ["f", "m"];
+// les petits (3-6 ans) ont les mêmes compliments simples que les 6-8 ans
+BANDS_Z();
+function BANDS_Z() { for (const kind of [BANK.win, BANK.retry]) kind.z = kind.a.slice(); }
 const pickOf = a => a[Math.floor(Math.random() * a.length)];
 const hasGender = t => /\[[^\]|]+\|[^\]]+\]/.test(t);
 // forme féminine / masculine ; sans choix (n), on ne garde que les modèles sans accord
@@ -32,7 +37,8 @@ export function line(kind) {
   const list = (BANK[kind] || BANK.win)[ageOf()], ok = sexOf() === "n" ? list.filter(t => !hasGender(t)) : list;
   return expand(pickOf(ok.length ? ok : list));
 }
-export const praise = () => line("win"), encourage = () => line("retry"), hello = () => line("hello");
+export const praise = () => line("win"), encourage = () => line("retry");
+export const hello = (d = new Date()) => DEVICE + expand(pickOf(HELLO[dayPart(d)]));
 
 // morceaux à enregistrer : chaque modèle, pour chaque forme, coupé au prénom puis en phrases (voice/extract.mjs)
 export function fragments() {

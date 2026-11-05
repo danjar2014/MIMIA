@@ -3,7 +3,7 @@
 import { el, S, chime, tone, sfx, rnd } from "./util.js";
 import { robotSvg } from "./robot.js";
 
-export const SIZES = { a: 2, b: 3, c: 4 };
+export const SIZES = { z: 2, a: 2, b: 3, c: 4 };
 export const PUZZLES = [
   { id: "1", robot: { color: "#3f7fd6", head: "round", eyes: "dots", antenna: true }, bg: ["#ffe9a8", "#ffc6a8"], deco: "#e24b4b" },
   { id: "2", robot: { color: "#e24b8a", head: "square", eyes: "visor", antenna: true }, bg: ["#c9f0ff", "#d9e8ff"], deco: "#3f7fd6" },
