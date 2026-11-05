@@ -43,6 +43,8 @@ export function brief(text, max = 240) {
   const t = String(text).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); if (t.length <= max) return t;
   const parts = t.match(/[^.!?…]+[.!?…]*\s*/g) || [t]; let out = ""; for (const p of parts) { if ((out + p).length > max && out) break; out += p; } return (out || t.slice(0, max)).trim();
 }
+let stopHook = () => {}, playHook = () => false;
+export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 export function speak(text, opts = {}) {
   if (!S.voice || !text) return;
   const mode = voiceMode(), force = !!opts.force, prio = opts.prio ?? (force ? 3 : 1);
@@ -52,7 +54,7 @@ export function speak(text, opts = {}) {
   if (!force && similar(k, lastSaid) && now - lastAt < 4000) return;
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;
   lastSaid = k; lastAt = now; lastPrio = prio; speakingUntil = now + Math.min(12000, 700 + spoken.length * 65);
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(spoken); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = () => { speakingUntil = 0; };
+  try { stopHook(); speechSynthesis.cancel(); if (playHook(spoken, () => { speakingUntil = 0; })) return; const u = new SpeechSynthesisUtterance(spoken); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = () => { speakingUntil = 0; };
     const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().startsWith("fr")); if (v) u.voice = v; speechSynthesis.speak(u); } catch (e) {}
 }
 let toastT;

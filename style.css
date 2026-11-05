@@ -332,3 +332,11 @@ body.calm .hface svg{animation:none}
 .igrid .tile{min-height:136px;justify-content:center;gap:8px}
 .igrid .tile .tic{width:72px;height:72px}
 .igrid .tile b{font-size:calc(18px*var(--fs))}
+
+/* choix de la voix : une femme ou un homme */
+.vpick{text-align:center}.vpick h1{font-size:56px;margin:0}
+.vpbtns{display:flex;gap:20px;justify-content:center;margin:16px 0}
+.vpb{width:132px;height:132px;font-size:76px;line-height:1;border-radius:32px;border:5px solid transparent;cursor:pointer}
+.vpb[data-g=f]{background:#ffe0ec}.vpb[data-g=m]{background:#d6ecff}
+.vpb.on{outline:6px solid #2e8b3d;border-color:#2e8b3d}
+.vpok{display:block;margin:8px auto}.vpok:disabled{opacity:.35}

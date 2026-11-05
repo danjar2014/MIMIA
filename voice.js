@@ -7,6 +7,7 @@
 //  - les messages du robot (bravo, erreurs, indices) sont lus tout seuls ;
 //  - 🔊 en bas à droite : « lire la page » ; 🔈/🔇 : voix oui ou non.
 import { S, save, speak, el, voiceMode, toast, brief } from "./util.js";
+import { stopClips } from "./voiceclips.js";
 
 const SYMBOLS = { "▲": "monter", "▼": "descendre", "✕": "supprimer", "↶": "tourner à gauche", "↷": "tourner à droite", "−": "moins", "+": "plus", "▶": "lancer", "⬅": "retour", "↺": "recommencer", "✔": "validé", "❌": "erreur" };
 export function clean(t) {
@@ -121,7 +122,7 @@ export function initVoice() {
   const read = el("button", "vb", "🔊"), mute = el("button", "vb", ""); read.setAttribute("aria-label", "Lire la consigne"); mute.setAttribute("aria-label", "Voix oui ou non");
   const paint = () => { mute.textContent = S.voice ? "🔈" : "🔇"; mute.classList.toggle("off", !S.voice); };
   read.onclick = () => { if (!S.voice) { S.voice = true; save(); paint(); } speak(modeOf() === "complet" ? pageText() : consigne(), { force: true }); };
-  mute.onclick = () => { S.voice = !S.voice; save(); paint(); try { speechSynthesis.cancel(); } catch (x) {} if (S.voice) speak("La voix est activée.", { force: true }); };
+  mute.onclick = () => { S.voice = !S.voice; save(); paint(); stopClips(); try { speechSynthesis.cancel(); } catch (x) {} if (S.voice) speak("La voix est activée.", { force: true }); };
   paint(); bar.append(read, mute); document.body.append(bar);
   setInterval(paint, 1500);
 }
