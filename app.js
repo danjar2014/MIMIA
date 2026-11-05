@@ -134,10 +134,9 @@ function home() {
   onWelcome = false; announceBadges(); leave(); applySettings(); if (sceneApi) sceneApi.set("sky"); app.className = "home"; app.innerHTML = "";
   if (needsParentSetup()) startSetup(); else if (!S.age || !S.placed) startOnboarding();
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const bar = el("div", "bar homebar"), gear = el("button", "iconbtn", icon("gear")); gear.setAttribute("aria-label", "Réglages pour les parents. Maintiens le doigt appuyé.");
-  bar.append(el("h1", "greet", `Bonjour${S.name ? " " + esc(S.name) : ""} !`), gear); app.append(bar);
-  gear.onpointerdown = () => { longTimer = setTimeout(() => { longTimer = null; openSettings(); }, 1200); };
-  gear.onpointerup = gear.onpointerleave = () => { if (longTimer) { clearTimeout(longTimer); longTimer = null; toast("Maintiens appuyé pour ouvrir les réglages (parents)"); } };
+  const bar = el("div", "bar homebar"), chip = el("button", "pchip", `<span class="pcav">${robotSvg(S.robot)}</span><b>${esc(S.name || "Moi")}</b>`); chip.setAttribute("aria-label", "Changer de joueur");
+  chip.onclick = () => askConfirm(overlay, { title: "Changer de joueur ?", onYes: () => { overlay.style.display = "none"; overlay.innerHTML = ""; welcome(); }, onNo: () => { overlay.style.display = "none"; overlay.innerHTML = ""; } });
+  bar.append(chip); app.append(bar, parentLock());
   const body = el("div", "homebody"); app.append(body);
   if (FLAGS.testUnlock) body.append(el("div", "testflag", "🧪 Mode test : tout est débloqué"));
   // 1. la prochaine étape : un seul grand bouton
@@ -359,12 +358,13 @@ function resetJourney() {
 function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
 // ----- « Qui joue ? » : à chaque ouverture, le robot et le prénom de l'enfant ; en bas à gauche, le cadenas des parents (inspiré d'iwawa) -----
 let onWelcome = false;
+// le bouton des parents : le même sur « Qui joue ? » et sur l'accueil (cadenas en bas à gauche, code obligatoire)
+function parentLock() { const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings(); return par; }
 function welcome() {
   onWelcome = true; leave(); overlay.style.display = "none"; if (sceneApi) sceneApi.set("sky"); app.className = "home welcome"; app.innerHTML = "";
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const who = el("button", "wchild", `<span class="wavatar">${robotSvg(S.robot)}</span><span class="wname">${esc(S.name || "Moi")}</span>`); who.setAttribute("aria-label", `Jouer : ${S.name || "moi"}`); who.dataset.say = S.name ? `Salut ${S.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer."; who.onclick = () => { chime("step"); home(); };
-  const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings();
-  app.append(who, par);
+  app.append(who, parentLock());
 }
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
 function startApp() { if (!needsParentSetup() && S.age && S.placed) welcome(); else home(); }

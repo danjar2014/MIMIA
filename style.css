@@ -313,3 +313,9 @@ body.calm .hface svg{animation:none}
 #app.welcome::before{display:none}
 #app>.wlock{position:absolute;left:16px;bottom:16px;right:auto;width:84px;height:84px}
 #app>.wchild{position:relative}
+
+/* accueil : prénom (retour à « Qui joue ? ») et cadenas parents, comme sur l'écran « Qui joue ? » */
+.pchip{display:flex;align-items:center;gap:10px;background:#ffffffe6;border:4px solid #fff;border-radius:999px;padding:4px 18px 4px 6px;font-size:calc(20px*var(--fs));cursor:pointer;min-height:56px}
+.pcav svg{width:44px;height:44px;display:block}
+#app.home>.wlock{width:68px;height:68px;font-size:28px;z-index:5}
+.homebody{padding-bottom:96px}

@@ -97,3 +97,6 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - **Confirmations sans phrase** (`confirm.js`) : une question courte et deux grands boutons ronds ✖ (non, sélectionné d'office) et ✔ (oui), nommés « Non » / « Oui » pour les lecteurs d'écran ; Échap = non. Utilisées pour effacer la progression, effacer les statistiques et l'effacement total (code oublié, qui garde en plus la question d'adulte).
 - **Espace parents en deux blocs d'icônes** : « Mon enfant » (Profil, Son, Écran, Parcours) et « Compte » (Temps, Suivi, Code, Abonnement). Chaque icône ouvre un petit écran de quelques réglages ; « Suivi » ouvre le tableau de bord ; ✖ ferme. Le réglage de la limite de jeu par jour est maintenant dans « Temps ».
 - Test : `node test-parentspace.mjs`.
+
+- **Un seul bouton parents** (`parentLock()`), le même cadenas sur « Qui joue ? » et sur l'accueil ; l'ancien bouton ⚙️ à appui long est supprimé. Sur l'accueil, le prénom (en haut à gauche) ramène à « Qui joue ? » après confirmation ✖/✔.
+- **Déploiement Render** : le déploiement automatique ne s'est pas déclenché après les envois sur GitHub (un seul déploiement existait). Il faut le lancer à la main depuis Render (Manual Deploy) ou rebrancher le webhook GitHub.
