@@ -12,7 +12,7 @@ t("guidé : elle peut être redite après 15 s", run(() => { tick(13000); speak(
 t("guidé : une phrase presque pareille (début identique) n'est pas redite tout de suite", run(() => { tick(20000); speak("Bravo ! Ton programme fonctionne."); tick(500); speak("Bravo ! Ton programme fonctionne dans toutes les situations testées."); }).length === 1);
 t("guidé : l'ambiance (priorité 0) ne se lit pas", run(() => { tick(20000); speak("Le robot a mal au dos", { prio: 0 }); }).length === 0);
 t("guidé : une consigne ne coupe pas un résultat qui se lit encore", run(() => { tick(20000); speak("Pas tout à fait, regarde le mot numéro trois.", { prio: 2 }); tick(300); speak("Touche les mots dans l'ordre.", { prio: 1 }); }).join("|") === "Pas tout à fait, regarde le mot numéro trois.");
-t("… sauf si c'est une NOUVELLE page (interrupt) : la nouvelle consigne passe", run(() => { tick(20000); speak("Résultat un.", { prio: 2 }); tick(300); speak("Nouvelle page : lis la consigne.", { prio: 1, interrupt: true }); }).length === 2);
+t("… même pour une NOUVELLE page (interrupt) : le compliment finit, la consigne attend son tour", run(() => { tick(20000); speak("Résultat un.", { prio: 2 }); tick(300); speak("Nouvelle page : lis la consigne.", { prio: 1, interrupt: true }); }).join("|") === "Résultat un.");
 t("un résultat (priorité 2) coupe une consigne", run(() => { tick(20000); speak("Lis la consigne de cette page.", { prio: 1 }); tick(300); speak("Bravo, c'est juste !", { prio: 2 }); }).length === 2);
 t("sa phrase est lue en entier si on a fini d'attendre (plus de blocage après la fin)", run(() => { tick(20000); speak("Une phrase.", { prio: 2 }); tick(20000); speak("Une autre phrase.", { prio: 1 }); }).length === 2);
 S.voiceMode = "demande";

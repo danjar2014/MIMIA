@@ -123,7 +123,7 @@ export function whenQuiet(fn, gap = 0) {
 }
 let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
-export const APP_VERSION = "3.7";   // affichée dans l'animation d'accueil
+export const APP_VERSION = "3.8";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
@@ -131,6 +131,7 @@ function stripNames(t) {
   const re = new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")(?![\\p{L}\\p{N}])", "giu");
   return t.replace(re, " ").replace(/\s+([,.!?])/g, "$1").replace(/([,;:])\s*([.!?])/g, "$2").replace(/\s{2,}/g, " ").trim();
 }
+let pendT = 0;
 export function speak(text, opts = {}) {
   if (!S.voice || !text) return;
   const mode = voiceMode(), force = !!opts.force, prio = opts.prio ?? (force ? 3 : 1);
@@ -139,6 +140,12 @@ export function speak(text, opts = {}) {
   if (k === lastSaid && now - lastAt < (force ? 800 : 15000)) return;
   if (!force && similar(k, lastSaid) && now - lastAt < 4000) return;
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;
+  // un compliment ou une correction en cours n'est jamais coupé par la consigne suivante : elle attend la fin de la phrase (6 s au plus)
+  if (force) { clearTimeout(pendT); pendT = 0; }
+  else if (now < speakingUntil && lastPrio >= 2) {
+    clearTimeout(pendT); const t0 = now, again = () => { if (Date.now() < speakingUntil && Date.now() - t0 < 6000) { pendT = setTimeout(again, 80); return; } pendT = 0; speak(text, { ...opts, interrupt: true }); };
+    pendT = setTimeout(again, 80); return;
+  }
   lastSaid = k; lastAt = now; lastPrio = prio; speakingUntil = now + Math.min(12000, 700 + spoken.length * 65);
   const hadTts = ttsActive > 0; ttsActive = 0;
   try { stopHook(); speechSynthesis.cancel(); } catch (e) {}
