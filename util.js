@@ -125,7 +125,7 @@ let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 // la salutation (Bonjour, Bonsoir, Salut…) n'est dite qu'à la première ouverture de la journée, pas à chaque rechargement
 export function greetOnce() { const d = new Date(), day = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; if (S.lastHello === day) return false; S.lastHello = day; save(); return true; }
-export const APP_VERSION = "4.3";   // affichée dans l'animation d'accueil
+export const APP_VERSION = "4.4";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
@@ -144,8 +144,8 @@ export function speak(text, opts = {}) {
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;
   // un compliment ou une correction en cours n'est jamais coupé par la consigne suivante : elle attend la fin de la phrase (6 s au plus)
   if (force) { clearTimeout(pendT); pendT = 0; }
-  else if (now < speakingUntil && lastPrio >= 2) {
-    clearTimeout(pendT); const t0 = now, again = () => { if (Date.now() < speakingUntil && Date.now() - t0 < 6000) { pendT = setTimeout(again, 80); return; } pendT = 0; speak(text, { ...opts, interrupt: true }); };
+  else if (!opts._w && now < speakingUntil && (lastPrio >= 2 || opts.queue)) {   // « queue » : la consigne attend la fin du nom du jeu au lieu de le couper
+    clearTimeout(pendT); const t0 = now, again = () => { if (Date.now() < speakingUntil && Date.now() - t0 < 6000) { pendT = setTimeout(again, 80); return; } pendT = 0; speak(text, { ...opts, interrupt: true, queue: false, _w: true }); };
     pendT = setTimeout(again, 80); return;
   }
   lastSaid = k; lastAt = now; lastPrio = prio; speakingUntil = now + Math.min(12000, 700 + spoken.length * 65);

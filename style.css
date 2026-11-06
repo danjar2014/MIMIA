@@ -428,3 +428,8 @@ body.calm .hface svg{animation:none}
 .bar>.iconbtn:first-child{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:35;width:64px;height:64px;box-shadow:0 4px 12px #0003}
 .bar>.iconbtn.ph{visibility:hidden}
 .phead>#pback{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;width:64px;height:64px;box-shadow:0 4px 12px #0003}
+#voicebar{right:92px;flex-direction:row}
+.ptdemo{pointer-events:none;margin:10px 0;padding:8px;border:3px dashed #2f7d4f88;border-radius:18px;background:#ffffff88}.ptdemo-t{text-align:center;font-weight:700;margin:6px 0;color:#2f7d4f}
+.ptplay{position:sticky;bottom:84px;z-index:5;box-shadow:0 4px 14px #0004}
+.installbar{top:calc(10px + env(safe-area-inset-top));bottom:auto;left:10px;transform:none}
+.installbtn{font-size:15px;padding:8px 14px;min-height:40px}.installx{width:40px;height:40px}

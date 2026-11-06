@@ -6,8 +6,8 @@ const dart = src("flutter_app/lib/main.dart"), kt = readFileSync("./flutter_app/
 
 t("le suivi (tableau de bord) revient à l'espace parents ET s'affiche (la boîte du tableau est bien créée)", /topbar\("Tableau de bord des parents", settings, false\)[^\n]*const box = el\("div", "astage dash"\); app\.append\(box\);/.test(app));
 t("le cadenas parents est figé (position fixe) en haut, hors du cadre des cartes", /#app>\.wlock,#app\.home>\.wlock\{position:fixed;right:12px;top:76px/.test(css));
-t("plein écran verrouillé : réglage parent dans « Écran », enregistré pour tous les joueurs", /togRow\("Plein écran verrouillé", "kiosk", S\.kiosk\)/.test(app) && /"reminder", "kiosk"/.test(util));
-t("plein écran : Android (épinglage d'écran) ou plein écran du navigateur", /callHandler\("kiosk"/.test(app) && /requestFullscreen/.test(app));
+t("plein écran verrouillé : désactivé pour l'instant (plus de réglage, rien n'est verrouillé)", !/togRow\("Plein écran verrouillé"/.test(app) && !/pushState/.test(app) && /callHandler\("kiosk", false\)/.test(app));
+t("plein écran : le réglage a disparu de l'espace parents", !/"quitter"/.test(app));
 t("Android : le canal « kiosk » démarre / arrête l'épinglage d'écran", /addJavaScriptHandler\(\s*handlerName: 'kiosk'/.test(dart) && /startLockTask\(\)/.test(kt) && /stopLockTask\(\)/.test(kt));
 t("bruitages du robot : avancer, tourner, cogner (grille) ; sauter, tourner sur soi (danse)", /sfx\("move"\)/.test(grid) && /sfx\("turn"\)/.test(grid) && /sfx\("bump"\)/.test(grid) && /sfx\("jump"\)/.test(dance) && /sfx\("spin"\)/.test(dance) && /export function sfx/.test(util));
 t("le prénom est lu par la voix de l'appareil (pas de clips de prénoms)", /nm \|\| !man\.has\(k\)/.test(vc) && !existsSync("voice/phrases_names.json"));

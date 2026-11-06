@@ -27,4 +27,4 @@ export const CAT_LESSONS = {
   soustraction: "Soustraire, c'est enlever. Quand on enlève, il en reste moins.", horloge: "L'horloge montre l'heure. La petite aiguille dit l'heure, la grande dit les minutes."
 };
 // les phrases du cours à enregistrer (voice/extract.mjs) ; les mots un par un restent à la voix de l'appareil
-export const lessonPhrases = () => [...Object.values(PETIT_LESSONS).map(l => l.say), ...Object.values(CAT_LESSONS)].flatMap(t => t.match(/[^.!?…]+[.!?…]*/g) || []).map(s => s.trim()).filter(s => s.split(/\s+/).length >= 2);
+export const lessonPhrases = () => ["Regarde l'exemple, puis touche Jouer.", ...Object.values(PETIT_LESSONS).map(l => l.say), ...Object.values(CAT_LESSONS)].flatMap(t => t.match(/[^.!?…]+[.!?…]*/g) || []).map(s => s.trim()).filter(s => s.split(/\s+/).length >= 2);
