@@ -6,7 +6,7 @@ export function initInstall() {
   if (typeof window === "undefined" || isInstalled()) return;
   const bar = document.createElement("div"); bar.className = "installbar";
   bar.innerHTML = `<button class="installbtn" type="button">⬇️ Installer l'appli</button><button class="installx" type="button" aria-label="Fermer">✕</button>`;
-  const kill = () => bar.remove();
+  const kill = () => { bar.remove(); document.body.classList.remove("hasinstall"); };
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; });
   window.addEventListener("appinstalled", kill);
   bar.querySelector(".installx").onclick = kill;
@@ -14,5 +14,5 @@ export function initInstall() {
     if (deferred) { deferred.prompt(); try { const r = await deferred.userChoice; if (r && r.outcome === "accepted") kill(); } catch (e) {} deferred = null; return; }
     alert(isIos() ? "Pour installer : touche le bouton Partager, puis « Sur l'écran d'accueil »." : "Pour installer : ouvre le menu du navigateur (⋮), puis « Installer l'application » ou « Ajouter à l'écran d'accueil ».");
   };
-  document.body.append(bar);
+  document.body.append(bar); document.body.classList.add("hasinstall");
 }

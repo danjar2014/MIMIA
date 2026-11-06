@@ -74,7 +74,7 @@ function celebrate(i) {
   });
 }
 let cleanup = null, longTimer;
-const leave = () => { app.className = ""; track(null); if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; } window.__cur = null; };
+const leave = () => { app.className = ""; dockClear(); track(null); if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; } window.__cur = null; };
 let mascotApi = null, sceneApi = null;
 // plein écran verrouillé : désactivé pour l'instant (à revoir plus tard). On s'assure seulement que rien n'est verrouillé.
 function applyKiosk() {
@@ -258,9 +258,12 @@ function openCodeFromBlocks(info) {
   const lv = info.level, spec = info.kind === "robot" ? { kind: "robot", scenarios: (lv.scenarios || [{ map: lv.map, dir: lv.dir }]).map(s => ({ map: s.map, dir: s.dir ?? 1 })), auto: !!lv.auto } : { kind: "brain", goal: info.goal };
   playCode({ id: "blocs", title: "Mon code (venu des blocs)", mission: "Voici le code de tes blocs. Change-le, relance, et vois ce qui se passe !", lesson: "Les blocs et le code font exactement la même chose. Ici, tu peux modifier le code toi-même.", example: "", starter: info.code, hints: [], solution: "", spec }, info.code, info.lang);
 }
+// la barre du bas (hors du cadre des cartes et des jeux) : retour à gauche, puis le robot Bolt, les boutons de voix et l'accès parents
+const dockSlot = k => document.querySelector("#dock .slot-" + k);
+function dockClear() { const s = dockSlot("back"), p = dockSlot("parent"); if (s) s.innerHTML = ""; if (p) p.innerHTML = ""; }
 function topbar(title, back, withPause = true) {
-  const bar = el("div", "bar"), b = el("button", "iconbtn", "⬅️"), ph = el("span", "iconbtn ph"); b.onclick = back; b.setAttribute("aria-label", "Retour"); const h = el("h1", "ttl", title);
-  const p = el("button", "iconbtn", withPause ? "⏸️" : ""); if (withPause) p.setAttribute("aria-label", "Pause"); if (withPause) p.onclick = pauseScreen; else p.style.visibility = "hidden"; bar.append(b, ph, h, p); return bar;
+  const bar = el("div", "bar"), b = el("button", "iconbtn dockback", "⬅️"), ph = el("span", "iconbtn ph"); b.onclick = back; b.setAttribute("aria-label", "Retour"); const h = el("h1", "ttl", title);
+  const p = el("button", "iconbtn", withPause ? "⏸️" : ""); if (withPause) p.setAttribute("aria-label", "Pause"); if (withPause) p.onclick = pauseScreen; else p.style.visibility = "hidden"; const ds = dockSlot("back"); if (ds) { ds.innerHTML = ""; ds.append(b); } else bar.append(b); bar.append(ph, h, p); return bar;
 }
 function menu(title, groups, back) {
   leave(); if (sceneApi) sceneApi.set("sky"); app.innerHTML = ""; app.append(topbar(title, back, false)); const box = el("div", "levels");
@@ -415,7 +418,7 @@ function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ 
 // ----- « Qui joue ? » : à chaque ouverture, le robot et le prénom de l'enfant ; en bas à gauche, le cadenas des parents (inspiré d'iwawa) -----
 let onWelcome = false;
 // le bouton des parents : le même sur « Qui joue ? » et sur l'accueil (cadenas en bas à gauche, code obligatoire)
-function parentLock() { const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings(); return par; }
+function parentLock() { const par = el("button", "wlock", `<span aria-hidden="true">👨‍👩‍👧</span><i aria-hidden="true">🔒</i>`); par.setAttribute("aria-label", "Espace parents, avec le code"); par.onclick = () => openSettings(); const ds = dockSlot("parent"); if (ds) { ds.innerHTML = ""; ds.append(par); return document.createDocumentFragment(); } return par; }
 function welcome() {
   onWelcome = true; leave(); overlay.style.display = "none"; if (sceneApi) sceneApi.set("sky"); app.className = "home welcome"; app.innerHTML = "";
   const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");

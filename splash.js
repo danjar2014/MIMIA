@@ -1,6 +1,6 @@
 // Animation d'entrée : le robot de l'enfant arrive en volant dans l'espace (étoiles, planète, lune), puis l'appli s'ouvre.
 // Un toucher la passe. En « mode calme », elle est presque immédiate et sans mouvement.
-import { S, APP_VERSION, tone, slide } from "./util.js";
+import { S, APP_VERSION, tone, slide, audioRunning } from "./util.js";
 import { robotSvg } from "./robot.js";
 
 // le son de l'arrivée (synthétisé, sans fichier) : moteur qui démarre, souffle du décollage, étoiles qui scintillent, petite fanfare
@@ -18,8 +18,15 @@ export function showSplash(done, ms = SPLASH_MS) {
     <div class="sp-planet"></div><div class="sp-moon"></div>
     <div class="sp-bot"><div class="sp-flame"></div>${robotSvg(S.robot, "#ffd54a")}</div>
     <div class="sp-ver">v ${APP_VERSION}</div>`;
-  document.body.append(d); if (!calm) splashSound();
-  let ended = false; const end = () => { if (ended) return; ended = true; d.remove(); done(); };
-  d.addEventListener("click", end); setTimeout(end, calm ? 900 : ms);
+  document.body.append(d);
+  let ended = false, timer = 0; const end = () => { if (ended) return; ended = true; clearTimeout(timer); d.remove(); done(); };
+  // le son ne se lance qu'avec l'animation : si le navigateur bloque le son (rien n'a encore été touché), l'animation attend un toucher
+  const begin = () => { if (!d.classList.contains("wait") && timer) return; d.classList.remove("wait"); const g = d.querySelector(".sp-go"); if (g) g.remove(); if (!calm) splashSound(); timer = setTimeout(end, calm ? 900 : ms); };
+  const wantSound = !calm && !!S.sound;
+  if (wantSound && !audioRunning()) {
+    d.classList.add("wait"); d.insertAdjacentHTML("beforeend", '<button class="sp-go" type="button">▶ Touche pour commencer</button>');
+    setTimeout(() => { if (d.classList.contains("wait") && audioRunning()) begin(); }, 150);   // certains navigateurs autorisent le son tout de suite
+    d.addEventListener("click", () => { if (d.classList.contains("wait")) begin(); else end(); });
+  } else { begin(); d.addEventListener("click", end); }
   return end;
 }

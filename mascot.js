@@ -42,7 +42,7 @@ export function faceSvg(mood = "neutral", o = S.robot) {
 export function initMascot() {
   const root = document.createElement("div"); root.id = "mascot"; root.setAttribute("role", "img"); root.setAttribute("aria-label", "Bolt, ton petit robot");
   const bub = document.createElement("div"); bub.className = "mbub"; bub.style.display = "none";
-  const fig = document.createElement("div"); fig.className = "mfig"; root.append(fig, bub); document.body.append(root);
+  const fig = document.createElement("div"); fig.className = "mfig"; root.append(fig, bub); (document.querySelector("#dock .slot-mascot") || document.body).append(root);
   let mood = "neutral", back = 0, hideB = 0, n = 0, lastKey = "", lastAt = 0;
   const paint = () => { fig.innerHTML = faceSvg(mood); root.dataset.mood = mood; root.className = "m-" + mood; };
   function show() {

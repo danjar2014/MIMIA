@@ -112,6 +112,7 @@ export const DEVICE = "\u2063";
 // La voix de l'appareil et les clips ne doivent jamais parler en même temps : avant de démarrer, on attend que la voix de l'appareil soit
 // vraiment muette (sur Android, speechSynthesis.cancel() peut tarder ; deux voix se chevauchaient).
 let ttsActive = 0, quietGen = 0, quietGap = 160;
+export const audioRunning = () => { try { return ctx().state === "running"; } catch (e) { return false; } };
 export const setQuietGap = ms => { quietGap = ms; };   // (les tests le mettent à 0)
 export const ttsStart = () => { ttsActive++; };
 export const ttsEnd = () => { ttsActive = Math.max(0, ttsActive - 1); };
@@ -125,7 +126,7 @@ let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 // la salutation (Bonjour, Bonsoir, Salut…) n'est dite qu'à la première ouverture de la journée, pas à chaque rechargement
 export function greetOnce() { const d = new Date(), day = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; if (S.lastHello === day) return false; S.lastHello = day; save(); return true; }
-export const APP_VERSION = "4.4";   // affichée dans l'animation d'accueil
+export const APP_VERSION = "4.6";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);

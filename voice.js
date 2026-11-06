@@ -126,6 +126,6 @@ export function initVoice() {
   const paint = () => { mute.textContent = S.voice ? "🔈" : "🔇"; mute.classList.toggle("off", !S.voice); };
   read.onclick = () => { if (!S.voice) { S.voice = true; save(); paint(); } speak(modeOf() === "complet" ? pageText() : consigne(), { force: true }); };
   mute.onclick = () => { S.voice = !S.voice; save(); paint(); stopClips(); try { speechSynthesis.cancel(); } catch (x) {} if (S.voice) speak("La voix est activée.", { force: true }); };
-  paint(); bar.append(read, mute); document.body.append(bar);
+  paint(); bar.append(read, mute); (document.querySelector("#dock .slot-voice") || document.body).append(bar);
   setInterval(paint, 1500);
 }

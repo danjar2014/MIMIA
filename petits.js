@@ -141,7 +141,7 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
   // le petit cours : une phrase, puis chaque mot est dit et éclairé l'un après l'autre
   function lesson(L) {
     body.innerHTML = ""; dots.innerHTML = ""; say("&nbsp;"); busy = true;
-    const row = el("div", "ptles"), cells = (L.items || []).map(it => el("div", "ptcell", it.html)), go = el("button", "ptplay", "▶ Jouer"); cells.forEach(c => row.append(c)); body.append(row, showDemo(), go);
+    const row = el("div", "ptles"), cells = (L.items || []).map(it => el("div", "ptcell", it.html)), go = el("button", "ptplay", "▶ Jouer"); cells.forEach(c => row.append(c)); body.append(row, go, showDemo());
     let run = 0, fired = 0;
     const start = () => { if (!alive) return; busy = false; run++; body.innerHTML = ""; show(); };
     go.onclick = () => { run++; start(); };
