@@ -32,6 +32,7 @@ import { initVoice } from "./voice.js";
 import "./voiceclips.js";
 import { initPraise } from "./praise.js";
 import { showSplash } from "./splash.js";
+import { initInstall } from "./install.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -439,6 +440,7 @@ function welcome() {
 let splashShown = false;
 function startApp() {
   if (splashShown) return enterApp();
+  initInstall();
   splashShown = true; showSplash(() => enterApp());   // à l'ouverture : le robot arrive dans l'espace
 }
 function enterApp() {

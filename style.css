@@ -417,3 +417,7 @@ body.calm .hface svg{animation:none}
 .shrow{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 12px;scroll-snap-type:x proximity}
 .gcard{flex:0 0 118px;display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:4px solid #fff;border-radius:26px;padding:8px 6px;cursor:pointer;scroll-snap-align:start;min-height:130px;font-size:calc(14px*var(--fs));font-weight:700;color:#38362f;text-align:center;position:relative}
 .gcard .gic{font-size:46px;line-height:1;height:54px;display:flex;align-items:center}.gcard .gic svg{width:54px;height:54px}.gcard.done::after{content:"⭐";position:absolute;top:4px;right:6px;font-size:18px}
+
+.installbar{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;display:flex;gap:6px;align-items:center}
+.installbtn{background:#2f7d4f;color:#fff;border:0;border-radius:999px;padding:12px 20px;font:700 17px system-ui,sans-serif;box-shadow:0 4px 14px #0004;min-height:44px;cursor:pointer}
+.installx{background:#fff;border:2px solid var(--line);border-radius:50%;width:44px;height:44px;font-size:16px;cursor:pointer}
