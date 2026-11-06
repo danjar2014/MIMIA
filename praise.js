@@ -5,9 +5,9 @@ import { S, DEVICE } from "./util.js";
 
 export const BANK = {
   win: {
-    a: ["Bravo {n} !", "Super {n} !", "Génial {n} !", "Youpi {n}, tu as réussi !", "Bien joué {n} !", "{n}, tu es [une championne|un champion] !", "{n}, tu es [très intelligente|très intelligent] !", "Tu es formidable, {n} !", "{n}, tu es [forte|fort] !"],
+    a: ["Bravo {n} !", "C'est super, {n} !", "Génial {n} !", "Youpi, c'est réussi, {n} !", "Bien joué {n} !", "{n}, tu es [une championne|un champion] !", "{n}, tu es [très intelligente|très intelligent] !", "Tu es formidable, {n} !", "{n}, tu es [forte|fort] !"],
     b: ["Excellent travail, {n} !", "Bravo {n}, tu as bien réfléchi !", "{n}, tu es vraiment [douée|doué] !", "Quelle belle réussite, {n} !", "Tu progresses vite, {n} !", "{n}, tu es [une vraie programmeuse|un vrai programmeur] !", "Impressionnant, {n} !", "{n}, tu es [courageuse|courageux] et [persévérante|persévérant] !"],
-    c: ["Très joli code, {n} !", "{n}, quelle logique !", "Bien raisonné, {n} !", "Tu maîtrises, {n} !", "{n}, tu es [une vraie roboticienne|un vrai roboticien] !", "Beau travail, {n} ! Tu es vraiment [brillante|brillant].", "Chapeau, {n} !", "Excellent, {n} ! Tu as tout compris."]
+    c: ["Très joli code, {n} !", "{n}, quelle logique !", "Bien raisonné, {n} !", "Tu maîtrises, {n} !", "{n}, tu es [une vraie roboticienne|un vrai roboticien] !", "Beau travail, {n} ! Tu es vraiment [brillante|brillant].", "Chapeau bas, {n} !", "Excellent, {n} ! Tu as tout compris."]
   },
   retry: {
     a: ["Courage {n}, essaie encore !", "Tu y es presque, {n} !", "On réessaie ensemble, {n} ?"],

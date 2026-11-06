@@ -20,7 +20,7 @@ t("toutes les clés des clips existants correspondent à une phrase (parité JS 
 t("aucune collision : deux phrases différentes n'ont jamais la même clé", (() => { const m = new Map(); for (const p of phrases) { const n = [...p.normalize("NFC").toLowerCase()].filter(c => /[\p{L}\p{N}]/u.test(c)).join(""), k = voiceKey(p); if (m.has(k) && m.get(k) !== n) return false; m.set(k, n); } return true; })());
 
 const util = src("util.js"), vc = src("voiceclips.js"), app = src("app.js"), sw = src("sw.js"), voice = src("voice.js"), css = src("style.css");
-t("speak() passe d'abord par les clips, puis par la voix de l'appareil", /stopHook\(\); speechSynthesis\.cancel\(\); if \(playHook\(spoken/.test(util) && /setClipHooks\(stopClips, playClips\)/.test(vc));
+t("speak() arrête tout, attend que la voix de l'appareil soit muette, puis passe par les clips avant la voix de l'appareil", /stopHook\(\); speechSynthesis\.cancel\(\);/.test(util) && /whenQuiet\(\(\) => \{/.test(util) && /playHook\(spoken/.test(util) && /setClipHooks\(stopClips, playClips\)/.test(vc));
 t("une phrase sans clip est lue par la voix de l'appareil (repli)", /tts\(p, next\)/.test(vc) && /return false;/.test(vc));
 t("la voix est toujours la femme : aucun réglage ni écran de choix (enfant, Mon robot, parents)", !/voiceG|voicepick|pickVoice|voiceChoice|Qui parle|id=\"svg\"/.test(app + vc + util) && !/vpick|vpb/.test(css));
 t("🔇 coupe aussi les clips", /stopClips\(\); try \{ speechSynthesis\.cancel/.test(voice));

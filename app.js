@@ -429,7 +429,7 @@ function welcome() {
   const wrap = el("div", "wwho");
   profileIds().forEach(id => {
     const p = profileData(id), who = el("button", "wchild" + (id === activeId() ? " on" : ""), `<span class="wavatar">${robotSvg(p.robot)}</span><span class="wname">${esc(p.name || "Moi")}</span>`);
-    who.setAttribute("aria-label", `Jouer : ${p.name || "moi"}`); who.dataset.say = p.name ? `Salut ${p.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer.";
+    who.setAttribute("aria-label", `Jouer : ${p.name || "moi"}`); who.dataset.say = p.name ? `Salut ${p.name} ! Touche le robot pour jouer.` : "Touche le robot pour jouer."; who.dataset.silent = "";   /* le salut de l'accueil suffit : pas de double salut */
     who.onclick = () => { chime("step"); if (id !== activeId()) switchProfile(id); home(); };   // un autre joueur : on charge son profil (la page ne se recharge pas : la voix reste active)
     wrap.append(who);
   });

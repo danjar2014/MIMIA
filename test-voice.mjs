@@ -2,7 +2,7 @@
 const said = []; globalThis.SpeechSynthesisUtterance = class { constructor(t) { this.text = t; } };
 globalThis.speechSynthesis = { cancel() {}, speak(u) { said.push(u.text); }, getVoices: () => [] };
 let NOW = 1_000_000; const realNow = Date.now; Date.now = () => NOW; const tick = ms => { NOW += ms; };
-const { S, speak, brief, voiceMode, VOICE_BY_AGE } = await import("./util.js");
+const { S, speak, brief, voiceMode, VOICE_BY_AGE, setQuietGap } = await import("./util.js"); setQuietGap(0);
 let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(76), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
 const run = (fn) => { said.length = 0; fn(); return said.slice(); };
 S.voice = true; S.voiceMode = "guide";

@@ -1,7 +1,7 @@
 // Voix enregistrée : une femme (F5), la seule voix de l'appli. Pas de choix à faire.
 // Chaque phrase de l'appli a un petit clip mp3 (voice/clips/f5/<clé>.mp3, créé par voice/gen.py).
 // La phrase est retrouvée par sa « clé » (même calcul que voice/gen.py) ; une phrase sans clip est lue par la voix de l'appareil.
-import { S, setClipHooks, profileIds, profileData, DEVICE } from "./util.js";
+import { S, setClipHooks, profileIds, profileData, DEVICE, whenQuiet, ttsStart, ttsEnd } from "./util.js";
 
 // clé d'une phrase : lettres et chiffres seulement, en minuscules, puis empreinte FNV-1a 32 bits (identique à gen.py)
 export function voiceKey(s) {
@@ -33,7 +33,11 @@ export const hasClip = text => !!(man && segmentsOf(text).some(([p, isName]) => 
 
 let token = 0, audio = null;
 export function stopClips() { token++; if (audio) { try { audio.pause(); } catch (e) {} audio = null; } }
-function tts(text, done) { try { const u = new SpeechSynthesisUtterance(text); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = done; speechSynthesis.speak(u); } catch (e) { done(); } }
+// un morceau lu par la voix de l'appareil ; « done » n'est appelé qu'une fois, même si la fin n'est jamais signalée (garde-fou)
+function tts(text, done) {
+  let fired = false, wd = 0; const fin = () => { if (fired) return; fired = true; clearTimeout(wd); ttsEnd(); done(); };
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = fin; wd = setTimeout(fin, 1500 + text.length * 110); ttsStart(); speechSynthesis.speak(u); } catch (e) { fin(); }
+}
 
 // lit le texte avec les clips ; renvoie false s'il n'y a rien d'enregistré (l'appli utilise alors la voix de l'appareil)
 export function playClips(text, onEnd) {
@@ -46,8 +50,13 @@ export function playClips(text, onEnd) {
     if (i >= parts.length) { audio = null; onEnd && onEnd(); return; }
     const [p, k, nm] = parts[i++];
     if (nm || !man.has(k)) { tts(p, next); return; }   // le prénom, ou une phrase sans clip : voix de l'appareil
-    const a = audio = new Audio(`voice/clips/${VOICE_DIR}/${k}.mp3`); a.playbackRate = S.age === "a" ? 0.92 : 1;
-    a.onended = next; a.onerror = () => tts(p, next); const pr = a.play(); if (pr && pr.catch) pr.catch(() => tts(p, next));
+    // un clip : on attend que la voix de l'appareil soit muette ; chaque morceau n'avance qu'une seule fois (fin, erreur ou refus de lecture)
+    let moved = false; const go = () => { if (moved) return; moved = true; next(); }, fallback = () => { if (moved) return; moved = true; tts(p, next); };
+    whenQuiet(() => {
+      if (my !== token) return;
+      const a = audio = new Audio(`voice/clips/${VOICE_DIR}/${k}.mp3`); a.playbackRate = S.age === "a" ? 0.92 : 1;
+      a.onended = go; a.onerror = fallback; const pr = a.play(); if (pr && pr.catch) pr.catch(fallback);
+    });
   };
   next(); return true;
 }

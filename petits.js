@@ -105,7 +105,7 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
     if (rd.type === "quiz") {
       if (rd.show) { const s = el("div", "ptshow"); s.innerHTML = rd.show; body.append(s); }
       const opts = el("div", "ptopts n" + rd.options.length); body.append(opts);
-      rd.options.forEach(o => { const b = el("button", "ptopt", o.html); b.setAttribute("aria-label", o.label); b.dataset.say = o.label; b.onclick = () => { if (busy) return; if (o.ok) { b.classList.add("ok"); goodNext(); } else wrongTap(b, rd.type === "quiz" && rd.say.startsWith("Combien") ? "Compte encore." : "Essaie encore."); }; opts.append(b); });
+      rd.options.forEach(o => { const b = el("button", "ptopt", o.html); b.setAttribute("aria-label", o.label); b.dataset.say = o.label; b.dataset.silent = "";   /* pas de mot lu au toucher : le « Bravo » enregistré suffit, sans chevauchement */ b.onclick = () => { if (busy) return; if (o.ok) { b.classList.add("ok"); goodNext(); } else wrongTap(b, rd.type === "quiz" && rd.say.startsWith("Combien") ? "Compte encore." : "Essaie encore."); }; opts.append(b); });
     } else if (rd.type === "seq") {
       let next = 0; const grid = el("div", "ptseq n" + rd.items.length); body.append(grid);
       rd.items.forEach(it => { const b = el("button", "ptopt seq", it.html); b.setAttribute("aria-label", it.label); b.dataset.say = it.label; b.onclick = () => { if (busy || b.disabled) return; if (it.order === next) { b.classList.add("ok"); b.disabled = true; tone(440 + next * 40, 0.12, "sine", 0.14); next++; if (next === rd.items.length) goodNext(900); } else wrongTap(b, "Cherche encore."); }; grid.append(b); });

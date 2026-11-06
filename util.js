@@ -109,6 +109,18 @@ export function brief(text, max = 240) {
 }
 // une phrase qui commence par ce caractère invisible est lue par la voix de l'appareil, jamais par les clips (salutations avec le prénom)
 export const DEVICE = "\u2063";
+// La voix de l'appareil et les clips ne doivent jamais parler en même temps : avant de démarrer, on attend que la voix de l'appareil soit
+// vraiment muette (sur Android, speechSynthesis.cancel() peut tarder ; deux voix se chevauchaient).
+let ttsActive = 0, quietGen = 0, quietGap = 160;
+export const setQuietGap = ms => { quietGap = ms; };   // (les tests le mettent à 0)
+export const ttsStart = () => { ttsActive++; };
+export const ttsEnd = () => { ttsActive = Math.max(0, ttsActive - 1); };
+const deviceBusy = () => { try { return !!(speechSynthesis.speaking || speechSynthesis.pending); } catch (e) { return false; } };
+export function whenQuiet(fn, gap = 0) {
+  const my = ++quietGen, t0 = Date.now();
+  const tick = () => { if (my !== quietGen) return; const waited = Date.now() - t0; if ((deviceBusy() || waited < gap) && waited < 700) { setTimeout(tick, 30); return; } fn(); };
+  tick();
+}
 let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 export function speak(text, opts = {}) {
@@ -120,8 +132,15 @@ export function speak(text, opts = {}) {
   if (!force && similar(k, lastSaid) && now - lastAt < 4000) return;
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;
   lastSaid = k; lastAt = now; lastPrio = prio; speakingUntil = now + Math.min(12000, 700 + spoken.length * 65);
-  try { stopHook(); speechSynthesis.cancel(); if (playHook(spoken, () => { speakingUntil = 0; })) return; const u = new SpeechSynthesisUtterance(spoken.replace(/\u2063/g, "")); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = () => { speakingUntil = 0; };
-    const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().startsWith("fr")); if (v) u.voice = v; speechSynthesis.speak(u); } catch (e) {}
+  const hadTts = ttsActive > 0; ttsActive = 0;
+  try { stopHook(); speechSynthesis.cancel(); } catch (e) {}
+  whenQuiet(() => {
+    try {
+      if (playHook(spoken, () => { speakingUntil = 0; })) return;
+      const u = new SpeechSynthesisUtterance(spoken.replace(/\u2063/g, "")); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = () => { ttsEnd(); speakingUntil = 0; };
+      const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().startsWith("fr")); if (v) u.voice = v; ttsStart(); speechSynthesis.speak(u);
+    } catch (e) {}
+  }, hadTts ? quietGap : 0);
 }
 let toastT;
 export function toast(msg, ms = 2400) { document.querySelectorAll(".toast").forEach(x => x.remove()); const e = el("div", "toast", msg); document.body.append(e); clearTimeout(toastT); toastT = setTimeout(() => e.remove(), ms); }
