@@ -123,11 +123,19 @@ export function whenQuiet(fn, gap = 0) {
 }
 let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
+export const APP_VERSION = "3.7";   // affichée dans l'animation d'accueil
+// le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
+function stripNames(t) {
+  const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
+  if (!names.length) return t;
+  const re = new RegExp("(?<![\\p{L}\\p{N}])(" + names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")(?![\\p{L}\\p{N}])", "giu");
+  return t.replace(re, " ").replace(/\s+([,.!?])/g, "$1").replace(/([,;:])\s*([.!?])/g, "$2").replace(/\s{2,}/g, " ").trim();
+}
 export function speak(text, opts = {}) {
   if (!S.voice || !text) return;
   const mode = voiceMode(), force = !!opts.force, prio = opts.prio ?? (force ? 3 : 1);
   if (!force && (mode === "demande" || (prio === 0 && mode !== "complet"))) return;
-  const raw = String(text).replace(/<[^>]+>/g, " "), spoken = force || opts.full ? raw : brief(raw), k = normT(spoken), now = Date.now();
+  const raw0 = String(text).replace(/<[^>]+>/g, " "), raw = raw0.trim()[0] === DEVICE ? raw0 : stripNames(raw0), spoken = force || opts.full ? raw : brief(raw), k = normT(spoken), now = Date.now();
   if (k === lastSaid && now - lastAt < (force ? 800 : 15000)) return;
   if (!force && similar(k, lastSaid) && now - lastAt < 4000) return;
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;

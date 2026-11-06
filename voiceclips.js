@@ -21,7 +21,7 @@ export function segmentsOf(text) {
     if (s[0] === DEVICE) { out.push([s.slice(1).trim(), true]); continue; }   // salutation : voix de l'appareil
     if (!re) { out.push([s, false]); continue; }
     let last = 0, m; re.lastIndex = 0;
-    while ((m = re.exec(s))) { const pre = s.slice(last, m.index); if (has(pre)) out.push([pre.trim(), false]); out.push([m[0], true]); last = m.index + m[0].length; }
+    while ((m = re.exec(s))) { const pre = s.slice(last, m.index); if (has(pre)) out.push([pre.trim(), false]); last = m.index + m[0].length; }
     const post = s.slice(last); if (has(post)) out.push([post.trim(), false]);
   }
   return out;

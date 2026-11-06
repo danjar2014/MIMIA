@@ -364,6 +364,7 @@ body.calm .hface svg{animation:none}
 .sp-moon{position:absolute;left:10%;top:14%;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe6,#d8d2b0);animation:spMoon 3s ease-out both}
 .sp-bot{position:relative;width:min(44vw,190px);animation:spFly 3.05s cubic-bezier(.2,.8,.3,1) both}
 .sp-bot svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px #0008)}
+.sp-ver{position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom));text-align:center;color:#cfd0ff;font:700 14px/1 system-ui,sans-serif;letter-spacing:.08em;opacity:.8}
 .sp-flame{position:absolute;left:50%;bottom:-26px;width:34px;height:54px;margin-left:-17px;border-radius:50% 50% 60% 60%/30% 30% 70% 70%;background:linear-gradient(#fff6c2,#ffb347 45%,#ff5d3a);filter:blur(1px);transform-origin:top;animation:spFlame .18s ease-in-out infinite alternate}
 .splash.calm *{animation:none!important}.splash.calm{animation:none}
 @keyframes spOut{to{opacity:0;visibility:hidden}}
