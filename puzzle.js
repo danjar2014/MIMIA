@@ -34,13 +34,13 @@ export function mountPuzzle(stage, band, idx = 0, hooks = {}) {
   const n = SIZES[band] || 2, p = PUZZLES[((idx % PUZZLES.length) + PUZZLES.length) % PUZZLES.length];
   let order = shuffled(n), sel = -1, done = false, alive = true;
   const intro = el("div", "intro", "Touche deux morceaux pour les échanger."), prev = el("div", "pzprev"), board = el("div", "pzboard"), msg = el("div", "gmsg", "&nbsp;");
-  prev.innerHTML = pictureSvg(p); prev.setAttribute("role", "img"); prev.setAttribute("aria-label", "Le dessin à retrouver"); prev.dataset.say = "Voici le dessin à retrouver.";
+  prev.innerHTML = pictureSvg(p); prev.setAttribute("role", "img"); prev.setAttribute("aria-label", "Le dessin à retrouver"); prev.dataset.silent = "";   /* toucher ne lit rien : seuls les bips parlent */
   board.style.setProperty("--n", n);
   const paint = () => {
     board.innerHTML = "";
     order.forEach((piece, pos) => {
       const r = Math.floor(piece / n), c = piece % n, b = el("button", "pzp" + (sel === pos ? " sel" : "") + (piece === pos ? " ok" : "")), inner = el("div", "pzin");
-      b.setAttribute("aria-label", `Morceau ${pos + 1}` + (piece === pos ? ", bien placé" : "")); inner.style.cssText = `width:${n * 100}%;height:${n * 100}%;left:${-c * 100}%;top:${-r * 100}%`; inner.innerHTML = pictureSvg(p);
+      b.dataset.silent = ""; b.setAttribute("aria-label", `Morceau ${pos + 1}` + (piece === pos ? ", bien placé" : "")); inner.style.cssText = `width:${n * 100}%;height:${n * 100}%;left:${-c * 100}%;top:${-r * 100}%`; inner.innerHTML = pictureSvg(p);
       b.append(inner); b.onclick = () => pick(pos); board.append(b);
     });
   };

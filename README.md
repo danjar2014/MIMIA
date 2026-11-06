@@ -131,7 +131,7 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - **Niveaux cachés selon l'âge** : un enfant ne voit jamais les niveaux des plus grands (blocs, code, construction, capteurs, « Plus loin », Grand Projet). Le parcours ne montre que les étapes de son âge (`stepVisible` dans `parcours.js`) ; « Plus loin » n'existe pas pour les 6-8 ans. Les parents changent la tranche d'âge quand l'enfant progresse.
 - **Mode test supprimé** : plus de bandeau « tout est débloqué ». Les parents gardent **Espace parents → Cartes** : pour chaque carte de l'accueil, ✨ selon la progression, 🔓 toujours ouverte ou 🔒 bloquée (réglé par enfant), et « Tout débloquer » dans Parcours.
 - **Animation d'entrée** (`splash.js`) : le robot de l'enfant arrive en volant dans l'espace (étoiles, planète, lune), un toucher la passe ; en mode calme elle est presque immédiate. Pas d'animation juste après un changement de joueur.
-- **Salutations selon l'heure** : « Bonjour / Salut / Content de te revoir, Léa ! » le jour, « Bonsoir… » le soir, lues par la **voix de l'appareil** (marqueur invisible `DEVICE` dans `util.js`) pour éviter la cassure entre deux voix.
+- **Salutations selon l'heure** : « Bonjour / Salut / Ça fait plaisir de te revoir, Léa ! » le jour, « Bonsoir… » le soir, lues par la **voix de l'appareil** (marqueur invisible `DEVICE` dans `util.js`) pour éviter la cassure entre deux voix.
 - La voix de l'appareil remplace aussi les mots seuls (les clips d'un mot seul étaient ratés) : `voice/gen.py` n'en génère plus.
 
 ## Pièces de robot, voix à la création d'un joueur

@@ -6,7 +6,7 @@
 //  - quand on touche un texte, la voix le lit ;
 //  - les messages du robot (bravo, erreurs, indices) sont lus tout seuls ;
 //  - 🔊 en bas à droite : « lire la page » ; 🔈/🔇 : voix oui ou non.
-import { S, save, speak, el, voiceMode, toast, brief } from "./util.js";
+import { S, save, speak, el, voiceMode, toast, brief, greetOnce } from "./util.js";
 import { stopClips } from "./voiceclips.js";
 import { hello } from "./praise.js";
 
@@ -67,7 +67,7 @@ export function pageBrief() {
      if (b) return textOf(b); const h = ov.querySelector("h1"), p = ov.querySelector(".sub"); return joinSay([h && textOf(h), p && textOf(p)]); }
   const app = document.getElementById("app"), home = app.querySelector(".homebody");
   if (app.querySelector(".ptbody")) return "";   // les activités des petits disent elles-mêmes leur consigne
-  if (home) { const g = app.querySelector(".greet"), hero = app.querySelector(".herotile b"); return joinSay([g ? textOf(g) : hello(), hero && "Ta prochaine étape : " + textOf(hero)]); }   // « Bonjour Léa ! » avec le prénom
+  if (home) { const g = app.querySelector(".greet"), hero = app.querySelector(".herotile b"); return joinSay([greetOnce() ? (g ? textOf(g) : hello()) : "", hero && "Ta prochaine étape : " + textOf(hero)]); }   // « Bonjour Léa ! » avec le prénom
   const ttl = app.querySelector(".ttl"), t = ttl ? textOf(ttl) : "";
   if (app.querySelector(".levels") || app.querySelector(".badgegrid")) return t;
   const lt = app.querySelector(".lbox .lt"), intro = app.querySelector(".astage .intro");

@@ -30,5 +30,6 @@ const list = [...sentences].sort();
 { const { fragments } = await import(pathToFileURL(resolve("praise.js")).href); const fr = fragments(); writeFileSync("voice/phrases_praise.json", JSON.stringify(fr, null, 1)); console.log("compliments:", fr.length); }
 { const { petitsPhrases } = await import(pathToFileURL(resolve("petits.js")).href); const pp = petitsPhrases(); writeFileSync("voice/phrases_petits.json", JSON.stringify(pp, null, 1)); console.log("petits:", pp.length); }
 { const { montessoriPhrases } = await import(pathToFileURL(resolve("montessori.js")).href); const mp = montessoriPhrases(); writeFileSync("voice/phrases_montessori.json", JSON.stringify(mp, null, 1)); console.log("montessori:", mp.length); }
+{ const { lessonPhrases } = await import(pathToFileURL(resolve("lessons.js")).href); const lp = lessonPhrases(); writeFileSync("voice/phrases_lessons.json", JSON.stringify(lp, null, 1)); console.log("cours:", lp.length); }
 writeFileSync("voice/phrases.json", JSON.stringify(list, null, 1));
 console.log(rep); console.log("total phrases:", list.length, " caractères:", list.reduce((a, s) => a + s.length, 0));

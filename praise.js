@@ -16,7 +16,7 @@ export const BANK = {
   }
 };
 // salutations : lues par la voix de l'appareil (pas de clip : le prénom change, et on n'entend pas de cassure de voix) ; elles dépendent de l'heure
-export const HELLO = { morning: ["Bonjour {n} !", "Salut {n} !", "Content de te revoir, {n} !"], day: ["Bonjour {n} !", "Salut {n} !", "Content de te revoir, {n} !"], evening: ["Bonsoir {n} !", "Salut {n} !", "Content de te revoir, {n} !"] };
+export const HELLO = { morning: ["Bonjour {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"], day: ["Bonjour {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"], evening: ["Bonsoir {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"] };
 export const dayPart = (d = new Date()) => { const h = d.getHours(); return h >= 18 || h < 5 ? "evening" : h < 12 ? "morning" : "day"; };
 const AGES = ["z", "a", "b", "c"], SEXES = ["f", "m"];
 // les petits (3-6 ans) ont les mêmes compliments simples que les 6-8 ans

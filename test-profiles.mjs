@@ -42,7 +42,7 @@ t("compliments et encouragements pour chaque âge (et les petits 3-6 ans)", ["z"
 // salutations : selon l'heure, lues par la voix de l'appareil (marqueur invisible), avec le prénom
 t("l'heure choisit le salut : matin, après-midi, soir (et nuit)", P.dayPart(new Date("2026-11-05T08:00:00")) === "morning" && P.dayPart(new Date("2026-11-05T14:00:00")) === "day" && P.dayPart(new Date("2026-11-05T20:30:00")) === "evening" && P.dayPart(new Date("2026-11-05T03:00:00")) === "evening");
 S.name = "Léa"; S.sex = "f"; S.age = "b"; const hs = new Set(); for (let i = 0; i < 200; i++) hs.add(P.hello(new Date("2026-11-05T20:00:00")));
-t("le soir : « Bonsoir Léa ! », « Salut Léa ! », « Content de te revoir, Léa ! »", [...hs].every(x => x.includes("Léa")) && [...hs].some(x => x.includes("Bonsoir")) && ![...hs].some(x => x.includes("Bonjour")), [...hs].join("|"));
+t("le soir : « Bonsoir Léa ! », « Salut Léa ! », « Ça fait plaisir de te revoir, Léa ! »", [...hs].every(x => x.includes("Léa")) && [...hs].some(x => x.includes("Bonsoir")) && ![...hs].some(x => x.includes("Bonjour")), [...hs].join("|"));
 const hm = new Set(); for (let i = 0; i < 200; i++) hm.add(P.hello(new Date("2026-11-05T09:00:00"))); t("le matin : « Bonjour Léa ! » et jamais « Bonsoir »", [...hm].some(x => x.includes("Bonjour")) && ![...hm].some(x => x.includes("Bonsoir")));
 t("les salutations sont marquées « voix de l'appareil »", [...hs, ...hm].every(x => x.startsWith(U.DEVICE)) && U.DEVICE === "⁣");
 const { segmentsOf } = await import("./voiceclips.js"); const seg = segmentsOf(P.hello(new Date("2026-11-05T09:00:00")) + " Ta prochaine étape : le robot.");

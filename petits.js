@@ -1,6 +1,6 @@
 // Les Petits (3-6 ans) : chiffres, lettres, couleurs, jours, mois, relier, espace — dans l'univers des robots (méthode Montessori :
 // un seul geste, de gros boutons, un seul mot à retenir, la voix dit tout). 5 petites manches par activité, sans texte à lire.
-import { el, S, chime, tone, speak, rnd } from "./util.js";
+import { el, S, chime, tone, speak, rnd, DEVICE } from "./util.js";
 import { robotSvg } from "./robot.js";
 import { PARTS } from "./parts.js";
 
@@ -95,25 +95,27 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
   const paintDots = () => { dots.innerHTML = rounds.map((_, k) => `<i class="${k < i ? "ok" : k === i ? "now" : ""}"></i>`).join(""); };
   const say = (t, cls) => { msg.className = "gmsg " + (cls || ""); msg.innerHTML = t; };
   const ask = (text) => { rep.onclick = () => speak(text, { force: true, full: true }); later(() => speak(text, { prio: 1, interrupt: true, full: true }), 350); };
-  const wrongTap = (b, hint) => { chime("no"); b.classList.add("no"); later(() => b.classList.remove("no"), 500); say(hint, "warn"); };
+  let miss = 0, okBtn = null;
+  const wrongTap = (b, hint) => { chime("no"); b.classList.add("no"); if (++miss >= 2 && okBtn && !okBtn.disabled) okBtn.classList.add("glow"); later(() => b.classList.remove("no"), 500); say(hint, "warn"); };
   const goodNext = (ms = 1100) => { busy = true; chime("ok"); say("Bravo !", "ok"); later(() => { i++; if (i >= rounds.length) finish(); else show(); }, ms); };
   function finish() { paintDots(); busy = true; chime("done"); say("🎉 Bravo ! Tu as tout réussi.", "ok"); hooks.onWin && hooks.onWin(); }
   function show() {
-    const rd = rounds[i]; busy = false; body.innerHTML = ""; say("&nbsp;"); paintDots(); ask(rd.say);
+    const rd = rounds[i]; busy = false; miss = 0; okBtn = null; body.innerHTML = ""; say("&nbsp;"); paintDots(); ask(rd.say);
     // jeux à son : on écoute (bouton 🔊, et une fois tout seul) puis on choisit
     if (rd.sound) { const bt = el("button", "ptsnd", "🔊"); bt.setAttribute("aria-label", "Écouter le son"); bt.onclick = () => playSound(rd.sound); body.append(bt); later(() => playSound(rd.sound), 1700); }
     if (rd.type === "quiz") {
       if (rd.show) { const s = el("div", "ptshow"); s.innerHTML = rd.show; body.append(s); }
       const opts = el("div", "ptopts n" + rd.options.length); body.append(opts);
-      rd.options.forEach(o => { const b = el("button", "ptopt", o.html); b.setAttribute("aria-label", o.label); b.dataset.say = o.label; b.dataset.silent = "";   /* pas de mot lu au toucher : le « Bravo » enregistré suffit, sans chevauchement */ b.onclick = () => { if (busy) return; if (o.ok) { b.classList.add("ok"); goodNext(); } else wrongTap(b, rd.type === "quiz" && rd.say.startsWith("Combien") ? "Compte encore." : "Essaie encore."); }; opts.append(b); });
+      rd.options.forEach(o => { const b = el("button", "ptopt", o.html); b.setAttribute("aria-label", o.label); b.dataset.say = o.label; b.dataset.silent = "";   /* pas de mot lu au toucher : le « Bravo » enregistré suffit, sans chevauchement */ if (o.ok) okBtn = b; b.onclick = () => { if (busy) return; if (o.ok) { b.classList.add("ok"); goodNext(); } else wrongTap(b, rd.type === "quiz" && rd.say.startsWith("Combien") ? "Compte encore." : "Essaie encore."); }; opts.append(b); });
     } else if (rd.type === "seq") {
       let next = 0; const grid = el("div", "ptseq n" + rd.items.length); body.append(grid);
-      rd.items.forEach(it => { const b = el("button", "ptopt seq", it.html); b.setAttribute("aria-label", it.label); b.dataset.say = it.label; b.onclick = () => { if (busy || b.disabled) return; if (it.order === next) { b.classList.add("ok"); b.disabled = true; tone(440 + next * 40, 0.12, "sine", 0.14); next++; if (next === rd.items.length) goodNext(900); } else wrongTap(b, "Cherche encore."); }; grid.append(b); });
+      const seqBtns = []; const markNext = () => { okBtn = seqBtns.find(x => !x.disabled && +x.dataset.o === next) || null; };
+      rd.items.forEach(it => { const b = el("button", "ptopt seq", it.html); b.dataset.o = it.order; seqBtns.push(b); b.setAttribute("aria-label", it.label); b.dataset.say = it.label; b.onclick = () => { if (busy || b.disabled) return; if (it.order === next) { b.classList.add("ok"); b.disabled = true; tone(440 + next * 40, 0.12, "sine", 0.14); next++; markNext(); if (next === rd.items.length) goodNext(900); } else wrongTap(b, "Cherche encore."); }; grid.append(b); }); markNext();
     } else if (rd.type === "memory") {
       // mémoire : on retourne deux cartes, si elles sont pareilles elles restent visibles
       const grid = el("div", "ptmem n" + rd.cards.length); body.append(grid); let open = [], found = 0;
       rd.cards.forEach(c => {
-        const b = el("button", "ptopt mem", '<span class="mback">?</span><span class="mface"></span>'); b.querySelector(".mface").innerHTML = c.html; b.setAttribute("aria-label", "carte");
+        const b = el("button", "ptopt mem", '<span class="mback">?</span><span class="mface"></span>'); b.querySelector(".mface").innerHTML = c.html; b.setAttribute("aria-label", "carte"); b.dataset.silent = "";
         b.onclick = () => {
           if (busy || b.disabled || b.classList.contains("up")) return; b.classList.add("up"); b.setAttribute("aria-label", c.label || "carte"); open.push([b, c]);
           if (open.length < 2) return; const [[b1, c1], [b2, c2]] = open; open = [];
@@ -124,7 +126,7 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
       });
     } else if (rd.type === "match") {
       let sel = null, done = 0; const box = el("div", "ptmatch"), L = el("div", "ptcol"), R = el("div", "ptcol"), svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "mline"); box.append(L, R, svg); body.append(box);
-      const mk = (it, side) => { const b = el("button", "ptopt m" + (side === "r" && !rd.plain ? " sil" : ""), `<span class="ptbig">${it.html}</span>`); b.dataset.k = it.k; b.setAttribute("aria-label", side === "r" ? "ombre" : "objet"); return b; };
+      const mk = (it, side) => { const b = el("button", "ptopt m" + (side === "r" && !rd.plain ? " sil" : ""), `<span class="ptbig">${it.html}</span>`); b.dataset.k = it.k; b.dataset.silent = ""; b.setAttribute("aria-label", side === "r" ? "ombre" : "objet"); return b; };
       const lefts = rd.left.map(it => mk(it, "l")), rights = rd.right.map(it => mk(it, "r")); lefts.forEach(b => L.append(b)); rights.forEach(b => R.append(b));
       const line = (a, b) => { const p = box.getBoundingClientRect(), x = a.getBoundingClientRect(), y = b.getBoundingClientRect(), ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
         ln.setAttribute("x1", x.right - p.left); ln.setAttribute("y1", x.top + x.height / 2 - p.top); ln.setAttribute("x2", y.left - p.left); ln.setAttribute("y2", y.top + y.height / 2 - p.top); svg.append(ln); };
@@ -134,6 +136,26 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
   }
   const sfxBeep = () => tone(880, 0.06, "square", 0.08);
   const playSound = snd => (snd.notes || []).forEach(([f, d, t, delay, g]) => tone(f, d, t || "sine", g || 0.2, delay || 0));
-  show();
+  // le petit cours : une phrase, puis chaque mot est dit et éclairé l'un après l'autre
+  function lesson(L) {
+    body.innerHTML = ""; dots.innerHTML = ""; say("&nbsp;"); busy = true;
+    const row = el("div", "ptles"), cells = (L.items || []).map(it => el("div", "ptcell", it.html)), go = el("button", "ptplay", "▶ Jouer"); cells.forEach(c => row.append(c)); body.append(row, go);
+    let run = 0, fired = 0;
+    const start = () => { if (!alive) return; busy = false; run++; body.innerHTML = ""; show(); };
+    go.onclick = () => { run++; start(); };
+    const play = () => {
+      const my = ++run; cells.forEach(c => c.classList.remove("now"));
+      const step = (k) => {
+        if (!alive || my !== run) return; if (k >= cells.length) { go.classList.add("pulse"); return; }
+        cells.forEach(c => c.classList.remove("now")); cells[k].classList.add("now");
+        let done = false; const nx = () => { if (done) return; done = true; later(() => step(k + 1), 250); }; later(nx, 1800 + (L.items[k].label.length) * 110);
+        speak(DEVICE + L.items[k].label, { force: true, full: true, onEnd: nx });
+      };
+      let intro = false; const after = () => { if (intro) return; intro = true; later(() => step(0), 300); };
+      later(after, 2500 + L.say.length * 90); speak(L.say, { force: true, full: true, onEnd: after });
+    };
+    rep.onclick = play; later(play, 400);
+  }
+  if (hooks.lesson && hooks.lesson.say) lesson(hooks.lesson); else show();
   return { destroy() { alive = false; timers.forEach(clearTimeout); }, rounds, get index() { return i; }, get busy() { return busy; } };
 }

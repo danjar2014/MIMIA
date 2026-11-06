@@ -10,7 +10,7 @@ const KEY = "robotique-junior-v1", GKEY = "robotique-junior-global";
 const DEFAULTS = { name: "", sex: "", age: "", voice: true, sound: true, mascot: true, scene: true, voiceMode: "auto", calm: false, big: false, reminder: 15, progress: {}, creations: [],
   robot: { name: "Bolt", color: "#3f7fd6", head: "round", eyes: "dots", antenna: true } };
 // Plusieurs joueurs : les réglages de l'appareil et des parents (code, voix, écran…) sont communs ; la progression, le prénom, le robot… sont propres à chaque joueur.
-const GLOBAL = ["pin", "pinFail", "parentSetup", "voice", "sound", "voiceMode", "voiceModeSet", "mascot", "scene", "calm", "big", "reminder", "kiosk"];
+const GLOBAL = ["pin", "pinFail", "parentSetup", "voice", "sound", "voiceMode", "voiceModeSet", "mascot", "scene", "calm", "big", "reminder", "kiosk", "lastHello"];
 const readJ = k => { try { return JSON.parse(localStorage.getItem(k) || "null") || {}; } catch (e) { return {}; } };
 const pkey = id => (id === "p1" ? KEY : KEY + "-" + id);   // le premier joueur garde l'ancienne clé : rien ne se perd à la mise à jour
 const G = (() => {
@@ -123,7 +123,9 @@ export function whenQuiet(fn, gap = 0) {
 }
 let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
-export const APP_VERSION = "3.9";   // affichée dans l'animation d'accueil
+// la salutation (Bonjour, Bonsoir, Salut…) n'est dite qu'à la première ouverture de la journée, pas à chaque rechargement
+export function greetOnce() { const d = new Date(), day = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; if (S.lastHello === day) return false; S.lastHello = day; save(); return true; }
+export const APP_VERSION = "4.0";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
@@ -151,8 +153,9 @@ export function speak(text, opts = {}) {
   try { stopHook(); speechSynthesis.cancel(); } catch (e) {}
   whenQuiet(() => {
     try {
-      if (playHook(spoken, () => { speakingUntil = 0; })) return;
-      const u = new SpeechSynthesisUtterance(spoken.replace(/\u2063/g, "")); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = () => { ttsEnd(); speakingUntil = 0; };
+      const fin = () => { speakingUntil = 0; const f = opts.onEnd; opts.onEnd = null; if (f) f(); };
+      if (playHook(spoken, fin)) return;
+      const u = new SpeechSynthesisUtterance(spoken.replace(/\u2063/g, "")); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = () => { ttsEnd(); fin(); }; u.onerror = e => { ttsEnd(); if (e && (e.error === "interrupted" || e.error === "canceled")) speakingUntil = 0; else fin(); };
       const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().startsWith("fr")); if (v) u.voice = v; ttsStart(); speechSynthesis.speak(u);
     } catch (e) {}
   }, hadTts ? quietGap : 0);

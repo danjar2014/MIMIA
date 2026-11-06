@@ -23,6 +23,7 @@ import { mountDance } from "./dance.js";
 import { mountPuzzle, PUZZLES } from "./puzzle.js";
 import { mountPetit, PETITS } from "./petits.js";
 import { CATEGORIES, gameById } from "./montessori.js";
+import { PETIT_LESSONS, CAT_LESSONS } from "./lessons.js";
 import { mountLab } from "./labs.js";
 import { mountDiscover } from "./discover.js";
 import { mountBuild } from "./build.js";
@@ -317,7 +318,7 @@ function playPuzzle(band = S.age || "a", idx) {
 // les petits (3-6 ans) : chiffres, lettres, couleurs, jours, mois, relier, espace
 function playPetit(id) {
   const info = PETITS.find(p => p[0] === id), next = () => playPetit(id);
-  activity(info[2], "petits", id, s => mountPetit(s, id, { onWin: () => { markDone("petits", id); winBar(next, home, "🏠 Accueil", "▶ Encore !", false); } }), home);
+  activity(info[2], "petits", id, s => mountPetit(s, id, { lesson: PETIT_LESSONS[id], onWin: () => { markDone("petits", id); winBar(next, home, "🏠 Accueil", "▶ Encore !", false); } }), home);
 }
 // le coin Montessori : 16 catégories rangées sur des étagères (comme chez iwawa), chacune avec ses jeux
 function montessoriHome() {
@@ -331,7 +332,7 @@ function montessoriHome() {
 function playMonte(id) {
   const g = gameById(id), back = montessoriHome;
   if (g.rounds === "puzzle") return playPuzzle("z");   // les puzzles ouvrent le puzzle du robot
-  activity(g.title, "monte", id, s => mountPetit(s, g.rounds, { onWin: () => { markDone("monte", id); winBar(() => playMonte(id), back, "☰ Montessori", "▶ Encore !", false); } }), back);
+  activity(g.title, "monte", id, s => mountPetit(s, g.rounds, { lesson: CAT_LESSONS[g.cat] ? { say: CAT_LESSONS[g.cat], items: [] } : null, onWin: () => { markDone("monte", id); winBar(() => playMonte(id), back, "☰ Montessori", "▶ Encore !", false); } }), back);
 }
 function littleHome(body, esc) {
   const grid = el("div", "igrid little");
