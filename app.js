@@ -77,6 +77,18 @@ let cleanup = null, longTimer;
 const leave = () => { app.className = ""; track(null); if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; } window.__cur = null; };
 let mascotApi = null, sceneApi = null;
 // plein écran verrouillé (choix des parents) : dans l'appli Android, l'écran est épinglé (pas de sortie sans le code parent) ; sur le web, plein écran
+// plein écran verrouillé dans un navigateur / une PWA : le bouton retour d'Android ne sort plus (on remet une entrée d'historique à chaque retour).
+// Chrome ignore les entrées ajoutées sans geste de l'utilisateur : on les ajoute donc au toucher suivant.
+let needPush = true, pushedKiosk = false;
+const pushTrap = () => { try { history.pushState({ kiosk: 1 }, ""); pushedKiosk = true; } catch (e) {} };
+window.addEventListener("popstate", () => { if (S.kiosk) { pushTrap(); needPush = true; } });
+document.addEventListener("pointerdown", () => { if (S.kiosk && needPush) { needPush = false; pushTrap(); } }, true);
+function leaveKiosk() {
+  S.kiosk = false; save(); applyKiosk();
+  try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
+  if (pushedKiosk) { pushedKiosk = false; try { history.back(); } catch (e) {} }
+  toast("Plein écran quitté. Tu peux sortir avec le bouton retour d'Android.", 4500);
+}
 let kioskArm = false;
 function applyKiosk() {
   try {
@@ -268,8 +280,8 @@ function openCodeFromBlocks(info) {
   playCode({ id: "blocs", title: "Mon code (venu des blocs)", mission: "Voici le code de tes blocs. Change-le, relance, et vois ce qui se passe !", lesson: "Les blocs et le code font exactement la même chose. Ici, tu peux modifier le code toi-même.", example: "", starter: info.code, hints: [], solution: "", spec }, info.code, info.lang);
 }
 function topbar(title, back, withPause = true) {
-  const bar = el("div", "bar"), b = el("button", "iconbtn", "⬅️"); b.onclick = back; b.setAttribute("aria-label", "Retour"); const h = el("h1", "ttl", title);
-  const p = el("button", "iconbtn", withPause ? "⏸️" : ""); if (withPause) p.setAttribute("aria-label", "Pause"); if (withPause) p.onclick = pauseScreen; else p.style.visibility = "hidden"; bar.append(b, h, p); return bar;
+  const bar = el("div", "bar"), b = el("button", "iconbtn", "⬅️"), ph = el("span", "iconbtn ph"); b.onclick = back; b.setAttribute("aria-label", "Retour"); const h = el("h1", "ttl", title);
+  const p = el("button", "iconbtn", withPause ? "⏸️" : ""); if (withPause) p.setAttribute("aria-label", "Pause"); if (withPause) p.onclick = pauseScreen; else p.style.visibility = "hidden"; bar.append(b, ph, h, p); return bar;
 }
 function menu(title, groups, back) {
   leave(); if (sceneApi) sceneApi.set("sky"); app.innerHTML = ""; app.append(topbar(title, back, false)); const box = el("div", "levels");
@@ -452,7 +464,7 @@ const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
   { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"], ["cartes", "🃏", "Cartes", "#e2dcff"]] },
-  { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"]] }
+  { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"], ["quitter", "🚪", "Quitter", "#ffd9d9"]] }
 ];
 const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
@@ -528,7 +540,7 @@ function parentScreen(id) {
 function settings() {
   overlay.style.display = "flex";
   overlay.innerHTML = `<div class="panel parentpanel" data-silent><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
-  overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
+  overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "quitter") { closeSettings(); leaveKiosk(); } else if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
   $("#pclose").onclick = closeSettings;
 }
 let lastNudge = Date.now();

@@ -424,3 +424,7 @@ body.calm .hface svg{animation:none}
 .ptles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}.ptcell{min-width:64px;padding:10px 14px;border:3px solid var(--line);border-radius:16px;background:#fff;font-size:24px;text-align:center;opacity:.55;transition:transform .2s,opacity .2s}.ptcell .ptbig{display:block;width:56px;margin:0 auto}.ptcell.now{opacity:1;transform:scale(1.18);border-color:#2f7d4f;background:#e8f6ec}
 .ptplay{display:block;margin:18px auto;background:#2f7d4f;color:#fff;border:0;border-radius:999px;padding:14px 34px;font:700 22px system-ui,sans-serif;min-height:56px;cursor:pointer}.ptplay.pulse{animation:glowp .9s ease-in-out infinite alternate}
 .ptopt.glow,.ptopt.seq.glow{animation:glowp .7s ease-in-out infinite alternate;border-color:#f4a020;box-shadow:0 0 0 6px #f4a02055}@keyframes glowp{to{transform:scale(1.07)}}
+/* le bouton retour en bas à droite, loin du bord d'écran où se trouve le retour d'Android */
+.bar>.iconbtn:first-child{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:35;width:64px;height:64px;box-shadow:0 4px 12px #0003}
+.bar>.iconbtn.ph{visibility:hidden}
+.phead>#pback{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;width:64px;height:64px;box-shadow:0 4px 12px #0003}
