@@ -18,10 +18,10 @@ export const POSITIONS = [["⬆️", "en haut", "top"], ["⬇️", "en bas", "bo
 export const PETITS = [["chiffres", "🔢", "Chiffres", "#ffe0ec"], ["lettres", "🔤", "Lettres", "#d6ecff"], ["couleurs", "🎨", "Couleurs", "#fff1b8"], ["pieces", "🔧", "Pièces", "#e3f1f1"], ["jours", "📅", "Jours", "#d9f5d3"],
   ["mois", "🗓️", "Mois", "#eadcff"], ["relier", "🔗", "Relier", "#ffe9c7"], ["espace", "🚀", "Espace", "#d2f1ef"]];
 
-const shuffle = (a, r = rnd) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = r(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const distinct = (list, n, r, not) => { const pool = shuffle(list.filter(x => x !== not), r); return pool.slice(0, n); };
+export const shuffle = (a, r = rnd) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = r(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+export const distinct = (list, n, r, not) => { const pool = shuffle(list.filter(x => x !== not), r); return pool.slice(0, n); };
 // trois réponses, une seule juste, mélangées
-const three = (right, others, r) => shuffle([{ ...right, ok: true }, ...others.map(o => ({ ...o, ok: false }))], r);
+export const three = (right, others, r) => shuffle([{ ...right, ok: true }, ...others.map(o => ({ ...o, ok: false }))], r);
 
 // ----- les manches -----
 export function countRound(r, max) {
@@ -87,7 +87,7 @@ export function petitsPhrases() {
 
 // ----- le jeu : des manches, une à une -----
 export function mountPetit(stage, id, hooks = {}, r = rnd) {
-  const rounds = ROUNDS[id](r); let i = 0, alive = true, busy = false, timers = [];
+  const rounds = Array.isArray(id) ? id : typeof id === "function" ? id(r) : ROUNDS[id](r); let i = 0, alive = true, busy = false, timers = [];
   const later = (fn, ms) => { const t = setTimeout(() => { if (alive) fn(); }, ms); timers.push(t); };
   const dots = el("div", "ptdots"), bar = el("div", "ptbar"), body = el("div", "ptbody"), msg = el("div", "gmsg", "&nbsp;"), rep = el("button", "ptrep", "🔊");
   rep.setAttribute("aria-label", "Écouter encore");
@@ -100,6 +100,8 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
   function finish() { paintDots(); busy = true; chime("done"); say("🎉 Bravo ! Tu as tout réussi.", "ok"); hooks.onWin && hooks.onWin(); }
   function show() {
     const rd = rounds[i]; busy = false; body.innerHTML = ""; say("&nbsp;"); paintDots(); ask(rd.say);
+    // jeux à son : on écoute (bouton 🔊, et une fois tout seul) puis on choisit
+    if (rd.sound) { const bt = el("button", "ptsnd", "🔊"); bt.setAttribute("aria-label", "Écouter le son"); bt.onclick = () => playSound(rd.sound); body.append(bt); later(() => playSound(rd.sound), 1700); }
     if (rd.type === "quiz") {
       if (rd.show) { const s = el("div", "ptshow"); s.innerHTML = rd.show; body.append(s); }
       const opts = el("div", "ptopts n" + rd.options.length); body.append(opts);
@@ -107,9 +109,22 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
     } else if (rd.type === "seq") {
       let next = 0; const grid = el("div", "ptseq n" + rd.items.length); body.append(grid);
       rd.items.forEach(it => { const b = el("button", "ptopt seq", it.html); b.setAttribute("aria-label", it.label); b.dataset.say = it.label; b.onclick = () => { if (busy || b.disabled) return; if (it.order === next) { b.classList.add("ok"); b.disabled = true; tone(440 + next * 40, 0.12, "sine", 0.14); next++; if (next === rd.items.length) goodNext(900); } else wrongTap(b, "Cherche encore."); }; grid.append(b); });
+    } else if (rd.type === "memory") {
+      // mémoire : on retourne deux cartes, si elles sont pareilles elles restent visibles
+      const grid = el("div", "ptmem n" + rd.cards.length); body.append(grid); let open = [], found = 0;
+      rd.cards.forEach(c => {
+        const b = el("button", "ptopt mem", '<span class="mback">?</span><span class="mface"></span>'); b.querySelector(".mface").innerHTML = c.html; b.setAttribute("aria-label", "carte");
+        b.onclick = () => {
+          if (busy || b.disabled || b.classList.contains("up")) return; b.classList.add("up"); b.setAttribute("aria-label", c.label || "carte"); open.push([b, c]);
+          if (open.length < 2) return; const [[b1, c1], [b2, c2]] = open; open = [];
+          if (c1.k === c2.k) { b1.classList.add("ok"); b2.classList.add("ok"); b1.disabled = b2.disabled = true; tone(660, 0.12, "sine", 0.14); found++; if (found === rd.cards.length / 2) goodNext(900); }
+          else { busy = true; tone(220, 0.15, "sawtooth", 0.1); later(() => { b1.classList.remove("up"); b2.classList.remove("up"); b1.setAttribute("aria-label", "carte"); b2.setAttribute("aria-label", "carte"); busy = false; }, 800); }
+        };
+        grid.append(b);
+      });
     } else if (rd.type === "match") {
       let sel = null, done = 0; const box = el("div", "ptmatch"), L = el("div", "ptcol"), R = el("div", "ptcol"), svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "mline"); box.append(L, R, svg); body.append(box);
-      const mk = (it, side) => { const b = el("button", "ptopt m" + (side === "r" ? " sil" : ""), `<span class="ptbig">${it.html}</span>`); b.dataset.k = it.k; b.setAttribute("aria-label", side === "r" ? "ombre" : "objet"); return b; };
+      const mk = (it, side) => { const b = el("button", "ptopt m" + (side === "r" && !rd.plain ? " sil" : ""), `<span class="ptbig">${it.html}</span>`); b.dataset.k = it.k; b.setAttribute("aria-label", side === "r" ? "ombre" : "objet"); return b; };
       const lefts = rd.left.map(it => mk(it, "l")), rights = rd.right.map(it => mk(it, "r")); lefts.forEach(b => L.append(b)); rights.forEach(b => R.append(b));
       const line = (a, b) => { const p = box.getBoundingClientRect(), x = a.getBoundingClientRect(), y = b.getBoundingClientRect(), ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
         ln.setAttribute("x1", x.right - p.left); ln.setAttribute("y1", x.top + x.height / 2 - p.top); ln.setAttribute("x2", y.left - p.left); ln.setAttribute("y2", y.top + y.height / 2 - p.top); svg.append(ln); };
@@ -118,6 +133,7 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
     }
   }
   const sfxBeep = () => tone(880, 0.06, "square", 0.08);
+  const playSound = snd => (snd.notes || []).forEach(([f, d, t, delay, g]) => tone(f, d, t || "sine", g || 0.2, delay || 0));
   show();
   return { destroy() { alive = false; timers.forEach(clearTimeout); }, rounds, get index() { return i; }, get busy() { return busy; } };
 }

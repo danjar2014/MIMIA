@@ -141,3 +141,10 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - **Voix à la création et au renommage d'un joueur** : « Bienvenue Julien ! » / « Salut Jules ! » (voix de l'appareil) et un petit son.
 - **Changer de joueur ne recharge plus la page** (`switchProfile` remplit l'état sur place) : le navigateur n'autorise la voix et les sons qu'après un toucher, un rechargement les coupait. Le son est aussi réveillé au premier toucher.
 - **Plus de lecture « dans tous les sens »** : les écrans des parents ne sont jamais lus (`data-silent`), les petits n'entendent jamais toute la page (seulement l'essentiel), et les activités des petits disent leur consigne une seule fois.
+
+## Le coin Montessori (3-6 ans), comme iwawa
+
+- Observé sur iwawa (page « Montessori », lue en défilant jusqu'à « No more data ») : **16 catégories**, chacune avec 4 à 6 jeux rangés sur une étagère horizontale. On retrouve la même organisation dans l'accueil des petits : tuile **Montessori** → étagères (`montessori.js`, `montessoriHome()` dans `app.js`).
+- Catégories : Cabinet géométrique · Tour rose · Tablettes de couleurs · Triangles constructeurs · Tablettes de poids · Cylindres sonores · Chiffres et jetons · Quilles des fractions · Barres rouges · Tableau des cent · Système décimal · Tableau des dizaines · Barres numériques · Bandes d'addition · Bandes de soustraction · Horloge à aiguilles (94 jeux).
+- Les jeux utilisent le thème robot quand il s'y prête (engrenages de toutes tailles, pièces à peser, bruits de moteur / horloge / capteur à reconnaître, compter des pièces) ; sinon ils sont repris tels quels (formes, couleurs, horloge, pizzas, pièces de monnaie…). Les jeux d'une même catégorie partagent parfois la même mécanique avec un autre contenu. Types : choisir, ordonner, relier, mémoire, écouter. Les « puzzles » ouvrent le puzzle du robot.
+- Les parents peuvent bloquer « Montessori » (Espace parents → Cartes). 10 XP par jeu terminé. Test : `node test-montessori.mjs` (chaque jeu est joué 150 fois : une seule bonne réponse, réponses distinctes, ordre et paires cohérents).

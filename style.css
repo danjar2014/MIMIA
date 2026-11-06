@@ -402,3 +402,17 @@ body.calm .hface svg{animation:none}
 .ptopt .ptbig{display:block}
 .ptrole{display:block;font-size:20px;font-weight:700;line-height:1.25;text-align:center}
 .ptopt:has(.ptrole){width:100%;min-height:64px}
+
+/* jeux Montessori : mémoire, sons, tailles, étagères */
+.ptsnd{display:block;margin:8px auto;min-width:84px;min-height:84px;font-size:40px;border-radius:50%;border:5px solid #fff;background:#d6ecff;cursor:pointer}
+.ptmem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px;margin:10px auto}.ptmem.n4{grid-template-columns:repeat(2,1fr)}.ptmem.n8{grid-template-columns:repeat(4,1fr)}.ptmem.n12{grid-template-columns:repeat(4,1fr)}
+.ptopt.mem{position:relative;min-width:0;min-height:76px;aspect-ratio:1;padding:4px}.ptopt.mem .mface{display:none}.ptopt.mem.up .mface{display:block}.ptopt.mem.up .mback{display:none}.ptopt.mem .mback{font-size:34px;color:#8a97a8}
+.ptopt.mem svg{width:100%;height:100%}.ptopt.mem.ok{background:#d8f5d0}
+.ptscale svg{width:calc(var(--s,1)*84px);height:calc(var(--s,1)*84px);display:block}.ptscale{display:flex;align-items:flex-end;justify-content:center;min-width:90px;min-height:90px}
+.ptsw{display:block;width:76px;height:76px;border-radius:16px;border:4px solid #fff;box-shadow:0 0 0 2px #38362f33}
+.ptbars{display:flex;flex-direction:column;gap:7px;align-items:flex-start}.ptbar1{height:20px;border-radius:6px;border:3px solid #38362f;background:#e24b4b}
+.ptclock svg,.ptopt .ptclock svg{width:96px;height:96px;display:block}.ptshow .ptclock svg{width:140px;height:140px}
+.shelf{margin:6px 0 14px}.shelf h2{display:flex;align-items:center;gap:8px;margin:6px 4px;font-size:calc(19px*var(--fs))}.shelf h2 .ci{font-size:30px}
+.shrow{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 12px;scroll-snap-type:x proximity}
+.gcard{flex:0 0 118px;display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:4px solid #fff;border-radius:26px;padding:8px 6px;cursor:pointer;scroll-snap-align:start;min-height:130px;font-size:calc(14px*var(--fs));font-weight:700;color:#38362f;text-align:center;position:relative}
+.gcard .gic{font-size:46px;line-height:1;height:54px;display:flex;align-items:center}.gcard .gic svg{width:54px;height:54px}.gcard.done::after{content:"⭐";position:absolute;top:4px;right:6px;font-size:18px}

@@ -22,6 +22,7 @@ import { mountDraw, DEFIS } from "./draw.js";
 import { mountDance } from "./dance.js";
 import { mountPuzzle, PUZZLES } from "./puzzle.js";
 import { mountPetit, PETITS } from "./petits.js";
+import { CATEGORIES, gameById } from "./montessori.js";
 import { mountLab } from "./labs.js";
 import { mountDiscover } from "./discover.js";
 import { mountBuild } from "./build.js";
@@ -53,10 +54,10 @@ const goalScreen = (r, earned) => next => {
   overlay.innerHTML = `<div class="panel rew"><div class="goalring" style="--p:${Math.min(100, Math.round(100 * r.after / r.goal))}"><span>⚡<small>${r.after} / ${r.goal} XP</small></span></div><h1>Objectif du jour atteint !</h1><p class="sub">Bravo${S.name ? " " + S.name : ""} ! Cette étape t'a rapporté <b>${earned} XP</b>. Reviens demain pour continuer ta série.</p><button class="big-btn" id="rwc">Récupérer</button></div>`;
   $("#rwc").onclick = next;
 };
-const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily", "puzzle", "petits"]);
+const REWARD_SECS = new Set(["learn", "disc", "lab", "prog", "build", "code", "project", "adv", "daily", "puzzle", "petits", "monte"]);
 function rewardXP(sec, id) {
   if (!REWARD_SECS.has(sec)) return;
-  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = sec === "puzzle" ? 20 : sec === "petits" ? 10 : stepXP(a.fails), r = addXP(xp);   // un puzzle rapporte un petit nombre fixe de points
+  const a = (S.stats && S.stats.acts && S.stats.acts[sec + ":" + id]) || { fails: 0 }, xp = sec === "puzzle" ? 20 : (sec === "petits" || sec === "monte") ? 10 : stepXP(a.fails), r = addXP(xp);   // un puzzle rapporte un petit nombre fixe de points
   setTimeout(() => { const st = document.querySelector(".astage"); if (st) { const chip = el("div", "xpchip", `⚡ +${xp} XP${a.fails === 0 ? " · sans aucune erreur !" : ""} · aujourd'hui ${r.after}/${r.goal}`), wb = st.querySelector(".winbar"); wb ? st.insertBefore(chip, wb) : st.append(chip); } }, 450);
   setTimeout(() => { if (r.firstOfDay) pushOverlay(streakScreen); if (r.crossed) pushOverlay(goalScreen(r, xp)); }, 800);
 }
@@ -317,10 +318,24 @@ function playPetit(id) {
   const info = PETITS.find(p => p[0] === id), next = () => playPetit(id);
   activity(info[2], "petits", id, s => mountPetit(s, id, { onWin: () => { markDone("petits", id); winBar(next, home, "🏠 Accueil", "▶ Encore !", false); } }), home);
 }
+// le coin Montessori : 16 catégories rangées sur des étagères (comme chez iwawa), chacune avec ses jeux
+function montessoriHome() {
+  leave(); if (sceneApi) sceneApi.set("sky"); app.innerHTML = ""; app.append(topbar("Montessori", home, false)); const box = el("div", "astage monte"); app.append(box);
+  CATEGORIES.forEach(c => {
+    const sh = el("section", "shelf"), row = el("div", "shrow"); sh.append(el("h2", "", `<span class="ci" aria-hidden="true">${c.icon}</span><span>${escH(c.title)}</span>`), row);
+    c.games.forEach(([id, title, ic]) => { const b = el("button", "gcard" + (isDone("monte", id) ? " done" : ""), `<span class="gic" aria-hidden="true">${ic}</span><span>${escH(title)}</span>`); b.setAttribute("aria-label", title); b.onclick = () => playMonte(id); row.append(b); });
+    box.append(sh);
+  });
+}
+function playMonte(id) {
+  const g = gameById(id), back = montessoriHome;
+  if (g.rounds === "puzzle") return playPuzzle("z");   // les puzzles ouvrent le puzzle du robot
+  activity(g.title, "monte", id, s => mountPetit(s, g.rounds, { onWin: () => { markDone("monte", id); winBar(() => playMonte(id), back, "☰ Montessori", "▶ Encore !", false); } }), back);
+}
 function littleHome(body, esc) {
   const grid = el("div", "igrid little");
   const mk = (ic, nm, hue, fn, done) => { const pb = (S.cards || {})[nm] === "blocked", b = el("button", "tile" + (pb ? " locked" : ""), `<span class="tic emo" aria-hidden="true">${pb ? icon("lock") : ic}</span><b>${esc(nm)}</b>${done && !pb ? '<i class="tdone" aria-hidden="true">⭐</i>' : ""}`); b.setAttribute("aria-label", pb ? `${nm} : bloqué` : nm); b.style.setProperty("--tc", hue); b.onclick = pb ? () => { toast("Cette carte est bloquée par tes parents.", 4000); speak("Cette carte est bloquée par tes parents."); } : fn; return b; };
-  grid.append(...PETITS.map(([id, ic, nm, hue]) => mk(ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
+  grid.append(mk("🏫", "Montessori", "#fde8c8", montessoriHome, CATEGORIES.some(c => c.games.some(g => isDone("monte", g[0])))), ...PETITS.map(([id, ic, nm, hue]) => mk(ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
   body.append(grid);
 }
 // « Les pièces du robot » : à quoi sert chaque pièce (30 pièces, 5 questions à chaque fois)
@@ -440,7 +455,7 @@ const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
 // les cartes de l'accueil que les parents peuvent bloquer ou ouvrir : « auto » = selon la progression, « open » = toujours ouverte, « blocked » = bloquée
 const CARD_NAMES = ["Défi", "Parcours", "Badges", "S'entraîner", "Découvrir", "Programmer", "Puzzle", "Construire", "Coder", "Capteurs", "Créer", "Plus loin", "Mon robot", "Créations"];
-const cardNamesFor = () => (S.age === "z" ? [...PETITS.map(p => p[2]), "Puzzle", "Mon robot"] : CARD_NAMES.filter(nm => !(nm === "Plus loin" && S.age === "a")));
+const cardNamesFor = () => (S.age === "z" ? ["Montessori", ...PETITS.map(p => p[2]), "Puzzle", "Mon robot"] : CARD_NAMES.filter(nm => !(nm === "Plus loin" && S.age === "a")));
 const CARD_ICON = { auto: "✨", open: "🔓", blocked: "🔒" }, CARD_LABEL = { auto: "selon la progression", open: "toujours ouverte", blocked: "bloquée" }, CARD_NEXT = { auto: "open", open: "blocked", blocked: "auto" };
 const PARENT_SCREENS = {
   profil: () => ({ title: "Joueurs", html: "" }),   // écran propre : voir profilesScreen()

@@ -46,7 +46,7 @@ const ps = src("parentsetup.js");
 t("l'âge « 3 – 6 ans » existe pour les parents (profil et joueurs)", /\["z", "3 – 6 ans/.test(ps) && /S\.age === "z"\) \{ S\.placed = true/.test(ps));
 t("les petits : accueil de gros mots-icônes, pas de parcours de programmation", /if \(S\.age === "z"\) return littleHome\(body, esc\)/.test(app) && /function littleHome/.test(app));
 t("les petits : la voix lit tout ce qu'on touche (ils ne lisent pas encore)", U.VOICE_BY_AGE.z === "complet");
-t("les petits : les parents peuvent bloquer chaque activité", /cardNamesFor/.test(app) && /\[\.\.\.PETITS\.map\(p => p\[2\]\), "Puzzle", "Mon robot"\]/.test(app));
+t("les petits : les parents peuvent bloquer chaque activité", /cardNamesFor/.test(app) && /\["Montessori", \.\.\.PETITS\.map\(p => p\[2\]\), "Puzzle", "Mon robot"\]/.test(app));
 t("petits.js connu du service worker", /petits\.js/.test(sw));
 const pz = await import("./puzzle.js"); t("puzzle des petits : 2×2", pz.SIZES.z === 2);
 
