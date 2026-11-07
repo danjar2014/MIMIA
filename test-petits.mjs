@@ -20,6 +20,7 @@ for (let k = 0; k < 300; k++) for (const id of Object.keys(P.ROUNDS)) {
   }
 }
 t("manches : une seule bonne réponse, réponses différentes, ordre et paires complets", ok, why);
+t("couleurs : 5 manches, jamais deux fois la même couleur demandée", (() => { for (let k = 0; k < 200; k++) { const n = P.ROUNDS.couleurs(rnd).map(r => r.say); if (new Set(n).size !== 5) return false; } return true; })());
 t("5 manches (chiffres, lettres, couleurs, espace), 4 (jours, mois), 3 (relier)", ["chiffres", "lettres", "couleurs", "espace"].every(i => P.ROUNDS[i](rnd).length === 5) && P.ROUNDS.jours(rnd).length === 4 && P.ROUNDS.mois(rnd).length === 4 && P.ROUNDS.relier(rnd).length === 3);
 // chiffres : le nombre d'objets affichés est la bonne réponse
 let cOk = true; for (let k = 0; k < 300; k++) { const r = P.countRound(rnd, 9), n = (r.show.match(/<i>/g) || []).length, right = r.options.find(o => o.ok); if (+right.html !== n || right.label !== P.NUMS[n]) cOk = false; }

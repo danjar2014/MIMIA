@@ -32,9 +32,9 @@ export function letterRound(r, used = []) {
   const pool = LETTER_OBJ.filter(x => !used.includes(x[2])), [emo, word, L] = pool[r(pool.length)], wrong = distinct(LETTER_OBJ.map(x => x[2]), 2, r, L);
   return { type: "quiz", L, say: `Touche la lettre ${L}, comme ${word}.`, show: `<span class="ptbig">${emo}</span>`, options: three({ html: L, label: L }, wrong.map(x => ({ html: x, label: x })), r) };
 }
-export function colorRound(r) {
-  const [c3, ...rest] = shuffle(COLORS, r).slice(0, 3), opts = [c3, ...rest].map(([name, hex]) => ({ html: robotSvg({ ...S.robot, color: hex }), label: "robot " + name, name }));
-  return { type: "quiz", say: `Touche le robot ${c3[0]}.`, show: "", options: shuffle(opts.map((o, i) => ({ ...o, ok: i === 0 })), r) };
+export function colorRound(r, used = []) {
+  const pool = COLORS.filter(c => !used.includes(c[0])), first = pool[r(pool.length)], [c3, ...rest] = [first, ...shuffle(COLORS.filter(c => c !== first), r).slice(0, 2)], opts = [c3, ...rest].map(([name, hex]) => ({ html: robotSvg({ ...S.robot, color: hex }), label: "robot " + name, name }));
+  return { type: "quiz", name: c3[0], say: `Touche le robot ${c3[0]}.`, show: "", options: shuffle(opts.map((o, i) => ({ ...o, ok: i === 0 })), r) };
 }
 // « Quel jour vient après … ? » : la bonne réponse et deux autres jours (jamais le jour donné)
 const nextOf = (list, i, r) => { const right = list[i + 1], wrong = shuffle(list.filter(x => x !== list[i] && x !== right), r).slice(0, 2); return three({ html: right, label: right }, wrong.map(w => ({ html: w, label: w })), r); };
@@ -69,7 +69,7 @@ export const ROUNDS = {
   roles: r => distinctRounds(roleRound, 5, r),
   chiffres: r => [countRound(r, 4), countRound(r, 5), countRound(r, 6), countRound(r, 9), countRound(r, 9)],
   lettres: r => { const used = [], out = []; for (let i = 0; i < 5; i++) { const x = letterRound(r, used); used.push(x.L); out.push(x); } return out; },
-  couleurs: r => Array.from({ length: 5 }, () => colorRound(r)),
+  couleurs: r => { const used = [], out = []; for (let i = 0; i < 5; i++) { const x = colorRound(r, used); used.push(x.name); out.push(x); } return out; },
   jours: r => [dayRound(r), dayRound(r), dayRound(r), seqRound(DAYS, "Touche les jours dans l'ordre.", r)],
   mois: r => [monthRound(r), monthRound(r), monthRound(r), seqRound(MONTHS, "Touche les mois dans l'ordre.", r)],
   relier: r => [matchRound(r, 3), matchRound(r, 3), matchRound(r, 4)],
@@ -94,7 +94,7 @@ export function mountPetit(stage, id, hooks = {}, r = rnd) {
   bar.append(rep, dots); stage.append(bar, body, msg);
   const paintDots = () => { dots.innerHTML = rounds.map((_, k) => `<i class="${k < i ? "ok" : k === i ? "now" : ""}"></i>`).join(""); };
   const say = (t, cls) => { msg.className = "gmsg " + (cls || ""); msg.innerHTML = t; };
-  const ask = (text) => { rep.onclick = () => speak(text, { force: true, full: true }); later(() => speak(text, { prio: 1, queue: true, full: true }), 350); };
+  const ask = (text) => { rep.onclick = () => speak(text, { force: true, full: true }); later(() => speak(text, { prio: 1, queue: true, again: true, full: true }), 350); };
   let miss = 0, okBtn = null;
   const wrongTap = (b, hint) => { chime("no"); b.classList.add("no"); if (++miss >= 2 && okBtn && !okBtn.disabled) okBtn.classList.add("glow"); later(() => b.classList.remove("no"), 500); say(hint, "warn"); };
   const goodNext = (ms = 1100) => { busy = true; chime("ok"); say("Bravo !", "ok"); later(() => { i++; if (i >= rounds.length) finish(); else show(); }, ms); };

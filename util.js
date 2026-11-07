@@ -126,7 +126,7 @@ let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 // la salutation (Bonjour, Bonsoir, Salut…) n'est dite qu'à la première ouverture de la journée, pas à chaque rechargement
 export function greetOnce() { const d = new Date(), day = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; if (S.lastHello === day) return false; S.lastHello = day; save(); return true; }
-export const APP_VERSION = "4.6";   // affichée dans l'animation d'accueil
+export const APP_VERSION = "4.7";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
@@ -140,8 +140,9 @@ export function speak(text, opts = {}) {
   const mode = voiceMode(), force = !!opts.force, prio = opts.prio ?? (force ? 3 : 1);
   if (!force && (mode === "demande" || (prio === 0 && mode !== "complet"))) return;
   const raw0 = String(text).replace(/<[^>]+>/g, " "), raw = raw0.trim()[0] === DEVICE ? raw0 : stripNames(raw0), spoken = force || opts.full ? raw : brief(raw), k = normT(spoken), now = Date.now();
-  if (k === lastSaid && now - lastAt < (force ? 800 : 15000)) return;
-  if (!force && similar(k, lastSaid) && now - lastAt < 4000) return;
+  // « again » : une consigne d'un jeu est toujours dite, même si c'est la même phrase que juste avant (deux fois « Touche le robot rouge »)
+  if (!opts.again && k === lastSaid && now - lastAt < (force ? 800 : 15000)) return;
+  if (!force && !opts.again && similar(k, lastSaid) && now - lastAt < 4000) return;
   if (!force && !opts.interrupt && now < speakingUntil && lastPrio > prio) return;
   // un compliment ou une correction en cours n'est jamais coupé par la consigne suivante : elle attend la fin de la phrase (6 s au plus)
   if (force) { clearTimeout(pendT); pendT = 0; }
