@@ -3,7 +3,8 @@
 // (textes, aria-label, bulles, etc.) et à tout ce que la voix lit. Les gabarits {1}, {2}… couvrent les phrases avec des valeurs.
 const LKEY = "robotique-junior-lang";
 let stored = null; try { stored = localStorage.getItem(LKEY); } catch (e) {}
-const LANGS = ["fr", "en", "ar"];
+// l'arabe est prêt (i18n/ar.json) mais désactivé pour le moment : pour le remettre, ajouter "ar" ici et les boutons dans app.js
+const LANGS = ["fr", "en"];
 export const LANG = LANGS.includes(stored) ? stored : "fr";
 export const langChosen = () => LANGS.includes(stored);
 export const setLang = l => { try { localStorage.setItem(LKEY, LANGS.includes(l) ? l : "fr"); } catch (e) {} };

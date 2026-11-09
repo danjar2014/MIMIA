@@ -28,5 +28,5 @@ t("voix : pas de clips français en anglais, voix de l'appareil en anglais", /LA
 const ar = JSON.parse(readFileSync("./i18n/ar.json", "utf8"));
 t("arabe : dictionnaire de plus de 1 200 textes, sans valeur vide", Object.keys(ar).length > 1200 && Object.values(ar).every(v => typeof v === "string" && v.length > 0), String(Object.keys(ar).length));
 t("arabe : jours, mois et couleurs", ar["lundi"] === "الاثنين" && ar["janvier"] === "يناير" && ar["rouge"] === "الأحمر");
-t("arabe : choix de la langue et sens de lecture", /ar: "ar-SA"/.test(src("i18n.js")) && /dir = RTL \? "rtl"/.test(src("i18n.js")) && /data-l="ar"/.test(src("app.js")));
+t("arabe : prêt mais désactivé (ni bouton ni choix possible), sens de lecture prévu", /ar: "ar-SA"/.test(src("i18n.js")) && /dir = RTL \? "rtl"/.test(src("i18n.js")) && /const LANGS = \["fr", "en"\]/.test(src("i18n.js")));
 console.log(bad ? "PROBLEMES: " + bad : "L'ANGLAIS FONCTIONNE");

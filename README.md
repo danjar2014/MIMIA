@@ -156,7 +156,7 @@ index.html, style.css, app.js (écrans), util.js, robot.js (dessin et parties), 
 - Fabrication du dictionnaire : `node i18n/extract.mjs` (extrait les textes du code), traductions dans `i18n/tr*/`, `i18n/extra.json` (mots isolés), `node i18n/merge.mjs` (écrit `en.json`), `node i18n/gaps.mjs` (cherche les textes français non couverts). Test : `node test-i18n.mjs`.
 - Limite connue : les noms des commandes de programmation (avancer(), tournerDroite(), lampe()…) restent en français, ce sont des identifiants du langage de l'atelier ; leurs explications sont traduites.
 
-## العربية (v 5.1)
+## العربية (prête, désactivée pour le moment)
 - Troisième langue : l'arabe, choisi comme les deux autres (écran de départ ou espace parents, écran « Son »). L'interface passe de droite à gauche (`dir="rtl"`), la voix est celle de l'appareil en `ar-SA`.
 - Dictionnaire `i18n/ar.json`, fabriqué par `node i18n/merge.mjs ar` à partir de `i18n/ar-tr*/` et `i18n/ar-extra.json` (mêmes numéros que l'anglais, lots `strings1..5.json`). Couvert : l'accueil, les jeux des 3-6 ans (Montessori, chiffres, lettres, couleurs, jours, mois…), les parents, le code, la configuration, les badges. **Pas encore traduit** : les leçons de programmation (blocs, code, cartes électroniques, ROS) et les messages d'erreur Python — ils restent en français tant qu'ils ne sont pas traduits.
 - Compliments et salutations en arabe avec accord fille / garçon ; les lettres du jeu suivent les mots arabes (ع مثل عجلة).
