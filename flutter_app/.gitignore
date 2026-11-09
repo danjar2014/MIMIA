@@ -46,3 +46,9 @@ app.*.map.json
 
 # copie de la version web, refaite par sync_web.ps1
 /assets/www/
+
+# signature de l'appli (ne JAMAIS publier)
+android/key.properties
+android/upload-keystore.jks
+*.jks
+*.keystore

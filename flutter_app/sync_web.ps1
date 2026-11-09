@@ -6,6 +6,9 @@ New-Item -ItemType Directory -Force $dst | Out-Null
 Get-ChildItem $root -File | Where-Object {
   $_.Extension -in '.js','.css','.html','.png','.svg','.webmanifest','.mp3','.opus','.json','.woff2' -and $_.Name -notlike 'test-*' -and $_.Name -ne 'package.json'
 } | Copy-Item -Destination $dst
+# dictionnaire anglais (la langue se choisit au premier lancement)
+New-Item -ItemType Directory -Force (Join-Path $dst 'i18n') | Out-Null
+Copy-Item (Join-Path $root 'i18n\en.json') (Join-Path $dst 'i18n')
 # voix enregistrées (femme F5) : manifeste + clips
 $v = Join-Path $root 'voice'
 if (Test-Path (Join-Path $v 'manifest.json')) {
