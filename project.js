@@ -84,16 +84,16 @@ export function mountProject(stage, hooks = {}, sheet = null) {
     const fiche = el("div", "fiche"), sheetName = el("h2", "", esc(nameIn.value));
     const rows = el("ul", "crows"); rows.append(el("li", "", "⏳ Les essais sont en cours…"));
     fiche.append(el("div", "fhead", `<div class="fbot">${robotSvg(S.robot)}</div><div>${""}</div>`), sheetName,
-      el("div", "fsub", `${p.icon} ${esc(p.title)} · ingénieur : <b>${esc(S.name || "Petit roboticien")}</b> · ${esc(P.date || new Date().toLocaleDateString(document.documentElement.lang === "en" ? "en-GB" : "fr-FR"))}`),
+      el("div", "fsub", `${p.icon} ${esc(p.title)} · ingénieur : <b>${esc(S.name || "Petit roboticien")}</b> · ${esc(P.date || new Date().toLocaleDateString(({ en: "en-GB", ar: "ar-SA-u-nu-latn" })[document.documentElement.lang] || "fr-FR"))}`),
       el("h4", "", "🧩 Pièces du robot"), el("ul", "fparts", projectParts(p).map(k => `<li>${COMP[k].icon} <b>${COMP[k].court}</b> — ${k === "battery" ? "l'énergie" : esc(p.why[k])}</li>`).join("")),
       el("h4", "", "🎯 Ce que sait faire mon robot"), el("ul", "", p.features.map(f => `<li>${esc(f)}</li>`).join("")),
       el("h4", "", "✅ Essais réussis"), rows, el("h4", "", `⌨️ Mon programme (${lang === "py" ? "Python" : "JavaScript"})`));
     const pre = el("pre", "excode"); pre.textContent = code || "(pas de programme enregistré)"; pre.dataset.say = "Ton programme. " + speakCode(code, lang); fiche.append(pre);
     const act = el("div", "gctl no-print"), pr = el("button", "gb go", "🖨️ Imprimer ma fiche"), sv = el("button", "gb", "💾 Garder dans Mes créations");
     pr.onclick = () => { document.body.classList.add("print-fiche"); window.print(); setTimeout(() => document.body.classList.remove("print-fiche"), 500); };
-    sv.onclick = () => hooks.onSave && hooks.onSave(clone({ pid: P.pid, name: P.name || nameIn.value, code: P.code, codeLang: lang, date: P.date || new Date().toLocaleDateString(document.documentElement.lang === "en" ? "en-GB" : "fr-FR"), parts: P.parts }));
+    sv.onclick = () => hooks.onSave && hooks.onSave(clone({ pid: P.pid, name: P.name || nameIn.value, code: P.code, codeLang: lang, date: P.date || new Date().toLocaleDateString(({ en: "en-GB", ar: "ar-SA-u-nu-latn" })[document.documentElement.lang] || "fr-FR"), parts: P.parts }));
     act.append(pr, sv);
-    if (!sheet) { const fin = el("button", "big-btn", P.finished ? "✔ Projet terminé" : "🏁 Terminer le Grand Projet"); fin.onclick = () => { P.date = P.date || new Date().toLocaleDateString(document.documentElement.lang === "en" ? "en-GB" : "fr-FR"); P.name = P.name || nameIn.value; P.finished = true; save(); fin.textContent = "✔ Projet terminé"; chime("done"); hooks.onFinish && hooks.onFinish(); }; body.append(el("label", "pnamel", "Nom de mon robot : "), nameIn, fiche, act, fin); }
+    if (!sheet) { const fin = el("button", "big-btn", P.finished ? "✔ Projet terminé" : "🏁 Terminer le Grand Projet"); fin.onclick = () => { P.date = P.date || new Date().toLocaleDateString(({ en: "en-GB", ar: "ar-SA-u-nu-latn" })[document.documentElement.lang] || "fr-FR"); P.name = P.name || nameIn.value; P.finished = true; save(); fin.textContent = "✔ Projet terminé"; chime("done"); hooks.onFinish && hooks.onFinish(); }; body.append(el("label", "pnamel", "Nom de mon robot : "), nameIn, fiche, act, fin); }
     else body.append(fiche, act);
     // les essais sont rejoués pour de vrai avec le programme enregistré
     const r = code ? await runRemote({ kind: "brain", goal: p.goal, lang }, code) : null; if (!alive) return; rows.innerHTML = "";

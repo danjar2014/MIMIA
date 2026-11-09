@@ -9,9 +9,12 @@ export const DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"
 export const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 // compter, nommer les lettres, relier : on utilise les pièces d'un vrai robot (roue, moteur, capteurs, haut-parleur, laser, wifi, contrôleur…)
 export const COUNT_OBJ = PARTS.filter(p => p.plural).map(p => [p.svg, p.plural]);
-// en anglais, les lettres suivent les mots anglais (W comme wheel…)
-const EN_LETTERS = { roue: ["W", "wheel"], moteur: ["M", "motor"], engrenage: ["G", "gear"], pile: ["B", "battery"], lampe: ["L", "lamp"], "haut-parleur": ["S", "speaker"], camera: ["C", "camera"], antenne: ["A", "antenna"], ventilateur: ["F", "fan"], helice: ["P", "propeller"], chenille: ["T", "track"] };
-export const LETTER_OBJ = LANG === "en" ? PARTS.filter(p => EN_LETTERS[p.id]).map(p => [p.svg, EN_LETTERS[p.id][1], EN_LETTERS[p.id][0]]) : PARTS.filter(p => p.letter).map(p => [p.svg, p.word, p.letter]);
+// en anglais et en arabe, les lettres suivent les mots de la langue (W comme wheel, ع مثل عجلة)
+const LETTERS = {
+  en: { roue: ["W", "wheel"], moteur: ["M", "motor"], engrenage: ["G", "gear"], pile: ["B", "battery"], lampe: ["L", "lamp"], "haut-parleur": ["S", "speaker"], camera: ["C", "camera"], antenne: ["A", "antenna"], ventilateur: ["F", "fan"], helice: ["P", "propeller"], chenille: ["T", "track"] },
+  ar: { roue: ["ع", "عجلة"], pile: ["ب", "بطارية"], camera: ["ك", "كاميرا"], engrenage: ["ت", "ترس"], antenne: ["ه", "هوائي"], chenille: ["ج", "جنزير"], ecran: ["ش", "شاشة"], laser: ["ل", "ليزر"], fil: ["س", "سلك"], ventilateur: ["م", "مروحة"] }
+}[LANG];
+export const LETTER_OBJ = LETTERS ? PARTS.filter(p => LETTERS[p.id]).map(p => [p.svg, LETTERS[p.id][1], LETTERS[p.id][0]]) : PARTS.filter(p => p.letter).map(p => [p.svg, p.word, p.letter]);
 export const COLORS = [["rouge", "#e24b4b"], ["bleu", "#3f7fd6"], ["vert", "#4caf6a"], ["jaune", "#f4c430"], ["orange", "#f08a24"], ["violet", "#8e5bd6"], ["rose", "#ec6aa5"]];
 export const MATCH_OBJ = PARTS.filter(p => ["roue", "moteur", "pile", "lampe", "haut-parleur", "camera", "antenne", "controleur", "bras", "ventilateur", "horloge", "satellite", "capteur-distance", "pince"].includes(p.id)).map(p => p.svg);
 export const SPACE_OBJ = [["🌙", "la lune"], ["☀️", "le soleil"], ["🌍", "la Terre"], ["⭐", "l'étoile"], ["🚀", "la fusée"], ["🪐", "la planète"]];
@@ -32,7 +35,7 @@ export function countRound(r, max) {
 }
 export function letterRound(r, used = []) {
   const pool = LETTER_OBJ.filter(x => !used.includes(x[2])), [emo, word, L] = pool[r(pool.length)], wrong = distinct(LETTER_OBJ.map(x => x[2]), 2, r, L);
-  return { type: "quiz", L, say: LANG === "en" ? `Touch the letter ${L}, as in ${word}.` : `Touche la lettre ${L}, comme ${word}.`, show: `<span class="ptbig">${emo}</span>`, options: three({ html: L, label: L }, wrong.map(x => ({ html: x, label: x })), r) };
+  return { type: "quiz", L, say: LANG === "en" ? `Touch the letter ${L}, as in ${word}.` : LANG === "ar" ? `المس الحرف ${L}، مثل ${word}.` : `Touche la lettre ${L}, comme ${word}.`, show: `<span class="ptbig">${emo}</span>`, options: three({ html: L, label: L }, wrong.map(x => ({ html: x, label: x })), r) };
 }
 export function colorRound(r, used = []) {
   const pool = COLORS.filter(c => !used.includes(c[0])), first = pool[r(pool.length)], [c3, ...rest] = [first, ...shuffle(COLORS.filter(c => c !== first), r).slice(0, 2)], opts = [c3, ...rest].map(([name, hex]) => ({ html: robotSvg({ ...S.robot, color: hex }), label: "robot " + name, name }));

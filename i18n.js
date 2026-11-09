@@ -3,18 +3,20 @@
 // (textes, aria-label, bulles, etc.) et à tout ce que la voix lit. Les gabarits {1}, {2}… couvrent les phrases avec des valeurs.
 const LKEY = "robotique-junior-lang";
 let stored = null; try { stored = localStorage.getItem(LKEY); } catch (e) {}
-export const LANG = stored === "en" ? "en" : "fr";
-export const langChosen = () => stored === "en" || stored === "fr";
-export const setLang = l => { try { localStorage.setItem(LKEY, l === "en" ? "en" : "fr"); } catch (e) {} };
-export const SPEECH_LANG = LANG === "en" ? "en-US" : "fr-FR";
-try { document.documentElement.lang = LANG; } catch (e) {}
+const LANGS = ["fr", "en", "ar"];
+export const LANG = LANGS.includes(stored) ? stored : "fr";
+export const langChosen = () => LANGS.includes(stored);
+export const setLang = l => { try { localStorage.setItem(LKEY, LANGS.includes(l) ? l : "fr"); } catch (e) {} };
+export const SPEECH_LANG = { fr: "fr-FR", en: "en-US", ar: "ar-SA" }[LANG];
+export const RTL = LANG === "ar";   // l'arabe s'écrit de droite à gauche
+try { document.documentElement.lang = LANG; document.documentElement.dir = RTL ? "rtl" : "ltr"; } catch (e) {}
 
 const norm = s => String(s).replace(/[  ]/g, " ").replace(/\s+/g, " ").replace(/\s+([:;!?])/g, "$1");   // « Bravo !» et « Bravo! » sont le même texte
 const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 let dict = Object.create(null), tpls = [], ready = LANG === "fr";
-if (LANG === "en") {
+if (LANG !== "fr") {
   try {
-    const r = await fetch("i18n/en.json"); const j = await r.json();
+    const r = await fetch("i18n/" + LANG + ".json"); const j = await r.json();
     for (const k of Object.keys(j)) {
       const key = norm(k).trim(), val = j[k];
       if (/\{\d+\}/.test(key)) {
@@ -86,7 +88,7 @@ function trCore(core, depth = 0) {
   return core;
 }
 export function tr(s) {
-  if (LANG !== "en" || !ready || s == null || s === "") return s;
+  if (LANG === "fr" || !ready || s == null || s === "") return s;
   const str = String(s); if (cache.has(str)) return cache.get(str);
   const lead = /^\s*/.exec(str)[0], trail = /\s*$/.exec(str)[0], core = norm(str.trim()); let out = trCore(core);
   out = out === core ? str : lead + out + trail; if (cache.size > 6000) cache.clear(); cache.set(str, out); return out;
@@ -107,7 +109,7 @@ function doTree(root) {
   doAttrs(root); const w = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT); let n;
   while ((n = w.nextNode())) { if (n.nodeType === 3) doText(n); else if (!SKIP.has(n.tagName)) doAttrs(n); }
 }
-if (LANG === "en" && ready && typeof MutationObserver !== "undefined") {
+if (LANG !== "fr" && ready && typeof MutationObserver !== "undefined") {
   const start = () => {
     new MutationObserver(ms => { for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(doTree); else if (m.type === "characterData") doText(m.target); else if (m.type === "attributes") doAttrs(m.target); } })
       .observe(document.documentElement, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ATTRS });

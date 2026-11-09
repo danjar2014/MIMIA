@@ -7,7 +7,7 @@ import { S, LANG } from "./util.js";
 const words = list => list.map(w => ({ html: `<b>${w}</b>`, label: w }));
 export const PETIT_LESSONS = {
   chiffres: { say: "Les nombres servent à compter. Compte avec moi, de un jusqu'à dix.", items: NUMS.slice(1).map((w, i) => ({ html: `<b>${i + 1}</b>`, label: w })) },
-  lettres: { say: "Chaque lettre commence un mot. Écoute.", items: LETTER_OBJ.slice(0, 6).map(([svg, w, L]) => ({ html: `<span class="ptbig">${svg}</span><b>${L}</b>`, label: LANG === "en" ? `${L}, as in ${w}` : `${L}, comme ${w}` })) },
+  lettres: { say: "Chaque lettre commence un mot. Écoute.", items: LETTER_OBJ.slice(0, 6).map(([svg, w, L]) => ({ html: `<span class="ptbig">${svg}</span><b>${L}</b>`, label: LANG === "en" ? `${L}, as in ${w}` : LANG === "ar" ? `${L}، مثل ${w}` : `${L}, comme ${w}` })) },
   couleurs: { say: "Voici les couleurs des robots. Écoute leurs noms.", items: COLORS.map(([n, hex]) => ({ html: `<span class="ptbig">${robotSvg({ ...S.robot, color: hex })}</span>`, label: n })) },
   pieces: { say: "Un robot est fait de plusieurs pièces. Voici quelques pièces.", items: PARTS.slice(0, 6).map(p => ({ html: `<span class="ptbig">${p.svg}</span>`, label: p.name })) },
   jours: { say: "Une semaine est composée de sept jours. Écoute-les un par un.", items: words(DAYS) },

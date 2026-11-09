@@ -25,4 +25,8 @@ t("l'anglais déjà anglais ne change pas", I.tr("Hello world") === "Hello world
 t("sw.js connaît i18n.js et le dictionnaire", /i18n\.js/.test(src("sw.js")) && /i18n\/en\.json/.test(src("sw.js")));
 t("premier écran : choix de la langue", /function chooseLanguage/.test(src("app.js")) && /if \(!langChosen\(\)\) chooseLanguage\(\); else startApp\(\);/.test(src("app.js")));
 t("voix : pas de clips français en anglais, voix de l'appareil en anglais", /LANG !== "fr"\) return false/.test(src("voiceclips.js")) && /SPEECH_LANG/.test(src("util.js")));
+const ar = JSON.parse(readFileSync("./i18n/ar.json", "utf8"));
+t("arabe : dictionnaire de plus de 1 200 textes, sans valeur vide", Object.keys(ar).length > 1200 && Object.values(ar).every(v => typeof v === "string" && v.length > 0), String(Object.keys(ar).length));
+t("arabe : jours, mois et couleurs", ar["lundi"] === "الاثنين" && ar["janvier"] === "يناير" && ar["rouge"] === "الأحمر");
+t("arabe : choix de la langue et sens de lecture", /ar: "ar-SA"/.test(src("i18n.js")) && /dir = RTL \? "rtl"/.test(src("i18n.js")) && /data-l="ar"/.test(src("app.js")));
 console.log(bad ? "PROBLEMES: " + bad : "L'ANGLAIS FONCTIONNE");

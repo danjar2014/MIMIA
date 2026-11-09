@@ -437,15 +437,15 @@ body.calm .hface svg{animation:none}
 #app{height:calc(100% - var(--dock) - env(safe-area-inset-bottom))!important;padding-bottom:6px!important}
 #dock{position:fixed;left:0;right:0;bottom:0;height:calc(var(--dock) + env(safe-area-inset-bottom));padding:0 12px env(safe-area-inset-bottom);display:flex;align-items:center;justify-content:center;gap:12px;background:rgba(255,255,255,.97);border-top:3px solid var(--line);z-index:45;box-sizing:border-box}
 #dock .slot{display:flex;align-items:center;justify-content:center;min-height:56px}
-#dock .slot-back{min-width:64px;margin-right:auto}
-#dock .slot-parent{min-width:60px;margin-left:auto}
+#dock .slot-back{min-width:64px;margin-inline-end:auto}
+#dock .slot-parent{min-width:60px;margin-inline-start:auto}
 #dock .dockback{position:static!important;width:64px;height:64px;box-shadow:none}
 #dock #mascot{position:relative!important;left:auto!important;bottom:auto!important;top:auto!important;right:auto!important;width:56px;z-index:46}
 #dock #mascot .mbub{bottom:calc(100% + 6px);left:0}
 #dock #voicebar{position:static!important;display:flex;flex-direction:row;gap:10px}
 #dock .wlock{position:static!important;width:60px;height:60px;font-size:26px;border-width:3px}
 #overlay{bottom:calc(var(--dock) + env(safe-area-inset-bottom));z-index:44}
-.phead>#pback{position:fixed;left:12px;bottom:calc(7px + env(safe-area-inset-bottom));right:auto;width:64px;height:64px;z-index:60;box-shadow:none}
+.phead>#pback{position:fixed;inset-inline-start:12px;bottom:calc(7px + env(safe-area-inset-bottom));inset-inline-end:auto;width:64px;height:64px;z-index:60;box-shadow:none}
 .toast{bottom:calc(var(--dock) + 16px + env(safe-area-inset-bottom))}
 .splash .sp-go{position:absolute;left:50%;bottom:calc(60px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;background:#ffd54a;color:#1d1a4d;border:0;border-radius:999px;padding:14px 26px;font:800 20px system-ui,sans-serif;box-shadow:0 6px 18px #0006;animation:glowp .8s ease-in-out infinite alternate!important;animation-play-state:running!important}
 .splash.wait,.splash.wait *:not(.sp-go){animation-play-state:paused!important}
@@ -459,3 +459,10 @@ body.hasinstall #overlay{bottom:calc(var(--dock) + 48px + env(safe-area-inset-bo
 .langpick{position:fixed;inset:0;z-index:500;background:radial-gradient(ellipse at 50% 100%,#4b3a9a,#15133f 60%,#090920);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px;text-align:center}
 .langpick h1{font:800 30px/1.25 system-ui,sans-serif;margin:0}.langpick small{font-size:20px;opacity:.85;font-weight:600}
 .langbtns{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}.langbtn{background:#fff;color:#1d1a4d;border:0;border-radius:24px;padding:18px 26px;min-width:150px;font:800 24px system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;box-shadow:0 8px 22px #0006}.langbtn span{font-size:56px}
+
+/* arabe : de droite à gauche */
+[dir=rtl] body{font-family:"Noto Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif}
+[dir=rtl] .iconbtn svg,[dir=rtl] .dockback{transform:scaleX(-1)}
+[dir=rtl] .langpick,[dir=rtl] .ptdots{direction:ltr}
+[dir=rtl] .ptcount,[dir=rtl] .ptbars,[dir=rtl] .ptseq,[dir=rtl] .ptmatch{direction:ltr}
+[dir=rtl] pre,[dir=rtl] code,[dir=rtl] textarea,[dir=rtl] .excode{direction:ltr;text-align:left}
