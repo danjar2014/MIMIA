@@ -1,0 +1,25 @@
+0|Listen
+1|Add a player
+2|=
+3|=
+4|=
+5|Save
+6|Close the parent area
+7|=
+8|Points today: {1} out of {2}
+9|Answer
+10|Streak: {7} day{8}
+11|Delete this player
+12|Free spot for {2}. Choose an item in the drawer.
+13|Remove {2} from the board
+14|A wire. Touch it to unplug it.
+15|=
+16|=
+17|=
+18|=
+19|=
+20|=
+21|Child's first name
+22|Recovery code
+23|Yes, erase everything
+24|=

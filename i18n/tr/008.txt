@@ -1,0 +1,200 @@
+1500|Says that in this command we will change the box or boxes created outside: {1}.
+1501|divided (whole) by
+1502|Divides the box by
+1503|Writes on the screen: {1}.
+1504|Writes on the screen the value of the box "{1}".
+1505|counting down to {1} ({2} not reached)
+1506|counting down to {1} (included)
+1507|Removes
+1508|is different from
+1509|is equal to
+1510|is greater than or equal to
+1511|is greater than
+1512|is less than or equal to
+1513|is less than
+1514|AND
+1515|Turns off the lamp.
+1516|Makes the robot move forward one step.
+1517|Makes the robot move forward {1} steps.
+1518|Makes the wheels roll.
+1519|Makes it quiet.
+1520|Makes the speaker sound.
+1521|Turns the robot right, on the spot.
+1522|Turns the robot left, on the spot.
+1523|there is no star here
+1524|there is no obstacle ahead
+1525|there is an obstacle ahead
+1526|there is a star here
+1527|up to {1} ({2} is not reached)
+1528|up to {1} (included)
+1529|the distance
+1530|the distance is $1 cm at most
+1531|the distance is $1 cm or more
+1532|the distance is less than $1 cm
+1533|the distance is more than $1 cm
+1534|the length of $1
+1535|the light is low (below $1)
+1536|the light is strong ($1 or more)
+1537|Runs your command "{1}" (the one you created above).
+1538|the remainder of $1 divided by $2
+1539|the robot has arrived
+1540|the robot has not arrived yet
+1541|The robot picks up the star that is under it.
+1542|the wheels
+1543|Multiplies the box by
+1544|Does nothing (this line is a placeholder).
+1545|order to the robot or to the screen
+1546|orders to the robot or to the screen
+1547|OR
+1548|starts at {1}, {2}, {3}
+1549|NOT $1
+1550|Goes straight to the next turn of the loop.
+1551|For each item of {1}: "{2}" takes each value, one by one.
+1552|Repeats: "{1}" starts at {2} and goes up to {3} ({4} is never reached){5}.
+1553|Repeats {1} times. "{2}" is 0, then 1, then 2… up to {3} - 1.
+1554|if it
+1555|If it
+1556|If
+1557|Otherwise (in all other cases), what is inside is run.
+1558|Otherwise, if
+1559|Leaves the loop right away.
+1560|As long as it
+1561|As long as {1}, we repeat what is inside.
+1562|Ends the command and gives back this result: {1}.
+1563|Ends the command right away.
+1564|Your program has {1} useful line{2}{4}. The computer reads them from top to bottom.
+1565|Your program is empty for now.
+1566|{1} The small steps on the grid show its path. Change your program and run it again 🙂
+1567|🎉 Well done! Your program worked{1}
+1568|👀 Look: while you place blocks, the code writes itself! Each block = one line.
+1569|Well done! Your program worked.
+1570|The robot is running your program…
+1571|The robot stopped, but it didn't reach the flag 🏁.
+1572|The robot is going round in circles! Look at your loop: does it ever end?
+1573|Program erased. Touch the blocks to start again.
+1574|Your program is empty. Touch the blocks above to add them 👆
+1575|Touch blocks to write your program, then ▶ Run.
+1576|{1} stars
+1577|{1} to the {2}
+1578|{1} to the {2}
+1579|💡 Try another path: this course is difficult.
+1580|💡 Touch the blocks to guide the robot.
+1581|After your {1} block, add "{2}".
+1582|After your start
+1583|At block {1}, try "{2}".
+1584|start block
+1585|Start with "{1}".
+1586|Start with a block.
+1587|start
+1588|Try another path.
+1589|star
+1590|{1} ⭐ missing.
+1591|the star
+1592|the robot's square
+1593|The flag 🏁 is {1}.
+1594|To start
+1595|Your blocks are the right ones, but there are too many. Remove one.
+1596|Your program already works: press ▶ Run!
+1597|Your program never stops. Look at your loop.
+1598|Your robot bumps into an obstacle or the edge. You need to turn first!
+1599|Your robot is on the flag, but stars are missing.
+1600|Your robot stops {1} from the flag.
+1601|Touch the blocks to guide the robot.
+1602|One solution: {1}.
+1603|One solution starts with "{1}".
+1604|=
+1605|To install: open the browser menu (⋮), then "Install app" or "Add to home screen".
+1606|To install: touch the Share button, then "Add to Home Screen".
+1607|{1} Bring the robot close to the wall (less than 20 cm)
+1608|{1} Make the lamp turn on
+1609|{2} Move it away (more than 60 cm)
+1610|{2} Make it turn off
+1611|▶ Run the robot
+1612|▶ Test over a whole day
+1613|☀️ ← slide to change the light → 🌙
+1614|⬜ Bring the robot close to the wall (less than 20 cm)
+1615|⬜ Move it away (more than 60 cm)
+1616|⬜ Make the lamp turn on
+1617|⬜ Make it turn off
+1618|🎉 Well done! The lamp turns red when the wall is too close: it's an alert.
+1619|🎉 Well done! The lamp turns on at night and stays off during the day. It's an "if… then" rule.
+1620|🎉 Well done! You saw how the robot reacts to light.
+1621|🎉 Perfect! It stops at {1} cm from the wall. A real engineer adjusts their sensors by testing!
+1622|💥 It hit the wall (it stopped at {1} cm). It needs more room to brake: increase the number.
+1623|Distance sensor:
+1624|Light sensor:
+1625|Engineer's challenge: set the braking threshold.
+1626|Write the robot's rule yourself! Compose the sentence with the menus, then test it over a whole day and night.
+1627|Slide to change the distance
+1628|It stopped very far from the wall ({1} cm). It can move forward a little more: decrease the number.
+1629|the distance is smaller than
+1630|The lamp never turns on at night. Try another rule 🙂
+1631|The lamp stays on in broad daylight: that wastes energy. Change the rule 🙂
+1632|The lamp turns on during the day and stays off at night: that's the opposite of what we want!
+1633|The light sensor sends a number to the brain: small = dark, big = bright. Here the rule is already written: "If it's dark, the lamp turns on".
+1634|The robot moves forward…
+1635|the robot brakes.
+1636|The robot rolls toward the wall. When it brakes, it needs a little room to stop (about 8 cm). Choose the right number so it stops just before the wall, without touching it!
+1637|The robot's eyes measure the distance to the wall, in centimetres. Robot rule: "If the distance is smaller than 20 cm, the lamp turns red".
+1638|Perfect! It stops just before the wall.
+1639|turns off
+1640|✅ You discovered everything!
+1641|👉 There is a mistake in the list. Touch 🧹 to start again.
+1642|👉 Your program is ready: touch ▶.
+1643|🙂 {1} Try again!
+1644|🙂 {1} Touch 🧹 to change your list and try again.
+1645|🙂 The list is empty. First touch some orders!
+1646|Your turn, no help! If you get stuck, touch 💡.
+1647|Ouch! The robot hit something.
+1648|Ouch! The robot ran into the wall. Maybe you needed to turn BEFORE moving forward?
+1649|Ouch! The robot can't go that way. Change the order and start again.
+1650|Ouch! The robot can't go that way. Try another order.
+1651|Add the ⬆️ order 4 times to the list, then touch ▶ to run your program.
+1652|Careful! "Turn then move forward" is not the same as "move forward then turn". The robot does the orders exactly in the order of the list.
+1653|Well done! Four orders, one single program.
+1654|Well done! You gave three "move forward" orders.
+1655|Well done! You know how to arrange orders.
+1656|Well done, you programmed a robot! Now you will discover the parts of the robot, then write smarter and smarter programs.
+1657|What is this screen?
+1658|What is an order?
+1659|What is a program?
+1660|What is a robot?
+1661|This is the field: it's where the robot moves.
+1662|This is a pebble.
+1663|This is a pebble. The robot can't go through it!
+1664|This is a flag, not the robot. Look for the little machine with eyes!
+1665|This is a flag.
+1666|This is an order. It means: move forward one step.
+1667|This is a robot.
+1668|This is a robot. A robot is a machine that can move and do things.
+1669|This is a star.
+1670|This is a star. It's pretty, but it's not what we're looking for.
+1671|This makes a pause.
+1672|This runs the program.
+1673|This pauses. To run, look for the button with the triangle.
+1674|This pauses the game. You can breathe calmly.
+1675|This takes you back.
+1676|This, ↷, means: turn right. That, ↶, means: turn left. The robot turns on the spot, it doesn't move forward.
+1677|These are the blocks. Each block is an order for the robot.
+1678|It helps when you're stuck, but it doesn't run anything.
+1679|This gives a hint.
+1680|That is a flag. In our games, the robot has to reach the flag.
+1681|This runs your program: the robot reads your list of orders.
+1682|This reads aloud what is written on the screen.
+1683|This gives you a hint when you're stuck.
+1684|This one turns left. Look carefully at the direction of the arrow.
+1685|Are these two programs the same? "⬆️ ↷" and "↷ ⬆️"
+1686|This order makes the robot move forward, not turn.
+1687|This order makes it move forward.
+1688|This order turns right.
+1689|This order turns left.
+1690|This order means: move forward one step.
+1691|This order means: turn right, on the spot.
+1692|This order means: turn left, on the spot.
+1693|This time, you have to turn. Try the orders!
+1694|Jumbled up
+1695|In which direction does the robot read the program?
+1696|From top to bottom
+1697|Clears the list of orders.
+1698|{1} left to discover.
+1699|One more! Put the 4 orders in the right order.

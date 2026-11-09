@@ -1,0 +1,22 @@
+0|Level 0
+1|Level 1
+2|Level 2
+3|Level 3
+4|Artificial intelligence in robotics
+5|Pause (minutes)
+6|Loop in real code
+7|Play for 14 days.
+8|Play for 30 days.
+9|Play for 7 days.
+10|The alarm keeps going, without a tick
+11|Lamp (LED)
+12|Broad daylight, clear path
+13|Line {1}, column {2}
+14|Line 1
+15|Two sensors in code
+16|What is 7 % 2?
+17|Run {1}().
+18|=
+19|Red fish, blue fish
+20|Which number comes before {1}?
+21|=

@@ -1,0 +1,200 @@
+500|Create your first "My block".
+501|Give your robot a distance sensor.
+502|Give the brain a memory.
+503|Write the brain's memory in real code.
+504|Write your first function.
+505|Write your first real program.
+506|Write your very first program.
+507|Write a for loop in Python or JavaScript.
+508|Electrician
+509|Make the robot move forward with a while loop.
+510|Expert Engineer
+511|I understand my code
+512|I create a function
+513|I decide on my own
+514|I give orders
+515|I don't give up
+516|I drive with code
+517|Play 3 days almost in a row (a rest day is allowed).
+518|Play 7 days almost in a row.
+519|Play for 3 days (not necessarily in a row).
+520|The programmed brain
+521|The robot's eyes
+522|My own command
+523|My first program
+524|First daily challenge
+525|First step
+526|First lines of code
+527|Program the brain with blocks.
+528|Watch your blocks turn into real code.
+529|Complete your first "repeat" loop.
+530|Complete your first "if" condition.
+531|Complete your very first step.
+532|Complete a step you tried a lot on (6 tries or more).
+533|King of the loop
+534|3-day gentle streak
+535|7-day gentle streak
+536|Finish 7 daily challenges.
+537|Finish the lesson "What is an order?".
+538|Finish the Big Project.
+539|Finish the whole adventure {1}.
+540|Finish a daily challenge.
+541|Translator
+542|An elephant's memory
+543|Use "Explain my program".
+544|{1}{2} at the start of each turn, everything is off
+545|=
+546|=
+547|=
+548|=
+549|=
+550|(empty) touch here to choose this spot
+551|🧩 My block
+552|then
+553|in the loop
+554|My block
+555|publish "forward" on /cmd
+556|publish "right" on /cmd
+557|publish "left" on /cmd
+558|pick up the star
+559|repeat
+560|if
+561|while
+562|Touch a block above to add it here
+563|turn right
+564|turn left
+565|"if the button was just pressed" → "change the memory". Then another "if the memory says YES" → "turn on the lamp".
+566|"if obstacle near" → "remember: YES". "if the button is pressed" → "remember: NO". "if the memory says YES" → "turn on the lamp".
+567|"if obstacle near" → turn on the lamp, and inside it another "if obstacle very near" → make it sound.
+568|{1}, obstacle at {2} cm
+569|⚠️ The + and − wires are swapped: the brain gets no power.
+570|⚠️ Your program uses "{1}", but it is not placed on the board.
+571|⚠️ Your program uses "{1}", but it is not connected to the brain ({2}).
+572|✅ The brain has power.
+573|📝 The memory remembers: {1}.
+574|Two-level alarm
+575|Turn on the robot's lamp.
+576|turn on the lamp
+577|stop the wheels
+578|At the start
+579|Battery
+580|Button
+581|Connect a sensor and an output so the robot can sense and act.
+582|It's the same point.
+583|it's a "tick" (every half second)
+584|Distance sensor
+585|Light sensor
+586|Free board
+587|Free board: build whatever you want and see what your robot does. You can also choose the power with + and − (advanced mode).
+588|These two points don't go together. Look at the colours: you connect two points of the same family (red with red, blue with blue, green with green).
+589|This time, YOU write the brain's program! Connect the button (input) and the lamp (output), then tell the brain: when the button is pressed, turn on the lamp.
+590|change the memory (YES ↔ NO)
+591|clear path (20 cm or more)
+592|Start with power: touch the battery 🔋 in the drawer at the bottom to place it on the board.
+593|Build a complete explorer: it rolls, stops in front of an obstacle, and then the lamp lights up and the speaker sounds.
+594|Build a robot that rolls but stops in front of an obstacle. The sensor sends the information to the brain (input), the brain gives the order to the wheels (output).
+595|Build an automatic lamp: it turns on by itself when it gets dark.
+596|Two sensors
+597|Write the program of a careful robot: the wheels turn, unless an obstacle is near. Remember: without an order, the wheels stay stopped.
+598|It gives power to the whole robot.
+599|It lights up to show what the robot is thinking.
+600|Right now, the brain gives no orders: everything stays off.
+601|Right now, the brain orders: {1}
+602|power
+603|input 1
+604|input 2
+605|INPUT, blue point
+606|Try "if clear path" then "make the wheels roll". Or: "make the wheels roll", then "if obstacle near" → "stop the wheels".
+607|turn off the lamp
+608|make the wheels roll
+609|be quiet
+610|make the speaker sound
+611|Make the lamp blink! The brain receives a "tick" every other time, every half second: a tick, no tick, a tick… Use it to turn on the lamp.
+612|Make the robot roll: give it power, then connect the motors to an output of the brain.
+613|Speaker
+614|it is bright
+615|It is bright
+616|It makes beeps and sounds.
+617|It is broad daylight
+618|it is dark
+619|It is dark
+620|It is dark: no tick
+621|It is dark: tick
+622|You need to connect the battery to the brain.
+623|It measures the distance between the robot and an obstacle.
+624|It warns the brain when someone presses it.
+625|It releases the button: back to standby
+626|It senses whether it is bright or dark.
+627|It is on standby: no tick
+628|It is on standby: tick
+629|It is on standby again: no tick
+630|There is already a wire on this point. Touch the point to unplug it first.
+631|They make the wheels turn: the robot moves forward.
+632|The alarm that remembers
+633|Power
+634|Power only connects to the red points of the battery and the brain.
+635|The obstacle disappears
+636|The obstacle has gone: the lamp remembers it
+637|The obstacle moves away
+638|the battery
+639|the lamp
+640|The lamp
+641|the lamp must change on every turn
+642|the lamp is on
+643|the lamp is off
+644|The blinking lamp
+645|The lamp stays on (no sensor controls it).
+646|The lamp turns on when it is dark.
+647|The lamp turns on when the button is pressed.
+648|The lamp turns on when an obstacle is near.
+649|the memory says NO
+650|the memory says YES
+651|At night: no tick
+652|At night: tick
+653|Night falls: tick
+654|the button
+655|the button is pressed
+656|the button is not pressed
+657|The button is not pressed
+658|the button was just pressed
+659|the distance sensor
+660|the light sensor
+661|The sensor sends its information, but nothing is connected to an output to act.
+662|The brain has no power: nothing works. Connect the battery to the brain.
+663|The brain has no program yet: it can't do anything. Add blocks to the program.
+664|the speaker
+665|The speaker is connected but doesn't know when to sound: a sensor is missing.
+666|the speaker is silent
+667|the speaker sounds
+668|The speaker sounds when the button is pressed.
+669|The speaker sounds when an obstacle is near.
+670|The day comes back
+671|The brain's program is empty for now.
+672|The owner presses the button
+673|The explorer robot
+674|The careful robot
+675|the motors
+676|The motors, the lamp and the speaker RECEIVE orders from the brain: connect them to an OUTPUT (green point, on the right).
+677|The wheels
+678|the wheels are stopped
+679|the wheels are turning
+680|The wheels only turn when the button is pressed.
+681|The wheels only turn if it is bright AND the path is clear. The lamp turns on when it is dark. You can put an "if" inside another "if".
+682|The wheels turn all the time (no sensor stops them!).
+683|The wheels turn, but stop when an obstacle is less than 20 cm away.
+684|Put "if it's a tick" then "turn on the lamp". When it's not a tick, everything turns off by itself.
+685|Motors and wheels
+686|NO
+687|Night and obstacle very near: tick
+688|obstacle near (less than 20 cm)
+689|Obstacle near (less than 20 cm): the lamp turns on. Obstacle VERY near (less than 8 cm): the speaker sounds too.
+690|obstacle very near (less than 8 cm)
+691|YES
+692|no tick
+693|Place {1} {2} on the board.
+694|Plus and minus
+695|When someone comes close, the lamp turns on AND the speaker sounds.
+696|Connect {1} to an INPUT of the brain (blue point): the sensor sends the information to the brain.
+697|Connect {1} to an OUTPUT of the brain (green point): the brain gives it orders.
+698|Connect the battery's red point to the brain's red point: touch one, then the other.
+699|Connect the battery's red (+) and black (−) points to those of the brain.

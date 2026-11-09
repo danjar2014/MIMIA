@@ -1,0 +1,28 @@
+// Version anglaise : le dictionnaire est complet et cohérent, la traduction gère les gabarits, les phrases multiples et les morceaux.
+import { readFileSync } from "node:fs";
+const store = { "robotique-junior-lang": "en" };
+globalThis.localStorage = { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
+globalThis.fetch = async p => ({ json: async () => JSON.parse(readFileSync("./" + p, "utf8")) });
+globalThis.document = { documentElement: {}, body: null, addEventListener() {} };
+let bad = 0; const t = (n, c, x) => { console.log(n.padEnd(86), c ? "ok" : "BUG " + (x || "")); if (!c) bad++; };
+const I = await import("./i18n.js"), en = JSON.parse(readFileSync("./i18n/en.json", "utf8")), src = f => readFileSync("./" + f, "utf8");
+
+t("langue anglaise détectée au démarrage", I.LANG === "en" && I.SPEECH_LANG === "en-US");
+t("le dictionnaire a plus de 2 500 textes, aucun vide", Object.keys(en).length > 2500 && Object.values(en).every(v => typeof v === "string" && v.length > 0), String(Object.keys(en).length));
+const ph = s => [...s.matchAll(/\{\d+\}/g)].map(x => x[0]).sort().join(",");
+const diff = Object.entries(en).filter(([k, v]) => ph(k) !== ph(v));
+t("les valeurs {1}, {2}… sont gardées (sauf les accords « e », « s » volontairement retirés)", diff.length <= 8, diff.length + " : " + diff.slice(0, 3).map(x => x[0]).join(" / "));
+t("phrase exacte", I.tr("Bravo !") === "Well done!" && I.tr("Retour") === "Back");
+t("gabarit avec valeurs", I.tr("Tu as 3 badges sur 12.") !== "Tu as 3 badges sur 12." || I.tr("Bienvenue Léa !") === "Welcome Léa!", I.tr("Bienvenue Léa !"));
+t("gabarit à plusieurs valeurs (jours, mois, nombres)", I.tr("Quel jour vient après lundi ?") === "Which day comes after Monday?", I.tr("Quel jour vient après lundi ?"));
+t("espace avant « ! » ou « : » sans importance", I.tr("Bravo!") === "Well done!" && I.tr("Sentir, penser, agir: remets les étapes dans l'ordre") === I.tr("Sentir, penser, agir : remets les étapes dans l'ordre"));
+t("deux phrases connues ensemble", I.tr("Retour. Bravo !").includes("Back") && I.tr("Retour. Bravo !").includes("Well done"), I.tr("Retour. Bravo !"));
+t("un titre suivi d'une description (aria-label)", /^Power\. /.test(I.tr("L'énergie. Un robot a besoin d'énergie ! Place la batterie sur la carte, puis relie-la au cerveau avec un fil.")), I.tr("L'énergie. Un robot a besoin d'énergie ! Place la batterie sur la carte, puis relie-la au cerveau avec un fil."));
+t("« A · B » et « 🎉 texte »", I.tr("6-8 · Premiers pas") === "6-8 · First steps" && I.tr("🎉 Bravo, tout est associé !").startsWith("🎉 Well done"), I.tr("6-8 · Premiers pas"));
+t("direction du drapeau : « 4 cases vers le bas et 1 case vers la gauche »", I.tr("Le drapeau 🏁 est à 4 cases vers le bas et 1 case vers la gauche.") === "The flag 🏁 is 4 squares down and 1 square left.", I.tr("Le drapeau 🏁 est à 4 cases vers le bas et 1 case vers la gauche."));
+t("un texte inconnu reste tel quel", I.tr("Zxqv inconnu") === "Zxqv inconnu");
+t("l'anglais déjà anglais ne change pas", I.tr("Hello world") === "Hello world");
+t("sw.js connaît i18n.js et le dictionnaire", /i18n\.js/.test(src("sw.js")) && /i18n\/en\.json/.test(src("sw.js")));
+t("premier écran : choix de la langue", /function chooseLanguage/.test(src("app.js")) && /if \(!langChosen\(\)\) chooseLanguage\(\); else startApp\(\);/.test(src("app.js")));
+t("voix : pas de clips français en anglais, voix de l'appareil en anglais", /LANG !== "fr"\) return false/.test(src("voiceclips.js")) && /SPEECH_LANG/.test(src("util.js")));
+console.log(bad ? "PROBLEMES: " + bad : "L'ANGLAIS FONCTIONNE");

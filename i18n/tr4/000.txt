@@ -1,0 +1,48 @@
+0|I understood ✔
+1|Next ▶
+2|{1} Adventure {2} · {3} ({4}/{5}){6}
+3|Adventure {1} · {2}
+4|Blocks · {1} years old
+5|Parent code ✅
+6|=
+7|The intruder runs away: the alarm keeps going
+8|Turn no. {1} ({2})
+9|Situation "{1}": {2}.
+10|Main program: avancer(); contourner(); avancer(2); contourner(); avancer();
+11|Main program: avancer() contourner() avancer(2) contourner() avancer()
+12|Next question ▶
+13|Finish ✔
+14|Pick up {1} ⭐ on the way.
+15|Well done! Move forward, turn, move forward.
+16|Yes! First turn, then move forward.
+17|=
+18|=
+19|=
+20|=
+21|=
+22|=
+23|=
+24|=
+25|=
+26|=
+27|=
+28|=
+29|=
+30|=
+31|=
+32|=
+33|=
+34|=
+35|=
+36|=
+37|=
+38|=
+39|=
+40|=
+41|=
+42|=
+43|=
+44|=
+45|=
+46|=
+47|=

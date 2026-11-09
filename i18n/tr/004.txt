@@ -1,0 +1,200 @@
+700|Nothing in sight
+701|Alarm robot
+702|if {1}, then {2}{3}
+703|If an obstacle passes within 20 cm, the lamp turns on and STAYS on, even when the obstacle has gone. The button erases the memory and turns the lamp off.
+704|Dark and obstacle at 15 cm: no tick
+705|Dark and obstacle at 5 cm
+706|Your + and − wires are swapped. Unplug them (touch a point) and connect + with +, − with −.
+707|Your program is written! Press "▶ Test my program" to check it.
+708|Touch the "if" block, choose "the button is pressed", then add "turn on the lamp" inside "then".
+709|Everything is connected! Press "Test the robot" to check its behaviour.
+710|You press again
+711|You press the button
+712|You press the button to erase
+713|You press once
+714|You keep your finger pressed
+715|You release
+716|You release the button
+717|An "if it is bright" that contains an "if clear path" → roll. Then another "if it is dark" → turn on the lamp.
+718|Another obstacle at 15 cm
+719|One button, two orders
+720|A sensor SENDS information to the brain: connect it to an INPUT (blue point, at the top), not to an output.
+721|A second intruder at 10 cm
+722|An intruder passes at 15 cm
+723|An obstacle at 15 cm
+724|An obstacle at 5 cm
+725|An obstacle is at {1} cm
+726|An obstacle passes at 10 cm
+727|A very near obstacle in broad daylight
+728|A robot needs power! Place the battery on the board, then connect it to the brain with a wire.
+729|A single button to turn on AND off! You need the memory 📝: a little box that remembers YES or NO, even when you release the button. One press changes the memory, and the lamp follows the memory.
+730|A third press
+731|A real battery has two terminals: + (red) and − (black). You have to connect + with + and − with −. Try swapping them to see!
+732|Night watchman
+733|Here is the brain's program. {1}
+734|, already connected
+735|, then it reads the blocks
+736|: {3} (touch ✕ to remove it)
+737|: write its orders with the blocks. Without a program, it does nothing.
+738|: it follows ready-made rules.
+739|. If no block gives an order, nothing moves.
+740|{1} "{2}" is not connected to the brain (or not placed on the board). {3}
+741|{1} {2} is already on the board. Touch it on the board to remove it.
+742|{1} {2} placed. {3}
+743|{1} {2} removed. Its wires are unplugged.
+744|{1} Battery placed. Now connect it to the brain: touch a red point, then the other red point.
+745|▶ Test the robot
+746|▶ Test my program
+747|☀️ Light:
+748|⚠️ The + and − wires are swapped: the robot has no power.
+749|⚠️ You connected + with −. In a real robot, that doesn't work. Look at the brain's lamp: it stays off!
+750|✂️ Unplug the wires
+751|✔ Wire connected.
+752|🎉 Well done! Your program works in all the tested situations.
+753|🎉 Well done! Your robot works: you connected the parts correctly.
+754|📝 Memory: {2}
+755|🔊 Read my program
+756|🔊 Sound: {9}
+757|🔌 Power: + and −
+758|🔌 Simple power
+759|🗑 Clear the board
+760|🧠 Brain: I program it
+761|🧠 The brain's program
+762|🧩 programmed
+763|🧽 Erase the memory
+764|on
+765|pressed
+766|stopped
+767|minus terminal, black
+768|plus terminal, red
+769|Well done! Your program works.
+770|Well done! Your robot works.
+771|What your robot does:
+772|BRAIN
+773|Choice cancelled.
+774|from top to bottom
+775|action input, green point
+776|input, blue point
+777|Try {1} of {2}: {3}…
+778|off
+779|Wire unplugged.
+780|It should be that: {1}. But right now: {2}.
+781|Something is missing: look at what "What your robot does" says. Try the 💡 Hint button.
+782|There are only 2 places for sensors. Remove one first.
+783|There are only 3 places for actions. Remove one first.
+784|it sounds
+785|The battery is already placed.
+786|The board is empty.
+787|The lamp doesn't behave as expected. Check the light sensor's wires.
+788|The memory is erased: it says NO.
+789|the brain
+790|The brain is
+791|The brain has no power. First connect the battery.
+792|The brain has no program yet. Touch the "if" block above to start.
+793|The brain reads this program over and over. On every turn,
+794|The robot doesn't always stop in front of the obstacle. Check that the sensor AND the motors are connected to the brain.
+795|The sun is setting…
+796|The blocks lit up in yellow are the ones the brain just read: find which one is wrong.
+797|But {1}.
+798|Advanced mode: the battery has a + and a −. Connect + with +, − with −.
+799|Simple mode: a single power wire.
+800|Point "{1}" chosen. Now touch the point to connect (the blinking ones are fine).
+801|red power point
+802|released
+803|sensor output, blue point
+804|Touch an item in the drawer to place it on the board.
+805|All the wires are unplugged. Touch a point, then another, to connect.
+806|everything is off
+807|a sensor
+808|A sensor connects to an INPUT (blue point).
+809|An obstacle is approaching…
+810|an action
+811|An action connects to an OUTPUT (green point).
+812|(it should have been {1})
+813|(nothing is displayed)
+814|⏱️ Your program never stops! It goes round in circles: look at your loop's condition (while or for). It must become false one day.
+815|☀️ light: {2}
+816|✅ Your program has finished. Here is what it displayed.
+817|✔ Course {1} completed! I'm testing the next one…
+818|❌ {1} The small steps show its path. Change your code and run it again 🙂
+819|⬇ Copy the example into the editor
+820|🎉 Well done! Your program works{1}
+821|🎉 You built the whole program! I'm running it…
+822|💡 Hint {1} of {2}: {3}
+823|🔊 Read my code
+824|🔊 sound: {10}
+825|🧐 Explain to me
+826|🧐 Your program, line by line
+827|🧐 There! I explain each line of your program, just below.
+828|🧩 By touching words
+829|Good to know:
+830|Ouch! The robot bumped into an obstacle (look at the ❗). Where should it turn first?
+831|for loop
+832|while loop
+833|What your program displays:
+834|Commands:
+835|create a box
+836|indent by two spaces
+837|indent by four spaces
+838|define a function
+839|hash, for a comment
+840|different from
+841|divided by
+842|whole division
+843|Write:
+844|First write a few lines, then touch 🧐.
+845|Write your program, then touch ▶ Run.
+846|Code editor
+847|Editor reset.
+848|equals
+849|equals equals, to compare
+850|=
+851|Error
+852|Try {1}: {2}…
+853|Tests of your function:
+854|and
+855|Example copied. Change it to fit your mission!
+856|Example. {1}
+857|=
+858|Spelling mistake.
+859|{1} star{2} missing ⭐.
+860|There is no star here, the robot picks up nothing.
+861|I couldn't run your program. Reload the page and try again.
+862|The computer is reading your program…
+863|Language:
+864|JavaScript language
+865|Python language
+866|The robot finished your program, but it didn't reach the flag 🏁.
+867|The robot stopped.
+868|Line
+869|Line {1}
+870|Line {1}. {2}
+871|minus
+872|or
+873|Course {1} of {2}…
+874|closing parenthesis
+875|opening parenthesis
+876|not
+877|No other hint here: try, it's your workshop! 🙂
+878|not, exclamation mark
+879|plus
+880|greater than or equal to
+881|greater than
+882|less than or equal to
+883|less than
+884|remainder of the division
+885|else if
+886|Possible solution. {1}
+887|on all the courses!
+888|=
+889|Your program is empty: write a few lines, then ask me to explain them!
+890|Your program is empty. Write instructions in the editor, then run it again 👆
+891|Your program stopped.
+892|Your program goes round in circles! Look at your loop: does it ever end?
+893|=
+894|An example
+895|Here is a possible solution. Read it, try to understand it, then write it yourself in your own words 🙂
+896|"{1}" is not an action: you can't put parentheses () after it.
+897|{1} should give {2}, but your program gives {3}.
+898|{1} returns nothing. A function gives back its result with return.
+899|💡 In real code, an output stays on until you turn it off: add an else, or write lamp({1}).

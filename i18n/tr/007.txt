@@ -1,0 +1,200 @@
+1300|What will this program display?
+1301|What does x = 5 mean?
+1302|Which order makes the robot move forward one step?
+1303|Which part gives power to the robot?
+1304|Which part makes the wheels turn?
+1305|Puts 5 in the box x
+1306|Gives back the result and stops the function
+1307|Repeats the function
+1308|repeat orders without rewriting them
+1309|stays on until you turn it off
+1310|always stays the same
+1311|return sends the calculated value back to whoever called the function.
+1312|turns off by itself
+1313|its dreams
+1314|If we change the order of the orders, the result…
+1315|follow a robot's orders on a grid
+1316|Right away
+1317|A sensor sends its information to the brain through…
+1318|a drawing
+1319|an order for the robot
+1320|A program is a series of orders that the robot reads in order.
+1321|A program is…
+1322|A robot decides nothing on its own: it does what you ask.
+1323|A robot obeys…
+1324|A single = stores a value, two == compare.
+1325|a single order
+1326|A single = sign stores a value. To compare, we write two (==).
+1327|a box with a name that keeps a value
+1328|a loop
+1329|A "while" loop keeps going until the condition becomes false.
+1330|A loop is used to…
+1331|a condition (a choice)
+1332|an input (blue point)
+1333|a spelling mistake
+1334|a list of orders, one after another
+1335|an output (green point)
+1336|An output keeps its state: you have to say when to turn it off.
+1337|a variable
+1338|A variable is…
+1339|to the right ➡️
+1340|to the left ⬅️
+1341|down ⬇️
+1342|up ⬆️
+1343|♪ The robot dances…
+1344|Compose a little dance: a light, a note, a jump… Put the blocks in any order you like!
+1345|Create a chorus in "My block" and call it several times to make a real song.
+1346|play the note
+1347|A
+1348|The dance never stops! Check your repeats.
+1349|D
+1350|Chorus (My block)
+1351|Your program is empty. Touch some blocks 👆
+1352|spin around
+1353|Use "repeat" to make a rhythm that comes back. Try: light, note, jump, and start again!
+1354|. Total since the beginning:
+1355|{1}: {2} percent
+1356|{1} percent of the journey
+1357|{2} failed try{3}{4} · {5} min spent · not succeeded yet
+1358|{4}/{5} steps in this adventure
+1359|{7} step{8} completed out of {10} ({11}% of the journey)
+1360|⚙️ Settings and tools
+1361|⭐ Latest successes
+1362|🎯 Level test on {1}: {2} right answer{3}{4} in a row out of 5, starting at adventure {5}.
+1363|👀 To keep an eye on
+1364|💬 Advice for you
+1365|📅 Play time over the last 7 days
+1366|📋 Copy the summary
+1367|🔊 Read the summary
+1368|🔒 This information stays on this device. Nothing is sent over the Internet.
+1369|🖨️ Print the report
+1370|🗑 Erase the statistics
+1371|🗺️ The 11 adventures
+1372|🧠 Skills
+1373|Today: {1} min out of {2} min.
+1374|Adventure {2} of 11: {3}
+1375|These steps take more time. A hand from you (reading the instruction together, using 💡 Hint) often makes the difference.
+1376|this week
+1377|Copying is not possible on this device
+1378|daily challenge{6}
+1379|Latest badges: {1}
+1380|Erase the statistics?
+1381|day{15} in a row
+1382|day{4} of gentle streak
+1383|days of play
+1384|The "gentle streak" counts play days: a rest day doesn't break it (it stops after two days without playing), and a missed day is never shown as a failure. Badges reward effort and regularity.
+1385|The child's progress is kept.
+1386|Time limit per day
+1387|Limit saved ✔
+1388|Minutes of active play per day (time when the screen is left untouched doesn't count). Average over play days:
+1389|No limit
+1390|No success recorded yet: tracking starts with the first finished activity.
+1391|Suggested next step:
+1392|Summary copied ✔
+1393|Nothing to report for now 🎉
+1394|Without a limit, the app only suggests a break (reminder adjustable in the settings).
+1395|session{17}
+1396|Statistics erased (progress is kept)
+1397|Your child
+1398|Total XP
+1399|XP today
+1400|✔ Yes, it's {1}!
+1401|🎉 Well done! Sense, think, act: you understood how a robot thinks.
+1402|🎉 Well done! You know all the parts of the robot.
+1403|👆 Touch a part of the robot to discover it.
+1404|Sensor
+1405|Brain
+1406|This time we tell you what the part is for. Find which one it is!
+1407|Listen to the name, then touch the right part of the robot.
+1408|Input
+1409|It is night in the room.
+1410|Hint: it's "{1}".
+1411|The LED lights up.
+1412|The button sends a signal.
+1413|The light sensor senses that it is dark.
+1414|The brain chooses the song.
+1415|The brain decides: it must stop.
+1416|The brain decides to turn on the lamp.
+1417|The speaker plays the music.
+1418|The robot sees a wall in front of it.
+1419|The wheels stop.
+1420|The eyes measure: the wall is near!
+1421|Now the robot must THINK: that is the brain's job.
+1422|Motor
+1423|Parts discovered: {1} / {2}
+1424|Parts discovered: 0 / {1}
+1425|Not quite. Look carefully and try again 🙂
+1426|Finally, the robot ACTS.
+1427|What happens first? The robot must first SENSE something.
+1428|Output
+1429|Touch {1}.
+1430|Touch the part that {1}.
+1431|You press the "music" button.
+1432|A robot always follows 3 steps: it SENSES (sensor), it THINKS (brain), it ACTS (motor, lamp, sound). Put the steps in order.
+1433|Here is your robot! Each part has a name and a role. Touch them all.
+1434|🎉 Well done! Your drawing covers the model.
+1435|🗑 Erase the program
+1436|🧽 Erase the drawing
+1437|6 equal sides. Calculate: a full turn is 360°. 360 ÷ 6 = ?
+1438|Instead of doing it 4 times, use "repeat". What angle is needed at each corner?
+1439|move forward by
+1440|move forward by "size"
+1441|Nice drawing! You can keep it with 💾.
+1442|Well done! Your drawing covers the model.
+1443|Draw whatever you want with your robot! Try shapes, colours, repeats.
+1444|Two long sides, two short sides. Repeat the same sequence twice.
+1445|There are extra lines. Look where the robot went too far.
+1446|The staircase
+1447|The star
+1448|The 8-pointed star
+1449|The hexagon
+1450|The flower of squares
+1451|The square spiral
+1452|The round spiral
+1453|The square
+1454|The repeating square
+1455|The rectangle
+1456|The robot is drawing…
+1457|The triangle
+1458|Climb the staircase step by step.
+1459|Almost! You covered {1}% of the model. Look where grey is left.
+1460|What angle is needed? Test: 8 points, many turns.
+1461|Follow the grey line: the robot must go far enough.
+1462|Your drawing is quite different from the grey model. Look carefully at the shape: how many sides? what angles?
+1463|Your program is too long or doesn't stop. Check your repeats.
+1464|Your program is empty. Touch the blocks above 👆
+1465|A square has 4 equal sides and 4 right angles. Follow the grey model.
+1466|A triangle has 3 equal sides. The robot's angle at each corner is not 90°! Try several angles.
+1467|A 5-pointed star. The robot turns a lot at each point!
+1468|A straight line
+1469|A repeat inside a repeat: a square, then we turn a little, and we start again.
+1470|A spiral that opens gently: small steps, small turn, and the size increases.
+1471|Use the variable "size": it grows on every turn, like a little counter.
+1472|, from {1} to {2}
+1473|, which receives: {1}
+1474|{1} {2} (box "{3}").
+1475|{1} {2} {3} the box "{4}".
+1476|{1} {2}, then what is inside is run.
+1477|{1} the box "{2}" and puts in it: {3}.
+1478|Add
+1479|Turn on the lamp.
+1480|Turns {1} on or off depending on this condition: {2}.
+1481|Stop the wheels.
+1482|box (variable)
+1483|boxes (variables)
+1484|Loop: "{1}" {2}. What is inside is repeated on every turn.
+1485|it's a tick
+1486|it's not a tick
+1487|This line ("{1}") does something I can't explain simply yet.
+1488|Change
+1489|Changes the box "{1}": it puts {2} in it.
+1490|choice (if)
+1491|command created
+1492|commands created
+1493|Comment: a note for you ("{1}"). The computer ignores it.
+1494|Create
+1495|Creates a new command named "{1}"{2}. What is inside only runs when you call it.
+1496|from
+1497|from {1} to {2}
+1498|counting by 1
+1499|counting down by 1

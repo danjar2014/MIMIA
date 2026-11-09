@@ -1,0 +1,242 @@
+[
+ {
+  "k": "J'ai compris ✔",
+  "n": 1,
+  "f": "advgames.js"
+ },
+ {
+  "k": "Suivant ▶",
+  "n": 5,
+  "f": "advgames.js"
+ },
+ {
+  "k": "{1} Aventure {2} · {3} ({4}/{5}){6}",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Aventure {1} · {2}",
+  "n": 2,
+  "f": "app.js"
+ },
+ {
+  "k": "Blocs · {1} ans",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Code parent ✅",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Langue / Language",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "L'intrus s'enfuit : l'alarme continue",
+  "n": 1,
+  "f": "boardlogic.js"
+ },
+ {
+  "k": "Tour n°{1} ({2})",
+  "n": 1,
+  "f": "boardlogic.js"
+ },
+ {
+  "k": "Situation « {1} » : {2}.",
+  "n": 1,
+  "f": "codeengine.js"
+ },
+ {
+  "k": "Programme principal : avancer(); contourner(); avancer(2); contourner(); avancer();",
+  "n": 1,
+  "f": "codemissions.js"
+ },
+ {
+  "k": "Programme principal : avancer() contourner() avancer(2) contourner() avancer()",
+  "n": 1,
+  "f": "codepy.js"
+ },
+ {
+  "k": "Question suivante ▶",
+  "n": 1,
+  "f": "daily.js"
+ },
+ {
+  "k": "Terminer ✔",
+  "n": 1,
+  "f": "daily.js"
+ },
+ {
+  "k": "Ramasse {1} ⭐ en chemin.",
+  "n": 1,
+  "f": "hints.js"
+ },
+ {
+  "k": "Bravo ! Avance, tourne, avance.",
+  "n": 1,
+  "f": "learn.js"
+ },
+ {
+  "k": "Oui ! D'abord tourner, ensuite avancer.",
+  "n": 1,
+  "f": "learn.js"
+ },
+ {
+  "k": "Bonjour {n} !",
+  "n": 2,
+  "f": "praise.js"
+ },
+ {
+  "k": "Bonsoir {n} !",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Bravo {n} !",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Chapeau bas, {n} !",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Cherche l'erreur, {n}.",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Come on {n}, try again!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Come on {n}, you can do it!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Don't give up, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Excellent travail, {n} !",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Excellent work, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Find the mistake, {n}.",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Good evening, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Good morning, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Great job, {n}! You are really brilliant.",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Hats off, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Let's try again together, {n}?",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Nice code, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Nice job, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Nice to see you again, {n}!",
+  "n": 3,
+  "f": "praise.js"
+ },
+ {
+  "k": "Salut {n} !",
+  "n": 3,
+  "f": "praise.js"
+ },
+ {
+  "k": "That's great, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Think a little more, {n}.",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Well done {n}, you thought it through!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Well done, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "Well reasoned, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "What a great success, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "You almost found it, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "You are improving fast, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "You are wonderful, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "You're almost there, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ },
+ {
+  "k": "You've got it, {n}!",
+  "n": 1,
+  "f": "praise.js"
+ }
+]

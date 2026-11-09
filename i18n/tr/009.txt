@@ -1,0 +1,200 @@
+1700|I'll show you where to touch 👆 Get the robot to the flag.
+1701|The order matters!
+1702|The list of orders is empty.
+1703|Run your program.
+1704|The robot finished the list, but it didn't reach the flag 🏁.
+1705|The robot reads your program, from top to bottom…
+1706|The robot itself
+1707|The robot is looking to the right, but the flag is below. Use these 3 orders, in the right order!
+1708|the field
+1709|the blocks
+1710|Now, touch the flag.
+1711|My very first program
+1712|No! The robot doesn't end up in the same place. The order changes everything.
+1713|No! A robot follows the list exactly, never in a jumbled order.
+1714|No, it starts with the first order, at the top of the list.
+1715|No, they are different
+1716|No, clouds don't talk to robots!
+1717|Yes! {1}
+1718|Yes, they are the same
+1719|Which button runs your program?
+1720|Which order makes the robot turn right?
+1721|Who gives the orders to the robot?
+1722|You, or the person who writes the program
+1723|Your first program worked!
+1724|Touch each element of the screen.
+1725|Touch the ⬆️ order. The robot obeys right away!
+1726|Touch the robot.
+1727|turn right
+1728|turn left
+1729|On your own! You're ready.
+1730|You know what a robot, an order and a program are. Now, let's write your first real program together!
+1731|A screen is like a car's dashboard. Each button has a role. Touch each thing to find out what it's for.
+1732|A hint to help you.
+1733|A cloud
+1734|A program with a turn. I'll show you where to touch 👆
+1735|A program is a list of orders, one after another. The robot reads the list from top to bottom, like you read a book.
+1736|A robot doesn't think on its own. It does what you ask: we say it obeys orders.
+1737|A robot on its own decides nothing. It waits for orders.
+1738|{1}, as in {2}
+1739|Adding means putting more. Two groups put together make a bigger group.
+1740|After ten come eleven, twelve, thirteen, up to nineteen.
+1741|Some things are heavy, others are light. Feel the difference.
+1742|Each bar is worth a number. The longer the bar, the bigger the number.
+1743|Each letter starts a word. Listen.
+1744|Each object has its shadow. Match the object to the right shadow.
+1745|In space, there is up, down, left and right. Listen.
+1746|Ten units make a ten. Ten tens make a hundred.
+1747|The clock shows the time. The short hand tells the hour, the long one tells the minutes.
+1748|Bars are short or long. We compare them to put them in order.
+1749|The blocks have different sizes. We go from the smallest to the biggest.
+1750|Numbers are used to count. We count with our fingers and with our eyes.
+1751|Colours are everywhere. We look at them, then we name them.
+1752|Shapes are everywhere, even on robots. Look closely at each shape.
+1753|Numbers follow each other, from one to one hundred. We look for the one that is missing.
+1754|Numbers are used to count. Count with me, from one to ten.
+1755|Subtracting means taking away. When we take away, there is less left.
+1756|A robot is made of several parts. Here are some parts.
+1757|A sound can be low or high, loud or soft. Listen carefully.
+1758|A whole can be cut into equal parts. Each part is a piece of the whole.
+1759|A triangle has three sides. We can put several together.
+1760|A year is made of twelve months. Listen to them one by one.
+1761|A week is made of seven days. Listen to them one by one.
+1762|Here are the colours of the robots. Listen to their names.
+1763|Watch out for the pebble
+1764|Two pebbles, same detour! In the "My block" tab, write the detour just once, then call it twice.
+1765|Two stars
+1766|star here
+1767|Stars AND pebbles! Combine everything you know: while, if, My block.
+1768|Go around the rectangle. A "repeat" block can contain another one, or several blocks.
+1769|Here the robot doesn't pick up on its own. Use "if star here" then "pick up the star". The stars are not always in the same places!
+1770|The remote control
+1771|The pebble is sometimes here, sometimes there. The robot must decide: "if obstacle ahead, use My block, otherwise move forward".
+1772|The corridor changes length, but your program must work in all corridors! "While the path is clear, move forward."
+1773|The flag is far away! The "repeat" block does the same thing several times. Put "move forward" inside.
+1774|The big challenge
+1775|The big course
+1776|The robot goes down in a zigzag. Find the sequence that repeats twice.
+1777|The robot can't go through a pebble 🪨. Find a path to go around it.
+1778|The robot wants to reach the flag 🏁. Touch the blocks to tell it what to do, in order.
+1779|The snake
+1780|Around the square
+1781|The corridor's turn
+1782|not arrived
+1783|To turn, use the ↶ and ↷ blocks. The robot turns on the spot.
+1784|First steps
+1785|Publishing the same message 5 times takes long! Use "repeat".
+1786|When the robot passes over a star ⭐, it picks it up on its own.
+1787|Pick up both stars before reaching the flag.
+1788|Pick up the three stars and go back to the starting point 🏁.
+1789|Look at the picture: the robot always repeats the same little sequence. Find it and repeat it.
+1790|Repeat
+1791|While
+1792|Your program is a NODE that publishes messages on the topic /cmd. The robot is another node: it listens to /cmd and obeys. Send it the right messages to reach the flag.
+1793|A message that repeats
+1794|A longer course. Think in small steps.
+1795|A turn
+1796|A star on the road
+1797|=
+1798|Bolt, your little robot
+1799|Every mistake teaches you something.
+1800|Exactly!
+1801|Incredible!
+1802|Shall we try again?
+1803|No worries!
+1804|Not quite…
+1805|Take your time, I'm here.
+1806|Almost!
+1807|What a feat!
+1808|Let's think…
+1809|Look carefully…
+1810|Great!
+1811|Touch 💡 if you want a hint.
+1812|You did it!
+1813|You can do it!
+1814|A little hint!
+1815|{1} minus what makes {2}?
+1816|{1} plus what makes {2}?
+1817|🕜 half past
+1818|Addition and subtraction
+1819|Flatten together
+1820|Match the colours
+1821|Match the times
+1822|Match the numbers
+1823|Catch the fruit
+1824|Increase or decrease
+1825|Before the number
+1826|Scale
+1827|Addition strips
+1828|Subtraction strips
+1829|Number rods
+1830|Red rods
+1831|Music box
+1832|Decimal abacus
+1833|Geometric cabinet
+1834|square
+1835|Crack the egg
+1836|Numbers and counters
+1837|=
+1838|How much money?
+1839|How many floors?
+1840|How many stars?
+1841|How many hexagons?
+1842|How many ovals?
+1843|How many squares?
+1844|How many circles?
+1845|How many tens?
+1846|How many fruits?
+1847|How many diamonds?
+1848|How many pieces?
+1849|How many parts?
+1850|How many beads?
+1851|How many coins?
+1852|How many fish
+1853|How many fish?
+1854|How many rectangles?
+1855|How many triangles?
+1856|How many in all?
+1857|What is {1} minus {2}?
+1858|What is {1} plus {2}?
+1859|How many are left?
+1860|Complete
+1861|Count
+1862|Count with the rods
+1863|Count the shapes
+1864|Count the gold coins
+1865|Count fast
+1866|Build the bridge
+1867|Build a tall building
+1868|Build a tower
+1869|Different colour
+1870|Friendly colours
+1871|Cut the bread
+1872|Sound cylinders
+1873|From 1 to 100
+1874|From eleven to nineteen
+1875|=
+1876|Break numbers down
+1877|Colour gradient
+1878|Guess who I am
+1879|=
+1880|Ten plus {1} makes how much?
+1881|Tens
+1882|Tens and units
+1883|Listen and touch the note.
+1884|Equal and unequal
+1885|Insets
+1886|Is it right?
+1887|half past
+1888|Make your clock
+1889|Friendly shapes
+1890|Twin shapes
+1891|Shapes I know
+1892|Loud or soft
+1893|Big and small
+1894|Skyscrapers
+1895|Low or high
+1896|On the hour or half past?
+1897|Clock with hands
+1898|The right size
+1899|The fall

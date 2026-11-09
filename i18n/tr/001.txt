@@ -1,0 +1,200 @@
+120|Not quite. Read again carefully and try again 🙂
+121|Not quite. Read the situation and the levels again 🙂
+122|Think about what the robot can do on its own.
+123|Think about the mailboxes between the small programs.
+124|More than 546,000 industrial robots were installed in 2024. Amazon uses more than 750,000 mobile robots in its warehouses.
+125|There are 5 steps to get started with ROS. Put them back in order.
+126|Always taking the same examples
+127|Prepare the data (preprocessing)
+128|Robot programmer
+129|Publish on a topic, and the subscribed nodes receive it.
+130|What is needed before you can train?
+131|What is needed before this step?
+132|Which job?
+133|A few numbers from the course
+134|Reality
+135|Look at the course sheet and think again.
+136|coded rules
+137|Coded rules or learning?
+138|ROS is a middleware: it makes nodes communicate.
+139|ROS has existed since 2007. ROS 2 can even run on small microcontrollers.
+140|ROS stands for Robot Operating System. Despite its name, it is not an operating system like Windows: it is a go-between (a middleware) that helps all the programs talk to each other.
+141|ROS, a go-between
+142|Health
+143|Services
+144|Services and launch
+145|If nothing changes, there's no need to learn.
+146|Your roboticist's road
+147|Robotics technician
+148|Test what you have learned
+149|Test on the robot
+150|First touch an item on the left 👈
+151|Try everything directly on the robot
+152|A manipulator arm in a factory
+153|An arm sometimes fails to grab objects of different shapes.
+154|An arm always repeats exactly the same movement.
+155|A little quiz about ROS.
+156|A robot often has one program for the camera, another for the motors, another to decide the path. Each small program is called a node.
+157|A farm robot drives on ground that is always changing (mud, grass, rain).
+158|A robot must stop 20 cm from a wall.
+159|A robot must follow a black line that is always the same.
+160|An explorer robot learns from its attempts and decides on its own how to move forward.
+161|A robot can't guess what it has never seen.
+162|A robot recognises an obstacle in an image thanks to an AI model.
+163|A robot follows a black line by applying rules written by hand.
+164|A service is a question and its answer. A launch file starts several nodes at once, like switching on the whole robot in one go.
+165|A real robot doesn't have ONE program, it has many. Find out how they work together.
+166|A camera detects objects for a sorting robot.
+167|An AI suggests code or a path to a programmer who stays in control.
+168|A machine can learn in several ways. Match each situation to its learning family.
+169|A single rule "if distance < 20 then stop" is enough.
+170|Validate the model with separate data
+171|Validate on other data
+172|Here are the 6 steps to train a robot. Touch them in the right order.
+173|Here are a few numbers given in the course.
+174|Here is a possible path to become a robotics ace.
+175|True or false about ROS
+176|· The robot guesses right:
+177|"Hello world"
+178|"I am a node"
+179|{1} {2} must listen to {3} (subscribe).
+180|{1} {2} must publish on {3}.
+181|↺ New set of measurements
+182|▶ Launch my node
+183|▶ One try
+184|✔ Success! It remembers that this angle works well.
+185|✖ Missed… It changes its way of doing things a little. Nobody reprograms it!
+186|🎉 Well done! With only {1} well-chosen examples, it guesses {2}% of the cases. Varied examples matter!
+187|🎉 Well done! Your node published and the listener received everything.
+188|🎉 Well done! All the messages arrive: your robot works.
+189|🎉 It has learned! 5 successes in a row. Now move the part somewhere else: will it be able to adapt?
+190|🏆 Incredible: the part moved and it adapted all by itself, with no new instruction!
+191|📤 publishes on
+192|📥 listens to
+193|📥 received on
+194|📦 The part is somewhere else! Watch the robot make mistakes, then learn.
+195|🔄 Move the part
+196|🖥️ Listener node console (subscribed to /hello)
+197|🚀 Launch the nodes
+198|No tries yet
+199|Hello world
+200|What the robot thinks of each angle (the higher, the more it believes it works)
+201|Some messages don't arrive. Fix the topics and run again.
+202|signal hardness →
+203|Write your first node: a publisher! It sends the message "Hello world" on the topic /hello. A listener node is already subscribed to /hello: it will display what it receives.
+204|Waiting for messages…
+205|Tries: {1} · Successes in a row: {2}
+206|Examples given:
+207|Make it publish the same message 3 times or more, without copying the block 3 times. Which block do you need?
+208|size of what the sensor detects →
+209|=
+210|You need at least 3 messages with a "repeat" block.
+211|I am a node
+212|The camera, the brain and the wheels
+213|The message "Hello world" was not published. Choose it in the block.
+214|The publisher that repeats
+215|The robot must recognise whether what its sensor detects is an OBSTACLE 🧱 or a FREE ROAD 🌿. Each dot is a measurement. You are the teacher: touch a dot to give it its name (a label). You only have 6 examples! The robot will guess the other dots. Aim for 85% right answers.
+216|The nodes all start at the same time (as with a launch file)…
+217|The topics (mailboxes):
+218|Camera node
+219|Distance sensor node
+220|Lamp node
+221|Motors node
+222|Planning node
+223|publish on /hello
+224|Look at the colours: they are the robot's guesses. Where does it go wrong?
+225|Hi robot
+226|Your node is empty. Touch a block 👆
+227|Your node is publishing…
+228|All your examples are {1}: the robot doesn't know the other case! Give varied examples.
+229|Everything is connected! Launch the nodes.
+230|Three nodes: the camera sees, the planner calculates the route, the motors obey. For each node, choose which topic it PUBLISHES on and which topic it LISTENS to (it subscribes). The planner must use the image to send commands to the motors.
+231|You used your 6 examples. See whether the robot succeeded, or start again with new measurements.
+232|A robot arm must grab a part. Nobody tells it which angle is the right one: it TRIES, gets a reward (✔) or a penalty (✖), and changes its way of doing things. That is reinforcement learning. When it has succeeded 5 times in a row, move the part somewhere else!
+233|A sensor measures the distance. The planner decides, then publishes ONE single order on /commands: the motors AND the lamp listen to that same topic. A topic can have several subscribers! (The /alarm topic is not useful here.)
+234|A robot that stops and warns
+235|: ✨ depending on progress · 🔓 always open · 🔒 blocked. Touch to change.
+236|. Come back tomorrow to continue your streak.
+237|· for you
+238|{1}: to unlock
+239|{1}: blocked
+240|{1} kept{2}
+241|{1} out of {2}
+242|{1}. Badge earned.
+243|{1}. To get it: {2}
+244|{2} You are now
+245|=
+246|⌨️ I already know how to write a little code
+247|▶ Again!
+248|▶ Program this course
+249|✔ It's my robot!
+250|✔ Saved in "My creations"!
+251|☰ Discover
+252|☰ List of levels
+253|🌙 That's enough for today
+254|🎉 Adventure {1} finished!
+255|🎲 Practise
+256|🏅 {1} out of {2}{3}
+257|🏆 Expert diploma
+258|🏠 Back to home
+259|🐣 I know nothing: I want to learn everything from the beginning
+260|💾 Keep this course
+261|🖨️ Print my diploma
+262|🗺️ My journey
+263|🗺️ See my journey
+264|🧩 I have already played with programming blocks
+265|🧪 Test mode: everything is unlocked
+266|🚀 From the course "Robotics coding" (NovaSavo), unit 12: the ideas of real roboticists, adapted for you.
+267|0. From blocks to real code: place blocks and watch the code being written
+268|15 more minutes granted ✔
+269|5. The Big Project: design a complete robot
+270|6. My workshop
+271|What is it for?
+272|What each part does: wheel, sensors, laser, wifi…
+273|Subscription
+274|Age
+275|Go further
+276|Cancel
+277|Learn with examples
+278|build whatever you want
+279|Put the parts on the board, then connect them to the brain with wires
+280|Free workshop
+281|Today you have {1} points out of {2}. Streak: {3} day{4}.
+282|with blocks
+283|with live code
+284|with a model to follow
+285|Adventure {1} of {2}
+286|Badges
+287|Welcome {1}!
+288|blocked
+289|connect nodes with topics
+290|Well done! You already earned your practice points for today 🌟
+291|Well done{4}! This step earned you
+292|Sensors
+293|Square
+294|Cards
+295|That's not the right answer.
+296|What the voice reads
+297|This card is blocked by your parents.
+298|Change
+299|Change player
+300|Change player?
+301|Choose…
+302|Choose what looks like you. You can change later (parent settings).
+303|choose its look
+304|choose your parts, build, program, print your sheet
+305|Choose: girl or boy.
+306|Code
+307|Code
+308|Real coding
+309|Compose a dance
+310|Compose an "if… then" rule
+311|Account
+312|Design, build and program your own robot, from the idea to the final sheet
+313|Build
+314|Build the robot
+315|Continue
+316|Continue: {1}
+317|Creations
+318|Create
+319|Deciding: if / else

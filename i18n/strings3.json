@@ -1,0 +1,112 @@
+[
+ {
+  "k": "Niveau 0",
+  "n": 1,
+  "f": "advgames.js"
+ },
+ {
+  "k": "Niveau 1",
+  "n": 1,
+  "f": "advgames.js"
+ },
+ {
+  "k": "Niveau 2",
+  "n": 1,
+  "f": "advgames.js"
+ },
+ {
+  "k": "Niveau 3",
+  "n": 1,
+  "f": "advgames.js"
+ },
+ {
+  "k": "L'intelligence artificielle en robotique",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Pause (minutes)",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Boucle en vrai code",
+  "n": 1,
+  "f": "badges.js"
+ },
+ {
+  "k": "Joue pendant 14 jours.",
+  "n": 1,
+  "f": "badges.js"
+ },
+ {
+  "k": "Joue pendant 30 jours.",
+  "n": 1,
+  "f": "badges.js"
+ },
+ {
+  "k": "Joue pendant 7 jours.",
+  "n": 1,
+  "f": "badges.js"
+ },
+ {
+  "k": "L'alarme continue, sans tic",
+  "n": 1,
+  "f": "boardlogic.js"
+ },
+ {
+  "k": "Lampe (LED)",
+  "n": 1,
+  "f": "boardlogic.js"
+ },
+ {
+  "k": "Plein jour, chemin libre",
+  "n": 1,
+  "f": "boardlogic.js"
+ },
+ {
+  "k": "Ligne {1}, colonne {2}",
+  "n": 1,
+  "f": "code.js"
+ },
+ {
+  "k": "Ligne 1",
+  "n": 1,
+  "f": "code.js"
+ },
+ {
+  "k": "Deux capteurs en code",
+  "n": 1,
+  "f": "codemissions.js"
+ },
+ {
+  "k": "Combien vaut 7 % 2 ?",
+  "n": 1,
+  "f": "dailyq.js"
+ },
+ {
+  "k": "Lance {1}().",
+  "n": 1,
+  "f": "explain.js"
+ },
+ {
+  "k": "Regarde l'exemple, puis touche Jouer.",
+  "n": 2,
+  "f": "lessons.js"
+ },
+ {
+  "k": "Poisson rouge, poisson bleu",
+  "n": 1,
+  "f": "montessori.js"
+ },
+ {
+  "k": "Quel nombre vient avant {1} ?",
+  "n": 2,
+  "f": "montessori.js"
+ },
+ {
+  "k": "Touch the letter {1}, as in {2}.",
+  "n": 1,
+  "f": "petits.js"
+ }
+]

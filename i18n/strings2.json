@@ -1,0 +1,127 @@
+[
+ {
+  "k": "Écouter",
+  "n": 3,
+  "f": "advgames.js"
+ },
+ {
+  "k": "Ajouter un joueur",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Choisis ta langue",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Choose your language",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "English",
+  "n": 2,
+  "f": "app.js"
+ },
+ {
+  "k": "Enregistrer",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Fermer l'espace parents",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Français",
+  "n": 2,
+  "f": "app.js"
+ },
+ {
+  "k": "Points aujourd'hui : {1} sur {2}",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Réponse",
+  "n": 3,
+  "f": "app.js"
+ },
+ {
+  "k": "Série : {7} jour{8}",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Supprimer ce joueur",
+  "n": 1,
+  "f": "app.js"
+ },
+ {
+  "k": "Emplacement libre pour {2}. Choisis un élément dans le tiroir.",
+  "n": 1,
+  "f": "build.js"
+ },
+ {
+  "k": "Retirer {2} de la carte",
+  "n": 1,
+  "f": "build.js"
+ },
+ {
+  "k": "Un fil. Touche-le pour le débrancher.",
+  "n": 1,
+  "f": "build.js"
+ },
+ {
+  "k": "CODE",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "DOMContentLoaded",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "PRE",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "SCRIPT",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "STYLE",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "TEXTAREA",
+  "n": 1,
+  "f": "i18n.js"
+ },
+ {
+  "k": "Prénom de l'enfant",
+  "n": 1,
+  "f": "parentsetup.js"
+ },
+ {
+  "k": "Code de secours",
+  "n": 1,
+  "f": "pin.js"
+ },
+ {
+  "k": "Oui, tout effacer",
+  "n": 1,
+  "f": "pin.js"
+ },
+ {
+  "k": "Super!",
+  "n": 1,
+  "f": "praise.js"
+ }
+]

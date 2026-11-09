@@ -1,6 +1,7 @@
 // Voix enregistrée : une femme (F5), la seule voix de l'appli. Pas de choix à faire.
 // Chaque phrase de l'appli a un petit clip mp3 (voice/clips/f5/<clé>.mp3, créé par voice/gen.py).
 // La phrase est retrouvée par sa « clé » (même calcul que voice/gen.py) ; une phrase sans clip est lue par la voix de l'appareil.
+import { LANG, SPEECH_LANG } from "./i18n.js";
 import { S, setClipHooks, profileIds, profileData, DEVICE, whenQuiet, ttsStart, ttsEnd } from "./util.js";
 
 // clé d'une phrase : lettres et chiffres seulement, en minuscules, puis empreinte FNV-1a 32 bits (identique à gen.py)
@@ -36,11 +37,12 @@ export function stopClips() { token++; if (audio) { try { audio.pause(); } catch
 // un morceau lu par la voix de l'appareil ; « done » n'est appelé qu'une fois, même si la fin n'est jamais signalée (garde-fou)
 function tts(text, done) {
   let fired = false, wd = 0; const fin = () => { if (fired) return; fired = true; clearTimeout(wd); ttsEnd(); done(); };
-  try { const u = new SpeechSynthesisUtterance(text); u.lang = "fr-FR"; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = fin; wd = setTimeout(fin, 1500 + text.length * 110); ttsStart(); speechSynthesis.speak(u); } catch (e) { fin(); }
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = SPEECH_LANG; u.rate = S.age === "a" ? 0.82 : 0.92; u.onend = u.onerror = fin; wd = setTimeout(fin, 1500 + text.length * 110); ttsStart(); speechSynthesis.speak(u); } catch (e) { fin(); }
 }
 
 // lit le texte avec les clips ; renvoie false s'il n'y a rien d'enregistré (l'appli utilise alors la voix de l'appareil)
 export function playClips(text, onEnd) {
+  if (LANG !== "fr") return false;   // les clips enregistrés sont en français : en anglais, voix de l'appareil
   if (!man) { ready(); return false; }
   const parts = segmentsOf(text).map(([p, isName]) => [p, voiceKey(p), isName]);
   if (!parts.some(([, k, nm]) => !nm && man.has(k))) return false;

@@ -1,0 +1,120 @@
+0|"ROS is an operating system like Windows." Myth or reality?
+1|🎉 Well done, everything is matched!
+2|🎉 Well done, everything is sorted!
+3|🎉 Well done, everything is in the right order!
+4|1. Blocks
+5|2. ROS and simulation
+6|4. The community
+7|A: write the rules
+8|Drawing robots in 3D
+9|Making the robot's parts
+10|Making a robot's programs (nodes) talk to each other
+11|What is ROS for?
+12|Replacing Windows on robots
+13|Agriculture
+14|Unsupervised learning
+15|Reinforcement learning
+16|Deep learning
+17|Supervised learning
+18|Approach A: we write all the rules by hand. Approach B: the robot learns by reinforcement (trial and reward). Which one should we choose?
+19|Match each description to its job.
+20|Course tip: joining ROS challenges or GitHub projects shows you can solve real problems.
+21|Before training the robot, what must be done with the data?
+22|Before running the robot for real, what must be done?
+23|B: reinforcement learning
+24|Lots of small programs
+25|BellaBot, a robot that delivers dishes
+26|Well done!
+27|It's a very simple rule!
+28|That's not it. Read both again carefully and try again 🙂
+29|That's not step {1}. What comes first?
+30|What to do, and what to avoid
+31|Robotics researcher
+32|Choose the hardware (PC, Raspberry Pi…)
+33|Choose where to program (Ubuntu, VS Code…)
+34|Choose an algorithm
+35|Each time, choose the right way to do it.
+36|Choose the right method
+37|Collect data (sensors, cameras)
+38|Collect data from every possible situation
+39|How a robot's small programs talk to each other
+40|How does a node send a message to the others?
+41|How a machine can learn
+42|Understand: ROS Core, nodes, topics, services
+43|Create a first node that publishes "Hello World"
+44|Da Vinci, a robot that helps surgeons
+45|Big neural networks to see or understand speech
+46|Getting started with ROS
+47|Robots in numbers
+48|Varied data: otherwise the robot only knows a few cases.
+49|Platforms like Marty, Scratch and Python: we start with blocks, then move on to written code.
+50|Simple rules are enough: it's easier and safer.
+51|Robots deliver dishes (BellaBot), welcome the public (Pepper) or clean floors on their own (Brain Corp).
+52|Industrial designer
+53|From collecting data to testing
+54|From the robot that obeys to the robot that learns
+55|Education
+56|It looks for groups on its own, with no names or labels
+57|It designs the whole robot: mechanics, electronics and programs
+58|It tries, gets a reward or a penalty, and changes its strategy
+59|It explores new technologies, often with a doctorate
+60|It installs, maintains and repairs robots
+61|Train the model
+62|Example: the camera publishes on /image, the planner subscribes to /image.
+63|AI for one task
+64|AI that helps
+65|it learns and decides
+66|It draws the robot's look and avoids sharp corners for safety
+67|It writes the programs that control the robot (Python, C++, ROS)
+68|It erases the other nodes
+69|It turns the robot off
+70|First you need a computer or a board to run ROS.
+71|You need a robot that adapts when things change.
+72|It prints it on paper
+73|It publishes it on a topic
+74|There are 4 levels of AI in robotics. Sort each situation into the right level. (Today, most robots are at level 0 or 1.)
+75|There would be too many rules to write!
+76|Industry
+77|Robotics engineer
+78|Install ROS
+79|Reinforcement learning
+80|Supervised learning only
+81|The robot's environment keeps changing. What should we choose?
+82|The arm can learn from its failures.
+83|The arm can change its path after each failure, without any new instruction.
+84|The Da Vinci surgical robot is used in more than 9,000 hospitals. Atalante exoskeletons help with rehabilitation.
+85|The ground changes: the robot must adapt without being reprogrammed.
+86|The test on the real robot comes last.
+87|The 4 steps to go far
+88|The 4 levels of autonomy
+89|The first 5 steps, in order
+90|Good learning habits
+91|The steps for a robot to learn
+92|Ways of learning
+93|The robot's messengers (ROS)
+94|Robotics jobs
+95|Nodes talk to each other with topics, like mailboxes. A node publishes a message on a topic. The nodes that subscribe to that topic receive the message.
+96|Naïo weeding robots are sold in more than 15 countries. Lely has installed 100,000 milking robots.
+97|Robots work everywhere. Match each robot to its field.
+98|Robotics sectors
+99|Topics
+100|Now, touch what goes with it.
+101|Marty, a little robot for learning to code
+102|It's better to check before using the robot.
+103|Myth: it's a middleware
+104|Myth! ROS is not a classic operating system, it's a layer that lets programs communicate.
+105|Naïo, a robot that weeds the fields
+106|Level 0: fixed instructions.
+107|Level 0: coded rules, it learns nothing.
+108|Level 1: AI specialised in detection.
+109|Level 1: an AI for ONE task (vision).
+110|Level 2: AI assists development.
+111|Level 3: learned behaviours, autonomous decisions.
+112|We learn machine learning with tools like OpenCV and PyTorch.
+113|We install ROS on Ubuntu and test our robots in a simulator (Gazebo) before building them.
+114|We show pictures with their name so it learns to recognise them
+115|You can't learn anything without data: that's step 1.
+116|We join open source projects and competitions: we learn as a team.
+117|We check first: it avoids surprises (and damage).
+118|Where do robots work?
+119|By reinforcement: the robot adapts by trial and error.

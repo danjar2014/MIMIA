@@ -1,0 +1,200 @@
+900|This quotation mark "{1}" doesn't work in programming. Use straight quotes " " (the "quote" button under the editor).
+901|This {1} "{2}" doesn't match the {3} "{4}" opened on line {5}. The ( ) { } come in pairs, in the right order.
+902|const, a box that never changes
+903|in
+904|In for ( … ) you need exactly two semicolons ; to separate the 3 parts. Example: for (let i = 0; i < 5; i++)
+905|indented,
+906|define the function
+907|equals equals
+908|equals equals equals
+909|close parenthesis
+910|global, an outside variable
+911|Line {1} is missing: "{2}".
+912|A semicolon ; or a sign (+, =, …) may be missing between two words.
+913|Something is missing at the end (a brace } or a parenthesis )?).
+914|A quotation mark is missing to close this text: every opened " must be closed on the same line.
+915|A quotation mark is missing to close this text.
+916|There is an extra closing {1} "{2}": it doesn't close anything.
+917|There is an error in your program: {1}
+918|I don't understand a sentence in your code: there is a spelling mistake.
+919|I don't know "{1}".{2}
+920|I wasn't expecting to find "{1}" here.
+921|I can't find the function "{1}". Write: {2}
+922|I can't find the function "boucle". The brain reads this function over and over: write {1}
+923|The {1} "{2}" on line {3} is never closed: "{4}" is missing.
+924|the lamp must change on every turn (on, off, on…)
+925|Line {1} should say "{2}", but your program displays "{3}".
+926|The name "{1}" already exists (it may be a robot command, or a box already created). Choose another name.
+927|let, creates a box
+928|Line {1}: {2}{3}
+929|minus equals
+930|minus one
+931|do nothing
+932|=
+933|open parenthesis
+934|parenthesis
+935|plus equals
+936|greater than or equal to
+937|less than or equal to
+938|plus one
+939|for
+940|remainder of the division by
+941|If it's a box (variable), create it first with let.
+942|Situation "{1}": expected: {2}. Your program gives: {3}.{4}
+943|Your program displays {1} lines, but only {2} are needed.
+944|Your program is empty.
+945|Your program displays nothing for now. Use afficher( … ) to write a message.
+946|Your program works for too long: it never stops. Look at your loop's condition: does it ever become false?
+947|Your result is right ✓ but the goal of the level has not been reached: {1}
+948|Your robot succeeds ✓ but the goal of the level has not been reached: {1}
+949|You use "{1}" before creating it with let. Create it earlier in your program.
+950|Did you mean to write "{1}"? Be careful with capital letters and accents.
+951|A character is not allowed (strange quotation marks?).
+952|A number is too big for me to continue.
+953|A box created with const can no longer change. Use let for a box that changes.
+954|Check the parentheses, the braces, the quotation marks and the commas.
+955|// Write your program below this line
+956|&& means "AND": both conditions must be true. || means "OR".
+957|% gives the remainder of the division: 7 % 2 equals 1. A number is even if number % 2 equals 0. if (condition) { … } else { … } chooses between two paths. Careful: to compare we write ===, not =.
+958|+ adds, - subtracts, * multiplies, / divides. You can calculate directly inside afficher( ).
+959|= (greater than or equal to).
+960|1. First words: writing and calculating
+961|2. The robot on the grid, in code
+962|3 steps, turn right, 2 steps.
+963|3. The robot's brain, in code
+964|4. Expert challenges
+965|At the end of each loop turn, i++ adds 1 to i. To add 2, write i += 2.
+966|At the end of the turn: avant = boutonAppuye(); then lampe(memoire);
+967|Add all the numbers from 1 to 10 with a loop and display the total.
+968|Display 2, 4, 6, 8, 10 with a loop.
+969|Display 5, 4, 3, 2, 1 then the word "Liftoff!".
+970|Display these three sentences, one per line: "I am a robot", "I can count", "Beep beep".
+971|display the double of the box "nombre" (nombre * 2), not just the result.
+972|Display the numbers from 1 to 15. But instead of a multiple of 3, write "bip", instead of a multiple of 5, write "bop", and for a multiple of both, "bipbop".
+973|Display the numbers from 1 to 5, one per line, with a for loop.
+974|afficher("…") writes a message. The quotation marks " " surround the words, the parentheses ( ) surround what we display, and the semicolon ; ends the sentence.
+975|=
+976|afficher("Hi") writes a message. afficher(3 + 4) writes 7.
+977|arrive() answers true when the robot is on the flag.
+978|Tip: lampe(boutonAppuye()); does it all in one line!
+979|Reach the flag by turning.
+980|avancer() makes the robot take one step. avancer(3) makes it take three. Each command ends with a semicolon.
+981|avancer() takes one step. avancer(3) takes three steps.
+982|Beep beep
+983|Hello
+984|boutonAppuye() answers true if the button is pressed.
+985|It's your expert challenge: combine what you know. && means AND, and a condition is a value you can give directly to lampe( ) or hautParleur( ).
+986|Each afficher writes a new line. The computer reads your program from top to bottom.
+987|Start at 2 and end at 10: for (let i = 2; i <= 10; i += 2)
+988|Countdown
+989|Counting with a loop
+990|Counting by twos
+991|Copy the words between the quotation marks carefully.
+992|create the function contourner().
+993|Create let total = 0; before the loop.
+994|create your box with let.
+995|create your function contourner().
+996|create a box (let total = 0;) to keep the total.
+997|Create a box named nombre that contains 5, then display its double (nombre * 2).
+998|In the loop: total += i; then afficher(total); after the loop.
+999|In the loop, test i % 15 === 0 first (bipbop), then i % 3, then i % 5.
+1000|In the last else, simply display i.
+1001|Inside the braces: return n * 2;
+1002|Inside the braces { }, display the variable i: afficher(i);
+1003|In a real robot, the brain repeats the function boucle() non-stop. lampe(true) turns on, lampe(false) turns off. CAREFUL: the lamp stays as you left it until you change it!
+1004|In a loop, you can put several commands: they are all repeated together.
+1005|Deciding on your own
+1006|Liftoff!
+1007|Two pebbles, same detour! Write the detour just once in a function, then call it twice.
+1008|Second line: afficher(nombre * 2);
+1009|Say hello
+1010|distance() gives the distance to the obstacle in cm.
+1011|distance() gives the distance in cm. We compare it with
+1012|Write: afficher("Hello");
+1013|Write whatever you want! Test your ideas: display, calculate, loops, functions…
+1014|Write the brain's program: the lamp is on when the button is pressed, and off otherwise.
+1015|Write a function doubler(n) that returns the double of n. The computer will test it with several numbers.
+1016|Write a function estPremier(n) that returns true if n is a prime number (divisible only by 1 and by itself), otherwise false. 1 and 0 are not prime.
+1017|Write a function plusGrand(a, b) that returns the larger of the two numbers.
+1018|Try changing the text, then run it again.
+1019|Try all the d from 2 to n - 1: if n % d === 0, return false. If none works, return true at the end.
+1020|etoileIci() answers true if there is a star under the robot.
+1021|Stars AND pebbles! Combine everything: while, if, function.
+1022|Make the robot reach the flag 🏁 with code.
+1023|Make the computer calculate 7 times 6 and display the result.
+1024|Make the lamp blink with tic().
+1025|make the computer do the multiplication with the * sign.
+1026|for (let i = 0; i < 7; i++) { … } repeats 7 times what is between the braces.
+1027|for repeats instructions. for (let i = 1; i <= 5; i++) { … } means: "i starts at 1, as long as i is less than or equal to 5, repeat, then add 1 to i".
+1028|hautParleur(true) makes it sound, hautParleur(false) makes it quiet.
+1029|Here there is no right or wrong answer. Run your program to see what it displays.
+1030|if (…) { … } else { … } chooses between two paths. With while (!arrive()) the robot keeps going until the flag.
+1031|You must say when to turn on AND when to turn off: if … else …
+1032|You must test the most precise case first: a multiple of 15 is also a multiple of 3 and of 5. A chain if … else if … else if … stops at the first true test.
+1033|You need three afficher, one per sentence.
+1034|I can count
+1035|I am a robot
+1036|The alarm that remembers (in code)
+1037|The staircase in code
+1038|The computer calculates
+1039|The robot's for loop
+1040|The lamp is on when it is dark AND tic() is true.
+1041|The blinking lamp in code
+1042|The sum
+1043|The repeating sequence: move forward, turn right, move forward, turn left. 4 times.
+1044|lampe(true) turns the lamp on, lampe(false) turns it off. It stays as you left it!
+1045|The button and the lamp
+1046|The pebble is sometimes here, sometimes there. The robot must decide: if there is an obstacle, it goes around, otherwise it moves forward.
+1047|The L-shaped corridor
+1048|The detour: left, forward, right, forward(2), right, forward, left.
+1049|The flag is 4 steps away: avancer(4);
+1050|The flag is far away! Use a for loop to move forward without writing the same line seven times.
+1051|The big coding challenge
+1052|The largest
+1053|The robot obeys the code
+1054|The careful robot in code
+1055|In the evening (light below 35), the lamp blinks with tic(). In the daytime, it is off. And as soon as an obstacle is closer than 8 cm, the speaker sounds, day or night.
+1056|The complete night watchman
+1057|Boxes created OUTSIDE the function keep their value from one turn to the next: that's the brain's memory. memoire = !memoire flips the box (true ↔ false). Careful: the press must count ONE time only, even if the finger stays down.
+1058|The corridors don't all have the same length: your program must work in all of them (three tries).
+1059|The wheels only turn if it is bright AND the path is clear. The lamp turns on when it is dark (light below 35).
+1060|The wheels turn, unless an obstacle is closer than 20 cm.
+1061|lumiere() gives the light from 0 (black) to 100 (bright sun). Below 35, it's dark.
+1062|My first function
+1063|My own function
+1064|Put avancer(); in the loop, which runs 7 times.
+1065|Climb the staircase to the flag by repeating a small sequence.
+1066|Don't forget afficher("Liftoff!"); AFTER the braces of the loop.
+1067|Prime number?
+1068|Obstacle closer than 20 cm: the lamp turns on. Closer than 8 cm: the speaker sounds too.
+1069|obstacleDevant() answers true or false: is there an obstacle right ahead?
+1070|Even or odd
+1071|For each number from 1 to 6, display "even" or "odd".
+1072|To count down, write i-- (subtracts 1) and repeat while i is greater than 0. After the loop, another instruction can display a last message.
+1073|First line: let nombre = 5;
+1074|Pick up the stars ⭐ (they are not always in the same places) then reach the flag.
+1075|ramasser() picks up the star that is under the robot.
+1076|roues(true) makes the wheels roll, roues(false) stops them.
+1077|If star here
+1078|If n < 2, return false.
+1079|If an obstacle passes closer than 20 cm, the lamp turns on and STAYS on. The button erases the memory.
+1080|As long as the path is clear
+1081|tic() answers true every other turn: true, false, true, false…
+1082|tic() answers true every other turn: true, false, true, false… The lamp can follow it!
+1083|Your first real program! Make the computer write the word Hello.
+1084|Turning with code
+1085|tournerDroite() and tournerGauche() turn the robot on the spot. Commands run in order.
+1086|tournerDroite() turns the robot right, on the spot.
+1087|tournerGauche() turns the robot left, on the spot.
+1088|Three L-shaped corridors, three sizes. A single program must succeed in all three.
+1089|Three lines
+1090|You can chain two while loops with a turn between them.
+1091|You know everything you need. Break the problem down: pick up the star if there is one, then go around or move forward.
+1092|One press turns the lamp on, the next press turns it off. You need two boxes (variables): the memory, and "was the button pressed on the previous turn?".
+1093|One button, two orders (with memory)
+1094|A number n is not prime if it has a divisor d between 2 and n - 1: n % d === 0. A return stops the function right away. Test the small cases first (n < 2).
+1095|A new press: boutonAppuye() is true AND avant is false.
+1096|A box: the variable
+1097|A boolean box (true or false) like memoire remembers a past event, even when it is over.
+1098|A box can keep a total: total = total + i; adds i to the total (you can write total += i;). Display the total AFTER the loop.
+1099|A comparison gives true or false, and lampe( ) directly accepts true or false: lampe(distance() < 20) does the whole if/else by itself.

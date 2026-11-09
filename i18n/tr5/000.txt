@@ -1,0 +1,160 @@
+0|◀ Back
+1|✔ Yes!
+2|3. Artificial intelligence
+3|word
+5|— nothing —
+6|💡 Hint
+7|"Hi robot"
+8|times
+9|🗑 Erase
+11|⏩ 10 tries
+12|↺ Start again
+13|🏅 New badge: {1}
+15|⚡ +{1} XP{2} · today {3}/{4}
+16|· without any mistake!
+17|little roboticist
+18|board
+19|publishes 3 times without copying
+20|draw, dance
+21|🔒 Parent area
+22|day
+23|project
+24|blocks
+25|⚡ +{1} XP · today {2}/{3}
+26|▶ Next level
+33|always open
+34|this child
+35|(last: {1}/5)
+36|never
+43|▶ Program
+44|else
+45|sensor
+46|output 1
+47|output 2
+48|output 3
+49|remember: YES
+50|remember: NO
+51|OUTPUT, green point
+52|, then
+53|nothing
+54|, otherwise {1}
+55|Then,
+56|First,
+57|💾 Keep
+58|automatic
+59|🧠 Brain: automatic
+60|output, green point
+61|no program
+62|🔘 Press (hold)
+63|running
+64|silence
+65|opening bracket
+66|closing bracket
+67|quotation mark
+68|colon
+69|comma
+71|returns
+72|true
+73|false
+74|opening brace
+75|closing brace
+76|semicolon
+78|function
+79|new line
+80|▶ Run
+81|🧹 Erase
+82|full
+83|🔊 Read the explanation
+84|brace
+85|bracket
+86|display
+87|open brace
+88|close brace
+89|open bracket
+90|close bracket
+91|comment: {1}
+92|quote {1} quote
+97|odd
+98|even
+99|use while.
+100|use while (!arrive()).
+101|use if / else if.
+102|use return.
+103|words
+104|brain
+119|use while not arrive().
+130|✅ Well done! {1}
+131|⬆️ move forward
+132|can change
+133|always becomes false
+134|x is 6
+135|blinks
+139|high C
+140|▶ Dance!
+141|🎉 Well done, what a dance!
+142|today
+143|black
+144|colour
+147|▶ Draw
+148|loops
+149|⟲ Start again
+150|down
+151|{1} {2} times
+152|dark
+153|turn on
+154|(dark)
+155|turns on
+156|move forward
+157|turn
+158|back
+159|run
+160|hint
+161|voice
+162|✔ Finish
+163|clear
+164|👉 Try the order "{1}" ({2}).
+165|clear path
+167|{1} balloon
+168|other shape
+169|⬇️ low
+170|low
+171|⬆️ high
+172|high
+173|🔈 soft
+174|soft
+175|🔊 loud
+176|loud
+177|We share between two: how many each?
+178|group
+179|rod
+180|✔ yes
+181|yes
+182|✖ no
+183|no
+184|⬆️ goes up
+185|goes up
+186|⬇️ goes down
+187|goes down
+188|🕐 on the hour
+218|🗺️ Full journey
+219|▶ Start
+221|👨‍👩‍👧 Welcome!
+222|⭐ Subscription
+223|▶ Let {2} start
+229|shadow
+230|object
+231|No, go back
+263|sheet
+265|explorer
+266|guard
+268|nothing (None)
+269|true/false
+270|eyes
+271|lights up in colour
+272|battery
+273|game
+274|climb
+275|go down
+276|delete
+277|start again
+278|error

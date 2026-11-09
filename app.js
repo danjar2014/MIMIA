@@ -34,6 +34,7 @@ import "./voiceclips.js";
 import { initPraise } from "./praise.js";
 import { showSplash } from "./splash.js";
 import { initInstall } from "./install.js";
+import { LANG, langChosen, setLang } from "./i18n.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -67,7 +68,7 @@ function markDone(sec, id) { const first = !isDone(sec, id), was = RANKS.map((_,
 function celebrate(i) {
   pushOverlay((next, closeAll) => {
     const r = RANKS[i];
-    if (i === RANKS.length - 1) { overlay.innerHTML = `<div class="panel diplome"><h1>🏆 Diplôme d'expert</h1><p class="sub">Félicitations <b>${S.name || "petit roboticien"}</b> !<br>Tu as parcouru tout le chemin : du premier « c'est quoi un robot ? » jusqu'au code du cerveau d'un robot, avec de la mémoire.${S.project && S.project.name ? `<br>Ton grand projet : le robot « <b>${S.project.name}</b> » !` : ""}</p><p class="sub">${new Date().toLocaleDateString("fr-FR")} · Petits Robots</p><div class="agebtns"><button class="big-btn" id="cel0">🖨️ Imprimer mon diplôme</button><button class="big-btn alt" id="cel2">Fermer</button></div></div>`; $("#cel0").onclick = () => window.print(); }
+    if (i === RANKS.length - 1) { overlay.innerHTML = `<div class="panel diplome"><h1>🏆 Diplôme d'expert</h1><p class="sub">Félicitations <b>${S.name || "petit roboticien"}</b> !<br>Tu as parcouru tout le chemin : du premier « c'est quoi un robot ? » jusqu'au code du cerveau d'un robot, avec de la mémoire.${S.project && S.project.name ? `<br>Ton grand projet : le robot « <b>${S.project.name}</b> » !` : ""}</p><p class="sub">${new Date().toLocaleDateString(LANG === "en" ? "en-GB" : "fr-FR")} · Petits Robots</p><div class="agebtns"><button class="big-btn" id="cel0">🖨️ Imprimer mon diplôme</button><button class="big-btn alt" id="cel2">Fermer</button></div></div>`; $("#cel0").onclick = () => window.print(); }
     else overlay.innerHTML = `<div class="panel"><h1>🎉 Aventure ${i + 1} terminée !</h1><p class="sub">${r.icon} Tu es maintenant <b>${r.name}</b>.<br>Tu viens de débloquer : ${r.unlocks}.</p><div class="agebtns"><button class="big-btn" id="cel1">🗺️ Voir mon parcours</button><button class="big-btn alt" id="cel2">Continuer</button></div></div>`;
     const c1 = $("#cel1"); if (c1) c1.onclick = () => { closeAll(); parcours(); };
     $("#cel2").onclick = next;
@@ -362,7 +363,7 @@ function winBar(next, list, listLabel = "☰ Liste des niveaux", nextLabel = "�
   document.querySelectorAll(".winbar").forEach(x => x.remove()); const w = el("div", "winbar"), stage = document.querySelector(".astage"); if (!stage) return;
   if (next) { const b = el("button", "big-btn", nextLabel); b.onclick = next; w.append(b); } const l = el("button", "big-btn alt", listLabel); l.onclick = list; w.append(l); if (parcoursBtn) { const pb = el("button", "big-btn alt", "🗺️ Mon parcours"); pb.onclick = parcours; w.append(pb); } stage.append(w); w.scrollIntoView({ behavior: "smooth", block: "end" });
 }
-function keep(type, title, data) { S.creations.unshift({ id: Date.now(), type, title, data, date: new Date().toLocaleDateString("fr-FR") }); S.creations = S.creations.slice(0, 40); save(); toast("✔ Gardé dans « Mes créations » !"); }
+function keep(type, title, data) { S.creations.unshift({ id: Date.now(), type, title, data, date: new Date().toLocaleDateString(LANG === "en" ? "en-GB" : "fr-FR") }); S.creations = S.creations.slice(0, 40); save(); toast("✔ Gardé dans « Mes créations » !"); }
 
 // ---------- parcours à dessiner ----------
 function sandbox() {
@@ -457,7 +458,7 @@ const CARD_ICON = { auto: "✨", open: "🔓", blocked: "🔒" }, CARD_LABEL = {
 const PARENT_SCREENS = {
   profil: () => ({ title: "Joueurs", html: "" }),   // écran propre : voir profilesScreen()
   cartes: () => ({ title: "Cartes", html: `<p class="sub">Pour <b>${escH(S.name || "cet enfant")}</b> : ✨ selon la progression · 🔓 toujours ouverte · 🔒 bloquée. Touchez pour changer.</p>` + cardNamesFor().map(nm => { const st = (S.cards || {})[nm] || "auto"; return `<div class="row"><span>${nm}</span><button class="cardst" data-nm="${escH(nm)}" aria-label="${escH(nm)} : ${CARD_LABEL[st]}">${CARD_ICON[st]}</button></div>`; }).join("") }),
-  son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
+  son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Langue / Language</span><select id="lg"><option value="fr" ${LANG === "fr" ? "selected" : ""}>Français</option><option value="en" ${LANG === "en" ? "selected" : ""}>English</option></select></div><div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
   ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
   parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
     <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt psmall" id="sdt">🎯</button></div>` + togRow("Tout débloquer", "unlockAll", S.unlockAll) + `<div class="row"><span>Effacer la progression</span><button class="big-btn alt psmall" id="rs" aria-label="Effacer la progression">↺</button></div>` }),
@@ -515,6 +516,7 @@ function parentScreen(id) {
     const nm = b.dataset.nm, nx = CARD_NEXT[(S.cards || {})[nm] || "auto"]; S.cards = S.cards || {}; if (nx === "auto") delete S.cards[nm]; else S.cards[nm] = nx;
     save(); b.textContent = CARD_ICON[nx]; b.setAttribute("aria-label", `${nm} : ${CARD_LABEL[nx]}`); speak(`${nm} : ${CARD_LABEL[nx]}`, { force: true, full: true });
   });
+  const lg = $("#lg"); if (lg) lg.onchange = () => { grabParent(); setLang(lg.value); location.reload(); };
   const sdt = $("#sdt"); if (sdt) sdt.onclick = () => { grabParent(); mountPlacement(overlay, res => { toast(res.rank ? `Nouveau départ : aventure ${res.rank + 1} · ${RANKS[res.rank].name}` : "Départ au tout début", 4000); closeSettings(); }); };
   const rs = $("#rs"); if (rs) rs.onclick = () => { grabParent(); askConfirm(overlay, { title: "Effacer la progression ?", sub: "Le parcours de l'enfant repart de zéro.", onYes: () => { resetJourney(); toast("Progression effacée"); parentScreen("parcours"); }, onNo: () => parentScreen("parcours") }); };
   const pc = $("#pc"); if (pc) pc.onclick = () => createPin({ onDone: settings, onCancel: () => parentScreen("code") });
@@ -534,4 +536,10 @@ mascotApi = initMascot();
 sceneApi = initScene();
 initStats({ onLimit: () => { if (overlay.style.display !== "flex") showLimit(); } });
 window.__app = { get mascot() { return mascotApi; }, welcome, startApp, parentScreen, playPractice, playPuzzle, progMenu, startSetup, startOnboarding, pushOverlay, streakScreen, goalScreen, rewardXP, playDaily, showBadges, announceBadges, openSettings, settings, dashboard, showLimit, playProject, playProjectSheet, parcours, playLearn, launchStep, stepInfo, celebrate, levelChooser, openCodeFromBlocks, RANKS, LESSONS, codeMenu, playCode, FLAT, FREE, home, advMenu, playAdv, ADVFLAT, buildMenu, playBuild, BUILD, playGrid, playDraw, freeDance, freeDraw, S, LEVELS, DEFIS, DISC, LABS, activity, sandbox, creations, robotBuilder, get cur() { return window.__cur; } };
-startApp();
+// tout premier écran : le choix de la langue (français / anglais), avant la configuration
+function chooseLanguage() {
+  const d = el("div", "langpick", `<h1>Choisis ta langue<br><small>Choose your language</small></h1><div class="langbtns"><button class="langbtn" data-l="fr"><span aria-hidden="true">🇫🇷</span><b>Français</b></button><button class="langbtn" data-l="en"><span aria-hidden="true">🇬🇧</span><b>English</b></button></div>`);
+  d.querySelectorAll(".langbtn").forEach(b => b.onclick = () => { setLang(b.dataset.l); location.reload(); });
+  document.body.append(d);
+}
+if (!langChosen()) chooseLanguage(); else startApp();

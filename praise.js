@@ -1,7 +1,7 @@
 // Compliments et salutations avec le prénom du joueur, selon son âge et fille / garçon (réglés par les parents).
 // Un modèle s'écrit avec {n} (le prénom) et [forme féminine|forme masculine] : « {n}, tu es [une championne|un champion] ! ».
 // Les voix enregistrées lisent les morceaux (« Bravo », le prénom, « tu es une championne ») : voice/extract.mjs les liste grâce à fragments().
-import { S, DEVICE } from "./util.js";
+import { S, DEVICE, LANG } from "./util.js";
 
 export const BANK = {
   win: {
@@ -17,6 +17,21 @@ export const BANK = {
 };
 // salutations : lues par la voix de l'appareil (pas de clip : le prénom change, et on n'entend pas de cassure de voix) ; elles dépendent de l'heure
 export const HELLO = { morning: ["Bonjour {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"], day: ["Bonjour {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"], evening: ["Bonsoir {n} !", "Salut {n} !", "Ça fait plaisir de te revoir, {n} !"] };
+// version anglaise (voix de l'appareil, pas d'accord fille / garçon)
+const BANK_EN = {
+  win: {
+    a: ["Well done, {n}!", "That's great, {n}!", "Awesome, {n}!", "Yay, you did it, {n}!", "Nice job, {n}!", "{n}, you are a champion!", "{n}, you are so smart!", "You are wonderful, {n}!", "{n}, you are strong!"],
+    b: ["Excellent work, {n}!", "Well done {n}, you thought it through!", "{n}, you are really talented!", "What a great success, {n}!", "You are improving fast, {n}!", "{n}, you are a real programmer!", "Impressive, {n}!", "{n}, you are brave and determined!"],
+    c: ["Nice code, {n}!", "{n}, what logic!", "Well reasoned, {n}!", "You've got it, {n}!", "{n}, you are a real roboticist!", "Great job, {n}! You are really brilliant.", "Hats off, {n}!", "Excellent, {n}! You understood everything."]
+  },
+  retry: {
+    a: ["Come on {n}, try again!", "You're almost there, {n}!", "Let's try again together, {n}?"],
+    b: ["Don't give up, {n}!", "You almost found it, {n}!", "Think a little more, {n}."],
+    c: ["Almost, {n}! Look closely.", "Come on {n}, you can do it!", "Find the mistake, {n}."]
+  }
+};
+for (const kind of [BANK_EN.win, BANK_EN.retry]) kind.z = kind.a.slice();
+const HELLO_EN = { morning: ["Good morning, {n}!", "Hi {n}!", "Nice to see you again, {n}!"], day: ["Hello, {n}!", "Hi {n}!", "Nice to see you again, {n}!"], evening: ["Good evening, {n}!", "Hi {n}!", "Nice to see you again, {n}!"] };
 export const dayPart = (d = new Date()) => { const h = d.getHours(); return h >= 18 || h < 5 ? "evening" : h < 12 ? "morning" : "day"; };
 const AGES = ["z", "a", "b", "c"], SEXES = ["f", "m"];
 // les petits (3-6 ans) ont les mêmes compliments simples que les 6-8 ans
@@ -34,11 +49,11 @@ export function expand(tpl, name = S.name, sex = sexOf()) {
 }
 const ageOf = () => (AGES.includes(S.age) ? S.age : "b");
 export function line(kind) {
-  const list = (BANK[kind] || BANK.win)[ageOf()], ok = sexOf() === "n" ? list.filter(t => !hasGender(t)) : list;
+  const B = LANG === "en" ? BANK_EN : BANK, list = (B[kind] || B.win)[ageOf()], ok = sexOf() === "n" ? list.filter(t => !hasGender(t)) : list;
   return expand(pickOf(ok.length ? ok : list));
 }
 export const praise = () => line("win"), encourage = () => line("retry");
-export const hello = (d = new Date()) => DEVICE + expand(pickOf(HELLO[dayPart(d)]));
+export const hello = (d = new Date()) => DEVICE + expand(pickOf((LANG === "en" ? HELLO_EN : HELLO)[dayPart(d)]));
 
 // morceaux à enregistrer : chaque modèle, pour chaque forme, coupé au prénom puis en phrases (voice/extract.mjs)
 export function fragments() {
@@ -49,12 +64,13 @@ export function fragments() {
 }
 
 // « Bravo ! » dans un message de réussite devient un compliment avec le prénom (affichage et voix)
+const BRAVO = /Bravo\s*!|Well done!/;
 export function initPraise() {
   const fix = n => {
     if (!n.classList || !n.classList.contains("gmsg") || !/(^|\s)ok(\s|$)/.test(n.className)) return;
     const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT); let t;
     // le remplaçant ne doit jamais redevenir « Bravo ! » (sinon on boucle sans fin quand il n'y a pas de prénom)
-    while ((t = w.nextNode())) { if (/Bravo\s*!/.test(t.nodeValue)) { let p = praise(); if (/Bravo\s*!/.test(p)) p = "Super !"; t.nodeValue = t.nodeValue.replace(/Bravo\s*!/, () => p); return; } }
+    while ((t = w.nextNode())) { if (BRAVO.test(t.nodeValue)) { let p = praise(); if (BRAVO.test(p)) p = LANG === "en" ? "Super!" : "Super !"; t.nodeValue = t.nodeValue.replace(BRAVO, () => p); return; } }
   };
   new MutationObserver(ms => { for (const m of ms) { const el = m.target.nodeType === 3 ? m.target.parentElement : m.target; const g = el && el.closest && el.closest(".gmsg"); if (g) fix(g); for (const a of m.addedNodes) if (a.nodeType === 1) { if (a.matches && a.matches(".gmsg")) fix(a); a.querySelectorAll && a.querySelectorAll(".gmsg").forEach(fix); } } })
     .observe(document.body, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["class"] });

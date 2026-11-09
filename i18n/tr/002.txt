@@ -1,0 +1,180 @@
+320|Animated background
+321|Discover your robot
+322|Discover
+323|Discover the robot
+324|Challenge
+325|Daily challenge
+326|Start at the very beginning
+327|From blocks to real code
+328|Free drawing
+329|Draw your course
+330|Draw a course
+331|From the sensor to the motor
+332|Screen
+333|write whatever you want and see what happens
+334|Write the lamp's rule
+335|Write the program that takes the robot to the flag while collecting all the stars. You can use all the blocks.
+336|Write the program that takes the robot to the flag.
+337|Please write the first name.
+338|Erase progress
+339|Erase progress?
+340|Saved
+341|Enter the 4-digit code to open the settings.
+342|Enter the code to grant 15 more minutes.
+343|Parent area
+344|Parent area, with the code
+345|done today
+346|Congratulations
+347|Close
+348|Big Project sheet
+349|Girl or boy
+350|Brake before the wall
+351|Earned on {1}
+352|Large display
+353|Inspire
+354|invent whatever you want
+355|I am a parent
+356|I suggest the activities that suit you best. You can try everything whenever you want.
+357|Play per day
+358|Play a little every day to make it grow. A rest day doesn't break it.
+359|Play: {1}
+360|Player
+361|Player added
+362|Players
+363|the robot's map
+364|Subscription management is coming soon.
+365|The arm that learns
+366|The distance sensor
+367|The light sensor
+368|The Big Project
+369|The child's journey starts again from zero.
+370|The robot moves and turns
+371|The robot dances
+372|The robot draws
+373|The robot that learns
+374|Lesson for beginners
+375|Blocks and code do exactly the same thing. Here, you can change the code yourself.
+376|The sensors
+377|the robot's parts
+378|The robot's parts
+379|Robots around the world
+380|The robot's eyes measure the distance to the wall
+381|light, distance
+382|lights, notes and jumps
+383|My map
+384|My dance
+385|My badges
+386|My creations
+387|Calm mode
+388|me
+389|Me
+390|My code (from the blocks)
+391|My drawing
+392|My child
+393|My big project
+394|My journey
+395|My first node: Hello World
+396|My program
+397|My robot
+398|Montessori
+399|Starting level
+400|No
+401|New badge: {1}
+402|New start: adventure {1} · {2}
+403|New player
+404|Goal of the day
+405|Goal of the day reached!
+406|See how the robot reacts to light
+407|We tell you a name, you touch the right part
+408|We tell you a role, you find the part
+409|Where are you?
+410|Yes
+411|by trial and reward
+412|Journey
+413|Surprise journey
+414|Pause
+415|Little robot that reacts
+416|Little break?
+417|Little break? 🌿 A robot also needs to recharge!
+418|First place a finish flag 🏁
+419|More explanations
+420|Go further
+421|Place blocks and watch the code write itself
+422|For
+423|To grant 15 more minutes: what is
+424|First name
+425|Program
+426|Program the robot
+427|Progress erased
+428|publishes a message
+429|then program the robot to succeed
+430|Puzzle
+431|Python and JavaScript
+432|How old are you?
+433|Recover
+434|Set the threshold like an engineer
+435|put the robot back in order
+436|Repeating: the for loop
+437|repeat a message
+438|Breathe gently…
+439|Back
+440|Nothing yet. In "Create", press 💾 to keep a drawing, a dance or a course.
+441|Round
+442|Circles
+443|ROS, AI, jobs
+444|Practise
+445|Its colour
+446|Their progress will be erased.
+447|Its head
+448|Hi {1}!
+449|Hi {1}! Touch the robot to play.
+450|depending on progress
+451|Sense, think, act: put the steps in order
+452|{1}-day streak!
+453|Gentle streak: {1} day{2}.
+454|Its eyes
+455|sound
+456|Sound
+457|Its antenna
+458|Their first name
+459|Sounds
+460|Blow
+461|Progress
+462|Delete this player?
+463|Parent dashboard
+464|While: the while loop
+465|Time
+466|First finish the previous step 🙂
+467|First finish the previous step.
+468|Finish the previous adventure to open it.
+469|Level test{2}
+470|Your big project: the robot "
+471|your node drives the robot
+472|Touch each part to learn its name and its role
+473|Touch the part
+474|Touch the robot to play.
+475|Touch a square to change it: 🪨 pebble → ⭐ star → 🏁 finish → empty. The robot 🤖 starts from the top-left square, facing right.
+476|Unlock everything
+477|You have {1} badge{2} out of {3}.{4} A rest day never breaks your streak.
+478|You worked well, well done! Your robot is resting. See you tomorrow!
+479|You started a streak!
+480|You have come all the way: from the first "what is a robot?" to the code of a robot's brain, with memory.{2}
+481|you are the robot's teacher
+482|You just unlocked: {4}.
+483|a new course every time
+484|A course of your own
+485|a surprise course
+486|A surprise course every time, always possible to complete. It gets harder as you succeed.
+487|one topic, several subscribers
+488|Confirm
+489|Free version
+490|Visor
+491|Here is the code of your blocks. Change it, run it again, and see what happens!
+492|Voice
+493|14 days of play
+494|3 days of play
+495|30 days of play
+496|7 daily challenges
+497|7 days of play
+498|Turn on your robot's lamp.
+499|Brain in code

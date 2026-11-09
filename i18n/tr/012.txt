@@ -1,0 +1,258 @@
+2300|=
+2301|=
+2302|=
+2303|=
+2304|=
+2305|=
+2306|=
+2307|=
+2308|=
+2309|=
+2310|=
+2311|=
+2312|=
+2313|=
+2314|: it is read over and over by the brain. You know everything you need!
+2315|(no program saved)
+2316|{1} {2} · engineer:
+2317|{1} part{2} chosen{3}.
+2318|{1}. Difficulty {2} stars.
+2319|⌨️ My program ({1})
+2320|⏳ The tests are running…
+2321|▶ Continue this project
+2322|▶ I choose this project
+2323|◀ Previous step
+2324|✅ Tests passed
+2325|✔ I chose my parts
+2326|✔ Project finished
+2327|✘ No program to test for now.
+2328|🎯 What my robot can do
+2329|🏁 Finish the Big Project
+2330|💾 Save in My creations
+2331|🖨️ Print my sheet
+2332|🧩 Robot parts
+2333|🙂 You are missing: {1}.
+2334|🙂 Your robot doesn't need: {1}. Put {2} back on the shelf!
+2335|Well done, your robot is ready!
+2336|Specifications:
+2337|What your robot must be able to do:
+2338|these parts
+2339|this part
+2340|Choose your parts.
+2341|Difficulty: {3}
+2342|Write the function
+2343|Sheet
+2344|Idea
+2345|=
+2346|power
+2347|The Big Project.
+2348|Assembly
+2349|Build your robot.
+2350|My robot's name:
+2351|Your robot's name
+2352|Go to the program ▶
+2353|Little roboticist
+2354|Place the parts on the board, then connect them: power, sensors (blue inputs) and actions (green outputs).
+2355|For "{1}", think: what does your robot need? Touch the parts to take. No useless part, and nothing forgotten!
+2356|for power
+2357|Program
+2358|Program the brain.
+2359|=
+2360|Your project sheet.
+2361|Your program. {1}
+2362|Your robot must pass all the tests of the specifications. The program will be tested in several situations, one after the other.
+2363|Touch a part to take it or put it back.
+2364|You are the engineer! You will invent a complete robot: choose its parts, build it, then write its program. Choose your project.
+2365|You can use: if / else, and / or (&& / ||), tic(), distance(), lumiere(), boutonAppuye(), and variables for the memory. Break the problem into small parts!
+2366|Here is its project sheet. Give it a name, then print it or save it.
+2367|Here is your robot "{1}". Place each part on the board, then connect everything to the brain: power (red, + and −), sensors on the blue inputs, actions on the green outputs.
+2368|See my project sheet ▶
+2369|=
+2370|=
+2371|Start with two variables: clair = lumiere() >= 35 and libre = distance() >= 20.
+2372|In the dark (light below 35), it stops and the lamp blinks with the tick.
+2373|In front of an obstacle (less than 20 cm), the lamp stays on.
+2374|It only rolls if it is bright AND the path is clear.
+2375|You need a memory: a variable alarme, true or false, created OUTSIDE the function (and global in Python).
+2376|It is on watch: the lamp blinks with the tick.
+2377|The alarm REMEMBERS: it keeps going when the intruder has left (memory).
+2378|The lamp: if it isn't bright, it follows tic(). Otherwise, it's on when the path isn't clear.
+2379|The button stops the alarm and the robot goes back on watch.
+2380|The speaker: haut_parleur(distance() < 8).
+2381|The speaker follows the variable alarme. The lamp is on if alarme OR tic().
+2382|The careful explorer robot
+2383|The guard robot
+2384|The wheels: roues(clair and libre).
+2385|to stop the alarm
+2386|to warn (on or blinking)
+2387|to spot the intruder
+2388|to roll
+2389|to know whether it is bright or dark
+2390|to sound
+2391|to sound very close to a wall
+2392|to watch and alert
+2393|to see obstacles
+2394|If distance() < 20: alarme becomes true. If the button is pressed: alarme becomes false.
+2395|Your robot explores a cave. It moves forward when the path is clear and there is enough light. It stops in front of an obstacle and warns with its lamp. Very close to a wall, it sounds. And when it's too dark, it stops and its lamp blinks to ask for help.
+2396|Your robot guards a treasure. It is on watch: its lamp blinks gently. If an intruder passes within 20 cm, the alarm goes off: the speaker sounds and the lamp stays on. Even if the intruder runs away, the alarm keeps going! Only the owner's button can stop it.
+2397|Very close to a wall (less than 8 cm), the speaker sounds.
+2398|An intruder within 20 cm sets off the alarm: speaker and steady lamp.
+2399|, well placed
+2400|🎉 Well done! The puzzle is finished.
+2401|The picture to find
+2402|Piece {1}{2}
+2403|Touch two pieces to swap them.
+2404|"{1}" expects {2} value{3}, but you gave {4}.
+2405|"{1}" doesn't have a value yet at this point in the function. If it's a variable created outside the function and you want to change it, first write: global {2}
+2406|"{1}" is not a function: you can't put parentheses () after it.
+2407|"{1}" doesn't exist for {2}.
+2408|"for … in" needs a list, a text or range(…).
+2409|"in" is used to search inside a text or a list.
+2410|{1}() needs at least one value.
+2411|Call
+2412|After "{1} … :", the next line must be indented to the right (4 spaces) to show what is inside.
+2413|After "def" you need the function's name: def doubler(n):
+2414|After "for" you need a variable name, for example: for i in range(5):
+2415|After "global" you need the name of a variable.
+2416|After the function's name, you need parentheses: def {1}():
+2417|After the dot, you need a name (for example liste.append(3)).
+2418|This quotation mark "{1}" doesn't work in programming. Use straight quotes " ".
+2419|This {1} "{2}" doesn't close anything, or doesn't match the one opened before.
+2420|this line
+2421|This line is indented to the right for no reason. Indentation is only used after a line that ends with ":".
+2422|This line is not finished: something is missing after the last sign.
+2423|this value
+2424|In an f"…" text, a closing brace "}" is missing.
+2425|Division
+2426|In Python we don't write "else if": we write "elif".
+2427|In Python, {1} is written with parentheses: {2}("Hello")
+2428|The closing parenthesis ")" of this call is missing.
+2429|The closing parenthesis ")" of the function is missing.
+2430|The closing parenthesis ")" is missing.
+2431|The closing bracket "]" of the list is missing.
+2432|The closing bracket "]" is missing.
+2433|The word "in" is missing: for i in range(5):
+2434|The colon ":" is missing at the end of the "{1}" line.
+2435|A quotation mark is missing to close this text: every opened quotation mark must be closed on the same line.
+2436|There is no item number {1} (the list has {2} item{3}, numbered from 0).
+2437|There is no item number {1} in this list.
+2438|There are empty braces { } in your f"…" text: put a variable's name in them.
+2439|Indentation
+2440|Index
+2441|I was expecting a value name in the function's parentheses.
+2442|I don't understand {1} here. Check the spelling of the words and signs.
+2443|I don't understand the end of this line. Did you forget a sign (+, ,, :) or a parenthesis?
+2444|I don't understand the sign "{1}".
+2445|I can't turn "{1}" into a whole number.
+2446|I don't know how to run this line.
+2447|I don't know how to do "{1}" between {2} and {3}.
+2448|The {1} on line {2} is never closed{3}.
+2449|The function "{1}" expects {2} value{3}, but you gave {4}.
+2450|the bracket "["
+2451|This line's indentation doesn't match any block above. Align it with a line above.
+2452|The word "{1}" is misplaced here.
+2453|The word "{1}" exists in Python, but it is not available in the Petits Robots workshop.
+2454|The item number must be a whole number.
+2455|The step of range() cannot be zero.
+2456|The sign "-" only works with a number.
+2457|len() is used to count the letters of a text or the items of a list.
+2458|Named options (name=value) are not available here: write only the values.
+2459|Pairs of values (a, b) are not available here.
+2460|Texts on several lines (three quotation marks) are not available here. Use a single quotation mark " per text.
+2461|Slices of lists or texts (a[1:3]) are not available here.
+2462|Default values must come last.
+2463|Name
+2464|=
+2465|You can only change an item in a list.
+2466|You can't add a text and a number. Turn the number into text with str(…), or use an f"…".
+2467|You can't compare {1} with {2}.
+2468|You can't divide by zero.
+2469|You can't remove an item from an empty list.
+2470|You can't use ".{1}" without parentheses: write .{2}( … ).
+2471|You can only store a value in a variable (for example: total = 5).
+2472|You can only use [ ] on a list or a text.
+2473|parenthesis "("
+2474|To compare two values, write two equal signs "==" (a single "=" is used to store a value in a variable).
+2475|Python doesn't use braces { }. It's the line's indentation (4 spaces) that shows what is "inside".
+2476|range() expects 1, 2 or 3 numbers.
+2477|range() only works with whole numbers (no decimal point).
+2478|If it's a variable, first give it a value: {1} = 0
+2479|Syntax
+2480|Did you mean to write "{1}"? Be careful with capital letters, accents and "_".
+2481|Type
+2482|a number
+2483|a text
+2484|a function
+2485|a list
+2486|Value
+2487|Distance sensor (the eyes)
+2488|Brain (electronic board)
+2489|gives power to the robot
+2490|It gives power to the whole robot, like a small tank.
+2491|It lights up in colour to say what the robot is thinking.
+2492|makes the robot move forward and turn
+2493|makes sounds and music
+2494|It makes sounds, beeps and music.
+2495|It thinks and gives orders to all the other parts.
+2496|They measure the distance between the robot and what is in front of it.
+2497|LED (the lamp)
+2498|The motors make the wheels turn: the robot moves forward and turns.
+2499|the eyes
+2500|measures the distance in front of the robot
+2501|thinks and gives the orders
+2502|senses whether it is bright or dark
+2503|▶ Touch to start
+2504|Your robot arrives in space
+2505|{1} is at adventure {2} of {3}: {4}. {5} steps completed out of {6}. Play time: {7} today, {8} this week. {9}{10}{11}
+2506|{1} days in a row.
+2507|🎉 {1} days in a row! Congratulate them on their regularity, it's more useful than long sessions.
+2508|To keep an eye on: {1}.
+2509|No activity recorded yet. Sit next to your child for their first lesson: 10 minutes is enough.
+2510|Others
+2511|Programming blocks
+2512|Code: first steps
+2513|Already {1} today: that's a lot. Suggest a real break (moving around, drinking water) before continuing.
+2514|Electronics and sensors
+2515|Big project
+2516|Ideal: a 15 to 20-minute session, one idea at a time, with no timer. Mistakes are part of learning.
+2517|They are stuck on "{1}" ({2} failed tries). Sit down with them: have them read the instruction aloud, use the 💡 Hint button, and celebrate every little step forward.
+2518|They write real code. Ask them to explain their program in their own words: if they can explain it, they understood it.
+2519|The basics
+2520|Nothing to report.
+2521|Robot in code
+2522|Your child hasn't played for {1} days. Start again gently: a short 10-minute lesson, beginning with a step they completed.
+2523|{1}. Touch to remove.
+2524|↩ Remove the last one
+2525|✅ Well played! {1}
+2526|✔ Check
+2527|🎉 You built the whole program!{1}
+2528|💡 There is a mistake in your line: touch "↩ Remove the last one" or touch the red word.
+2529|💡 The next word is circled in yellow.
+2530|🧩 Build your program line by line: touch the words in the right order, then "Check". Careful, some words are traps!
+2531|🧹 Start the line again
+2532|🙂 Good start! {1} word{2} still missing. Keep going.
+2533|🙂 I removed the words that didn't fit. Your turn!
+2534|🙂 Not quite: word no. {1} is not the right one. {2} Touch it to remove it, or "Check" to try again.
+2535|=
+2536|=
+2537|Look at what comes after "{1}".
+2538|Look at how the line starts.
+2539|Touch the words below, in order
+2540|. The answers: {1}
+2541|🔊 Touch the speaker to listen to the instruction.
+2542|Choose an activity.
+2543|The voice is on.
+2544|The possible answers: {1}
+2545|Read the instruction
+2546|=
+2547|Your next step: {1}
+2548|Touch a card to choose what you want to do.
+2549|confirmed
+2550|Voice on or off
+2551|=
+2552|1 step per day
+2553|2 steps per day
+2554|4 steps per day
+2555|Motivated
+2556|Normal
+2557|Relaxed

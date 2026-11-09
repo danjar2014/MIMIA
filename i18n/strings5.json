@@ -1,0 +1,839 @@
+[
+ {
+  "k": "◀ Retour"
+ },
+ {
+  "k": "✔ Oui!"
+ },
+ {
+  "k": "3. L'intelligence artificielle"
+ },
+ {
+  "k": "mot"
+ },
+ {
+  "k": "/commandes"
+ },
+ {
+  "k": "— rien —"
+ },
+ {
+  "k": "💡 Indice"
+ },
+ {
+  "k": "« Salut robot »"
+ },
+ {
+  "k": "fois"
+ },
+ {
+  "k": "🗑 Effacer"
+ },
+ {
+  "k": "/salut"
+ },
+ {
+  "k": "⏩ 10 essais"
+ },
+ {
+  "k": "↺ Recommencer"
+ },
+ {
+  "k": "🏅 Nouveau badge: {1}"
+ },
+ {
+  "k": "monte"
+ },
+ {
+  "k": "⚡ +{1} XP{2} · aujourd'hui {3}/{4}"
+ },
+ {
+  "k": "· sans aucune erreur!"
+ },
+ {
+  "k": "petit roboticien"
+ },
+ {
+  "k": "carte"
+ },
+ {
+  "k": "publie 3 fois sans copier"
+ },
+ {
+  "k": "dessiner, danser"
+ },
+ {
+  "k": "🔒 Espace parents"
+ },
+ {
+  "k": "jour"
+ },
+ {
+  "k": "projet"
+ },
+ {
+  "k": "blocs"
+ },
+ {
+  "k": "⚡ +{1} XP · aujourd'hui {2}/{3}"
+ },
+ {
+  "k": "▶ Niveau suivant"
+ },
+ {
+  "k": "astage monte"
+ },
+ {
+  "k": "profil"
+ },
+ {
+  "k": "parcours"
+ },
+ {
+  "k": "cartes"
+ },
+ {
+  "k": "temps"
+ },
+ {
+  "k": "suivi"
+ },
+ {
+  "k": "toujours ouverte"
+ },
+ {
+  "k": "cet enfant"
+ },
+ {
+  "k": "(dernier: {1}/5)"
+ },
+ {
+  "k": "jamais"
+ },
+ {
+  "k": "Choisis ta langue"
+ },
+ {
+  "k": "mon_bloc"
+ },
+ {
+  "k": "// (vide)"
+ },
+ {
+  "k": "# Ton programme est vide: ajoute des blocs!"
+ },
+ {
+  "k": "// Ton programme est vide: ajoute des blocs!"
+ },
+ {
+  "k": "# Ton programme est vide: ajoute des blocs! def boucle(): pass"
+ },
+ {
+  "k": "▶ Programme"
+ },
+ {
+  "k": "sinon"
+ },
+ {
+  "k": "capteur"
+ },
+ {
+  "k": "sortie 1"
+ },
+ {
+  "k": "sortie 2"
+ },
+ {
+  "k": "sortie 3"
+ },
+ {
+  "k": "retenir: OUI"
+ },
+ {
+  "k": "retenir: NON"
+ },
+ {
+  "k": "SORTIE, point vert"
+ },
+ {
+  "k": ", puis"
+ },
+ {
+  "k": "rien"
+ },
+ {
+  "k": ", sinon {1}"
+ },
+ {
+  "k": "Ensuite,"
+ },
+ {
+  "k": "D'abord,"
+ },
+ {
+  "k": "💾 Garder"
+ },
+ {
+  "k": "automatique"
+ },
+ {
+  "k": "🧠 Cerveau: automatique"
+ },
+ {
+  "k": "sortie, point vert"
+ },
+ {
+  "k": "sans programme"
+ },
+ {
+  "k": "🔘 Appuie (maintiens)"
+ },
+ {
+  "k": "en marche"
+ },
+ {
+  "k": "silence"
+ },
+ {
+  "k": "crochet ouvrant"
+ },
+ {
+  "k": "crochet fermant"
+ },
+ {
+  "k": "guillemet"
+ },
+ {
+  "k": "deux points"
+ },
+ {
+  "k": "virgule"
+ },
+ {
+  "k": "def nom(‸):"
+ },
+ {
+  "k": "renvoie"
+ },
+ {
+  "k": "vrai"
+ },
+ {
+  "k": "faux"
+ },
+ {
+  "k": "accolade ouvrante"
+ },
+ {
+  "k": "accolade fermante"
+ },
+ {
+  "k": "point-virgule"
+ },
+ {
+  "k": "let nom = ‸;"
+ },
+ {
+  "k": "fonction"
+ },
+ {
+  "k": "nouvelle ligne"
+ },
+ {
+  "k": "▶ Lancer"
+ },
+ {
+  "k": "🧹 Effacer"
+ },
+ {
+  "k": "complet"
+ },
+ {
+  "k": "🔊 Lire l'explication"
+ },
+ {
+  "k": "accolade"
+ },
+ {
+  "k": "crochet"
+ },
+ {
+  "k": "affiche"
+ },
+ {
+  "k": "ouvre accolade"
+ },
+ {
+  "k": "ferme accolade"
+ },
+ {
+  "k": "ouvre crochet"
+ },
+ {
+  "k": "ferme crochet"
+ },
+ {
+  "k": "commentaire: {1}"
+ },
+ {
+  "k": "guillemet {1} guillemet"
+ },
+ {
+  "k": "afficher(\"Salut!\");"
+ },
+ {
+  "k": "afficher(\"Bonjour\");"
+ },
+ {
+  "k": "afficher(\"Ligne 1\"); afficher(\"Ligne 2\");"
+ },
+ {
+  "k": "afficher(\"Je suis un robot\"); afficher(\"Je sais compter\"); afficher(\"Bip bip\");"
+ },
+ {
+  "k": "impair"
+ },
+ {
+  "k": "pair"
+ },
+ {
+  "k": "utilise while."
+ },
+ {
+  "k": "utilise while (!arrive())."
+ },
+ {
+  "k": "utilise if / else if."
+ },
+ {
+  "k": "utilise return."
+ },
+ {
+  "k": "mots"
+ },
+ {
+  "k": "cerveau"
+ },
+ {
+  "k": "let nom = \"Bolt\"; afficher(\"Bonjour \" + nom);"
+ },
+ {
+  "k": "afficher(\"Bonjour!\");"
+ },
+ {
+  "k": "# Écris ton programme sous cette ligne"
+ },
+ {
+  "k": "# Le cerveau relit cette fonction sans arrêt def boucle(): pass"
+ },
+ {
+  "k": "print(\"Salut!\")"
+ },
+ {
+  "k": "print(\"Bonjour\")"
+ },
+ {
+  "k": "print(\"Ligne 1\") print(\"Ligne 2\")"
+ },
+ {
+  "k": "print(\"Je suis un robot\") print(\"Je sais compter\") print(\"Bip bip\")"
+ },
+ {
+  "k": "for i in range(5, 0, -1): print(i) print(\"Décollage!\")"
+ },
+ {
+  "k": "if 3 > 2: print(\"oui\") else: print(\"non\")"
+ },
+ {
+  "k": "for i in range(1, 7): if i % 2 == 0: print(\"pair\") else: print(\"impair\")"
+ },
+ {
+  "k": "def ajouter_un(n): return n + 1"
+ },
+ {
+  "k": "def plus_petit(a, b): if a < b: return a return b"
+ },
+ {
+  "k": "if a > b: return a puis return b"
+ },
+ {
+  "k": "utilise while not arrive()."
+ },
+ {
+  "k": "compteur = 0 def boucle(): global compteur compteur = compteur + 1"
+ },
+ {
+  "k": "memoire = False avant = False def boucle(): global memoire, avant # on va changer ces deux boîtes pass"
+ },
+ {
+  "k": "if bouton_appuye(): memoire = False puis lampe(memoire)"
+ },
+ {
+  "k": "if n % 2 == 0: print(\"pair\") elif n % 3 == 0: print(\"multiple de 3\")"
+ },
+ {
+  "k": "def est_pair(n): return n % 2 == 0"
+ },
+ {
+  "k": "def est_premier(n): pass"
+ },
+ {
+  "k": "est_premier"
+ },
+ {
+  "k": "def est_premier(n): if n < 2: return False for d in range(2, n): if n % d == 0: return False return True"
+ },
+ {
+  "k": "nom = \"Bolt\" print(\"Bonjour \" + nom)"
+ },
+ {
+  "k": "print(\"Bonjour!\")"
+ },
+ {
+  "k": "✅ Bravo! {1}"
+ },
+ {
+  "k": "⬆️ avance"
+ },
+ {
+  "k": "peut changer"
+ },
+ {
+  "k": "devient toujours faux"
+ },
+ {
+  "k": "x vaut 6"
+ },
+ {
+  "k": "clignote"
+ },
+ {
+  "k": "global nom"
+ },
+ {
+  "k": "let nom"
+ },
+ {
+  "k": "var nom"
+ },
+ {
+  "k": "do aigu"
+ },
+ {
+  "k": "▶ Danse!"
+ },
+ {
+  "k": "🎉 Bravo, quelle danse!"
+ },
+ {
+  "k": "aujourd'hui"
+ },
+ {
+  "k": "noir"
+ },
+ {
+  "k": "couleur"
+ },
+ {
+  "k": "taille ="
+ },
+ {
+  "k": "taille +"
+ },
+ {
+  "k": "▶ Dessiner"
+ },
+ {
+  "k": "boucles"
+ },
+ {
+  "k": "⟲ Recommencer"
+ },
+ {
+  "k": "bas"
+ },
+ {
+  "k": "{1} {2} fois"
+ },
+ {
+  "k": "sombre"
+ },
+ {
+  "k": "allume"
+ },
+ {
+  "k": "(sombre)"
+ },
+ {
+  "k": "s'allume"
+ },
+ {
+  "k": "avance"
+ },
+ {
+  "k": "tour"
+ },
+ {
+  "k": "retour"
+ },
+ {
+  "k": "lancer"
+ },
+ {
+  "k": "indice"
+ },
+ {
+  "k": "voix"
+ },
+ {
+  "k": "✔ Terminer"
+ },
+ {
+  "k": "vider"
+ },
+ {
+  "k": "👉 Essaie l'ordre « {1} » ({2})."
+ },
+ {
+  "k": "chemin libre"
+ },
+ {
+  "k": "{1} heure{2}{3}"
+ },
+ {
+  "k": "ballon {1}"
+ },
+ {
+  "k": "autre forme"
+ },
+ {
+  "k": "⬇️ grave"
+ },
+ {
+  "k": "grave"
+ },
+ {
+  "k": "⬆️ aigu"
+ },
+ {
+  "k": "aigu"
+ },
+ {
+  "k": "🔈 faible"
+ },
+ {
+  "k": "faible"
+ },
+ {
+  "k": "🔊 fort"
+ },
+ {
+  "k": "fort"
+ },
+ {
+  "k": "On partage en deux: combien chacun?"
+ },
+ {
+  "k": "groupe"
+ },
+ {
+  "k": "barre"
+ },
+ {
+  "k": "✔ oui"
+ },
+ {
+  "k": "oui"
+ },
+ {
+  "k": "✖ non"
+ },
+ {
+  "k": "non"
+ },
+ {
+  "k": "⬆️ augmente"
+ },
+ {
+  "k": "augmente"
+ },
+ {
+  "k": "⬇️ diminue"
+ },
+ {
+  "k": "diminue"
+ },
+ {
+  "k": "🕐 pile"
+ },
+ {
+  "k": "encastrements"
+ },
+ {
+  "k": "couleurs"
+ },
+ {
+  "k": "aplatir"
+ },
+ {
+  "k": "poids"
+ },
+ {
+  "k": "balance"
+ },
+ {
+  "k": "transporter"
+ },
+ {
+  "k": "magasin"
+ },
+ {
+  "k": "sons"
+ },
+ {
+  "k": "chiffres"
+ },
+ {
+  "k": "compter"
+ },
+ {
+  "k": "partager"
+ },
+ {
+  "k": "poissons"
+ },
+ {
+  "k": "immeuble"
+ },
+ {
+  "k": "fractions"
+ },
+ {
+  "k": "voisin"
+ },
+ {
+  "k": "barres"
+ },
+ {
+  "k": "tuyau"
+ },
+ {
+  "k": "gratte-ciels"
+ },
+ {
+  "k": "tige"
+ },
+ {
+  "k": "cent"
+ },
+ {
+  "k": "remplir"
+ },
+ {
+  "k": "perles"
+ },
+ {
+  "k": "payer"
+ },
+ {
+  "k": "boulier"
+ },
+ {
+  "k": "dizaines"
+ },
+ {
+  "k": "pont"
+ },
+ {
+  "k": "gare"
+ },
+ {
+  "k": "soustraction"
+ },
+ {
+  "k": "tic-tac"
+ },
+ {
+  "k": "🗺️ Parcours complet"
+ },
+ {
+  "k": "▶ Commencer"
+ },
+ {
+  "k": "demande"
+ },
+ {
+  "k": "👨‍👩‍👧 Bienvenue!"
+ },
+ {
+  "k": "⭐ Abonnement"
+ },
+ {
+  "k": "▶ Laisser {2} commencer"
+ },
+ {
+  "k": "lettres"
+ },
+ {
+  "k": "jours"
+ },
+ {
+  "k": "mois"
+ },
+ {
+  "k": "relier"
+ },
+ {
+  "k": "espace"
+ },
+ {
+  "k": "ombre"
+ },
+ {
+  "k": "objet"
+ },
+ {
+  "k": "Non, retour"
+ },
+ {
+  "k": "Bravo {n}!"
+ },
+ {
+  "k": "C'est super, {n}!"
+ },
+ {
+  "k": "Youpi, c'est réussi, {n}!"
+ },
+ {
+  "k": "Bien joué {n}!"
+ },
+ {
+  "k": "{n}, tu es [une championne|un champion]!"
+ },
+ {
+  "k": "{n}, tu es [très intelligente|très intelligent]!"
+ },
+ {
+  "k": "{n}, tu es [forte|fort]!"
+ },
+ {
+  "k": "Excellent travail, {n}!"
+ },
+ {
+  "k": "Bravo {n}, tu as bien réfléchi!"
+ },
+ {
+  "k": "Quelle belle réussite, {n}!"
+ },
+ {
+  "k": "Tu progresses vite, {n}!"
+ },
+ {
+  "k": "{n}, tu es [une vraie programmeuse|un vrai programmeur]!"
+ },
+ {
+  "k": "Très joli code, {n}!"
+ },
+ {
+  "k": "{n}, quelle logique!"
+ },
+ {
+  "k": "Bien raisonné, {n}!"
+ },
+ {
+  "k": "{n}, tu es [une vraie roboticienne|un vrai roboticien]!"
+ },
+ {
+  "k": "Beau travail, {n}! Tu es vraiment [brillante|brillant]."
+ },
+ {
+  "k": "Chapeau bas, {n}!"
+ },
+ {
+  "k": "Excellent, {n}! Tu as tout compris."
+ },
+ {
+  "k": "Courage {n}, essaie encore!"
+ },
+ {
+  "k": "Tu y es presque, {n}!"
+ },
+ {
+  "k": "On réessaie ensemble, {n}?"
+ },
+ {
+  "k": "Ne lâche rien, {n}!"
+ },
+ {
+  "k": "Tu as presque trouvé, {n}!"
+ },
+ {
+  "k": "Réfléchis encore un peu, {n}."
+ },
+ {
+  "k": "Presque, {n}! Regarde bien."
+ },
+ {
+  "k": "Courage {n}, tu vas y arriver!"
+ },
+ {
+  "k": "Cherche l'erreur, {n}."
+ },
+ {
+  "k": "Bonjour {n}!"
+ },
+ {
+  "k": "Ça fait plaisir de te revoir, {n}!"
+ },
+ {
+  "k": "Bonsoir {n}!"
+ },
+ {
+  "k": "fiche"
+ },
+ {
+  "k": "# Écris le programme complet de ton robot def boucle(): pass"
+ },
+ {
+  "k": "explorateur"
+ },
+ {
+  "k": "gardien"
+ },
+ {
+  "k": "# Une boîte (variable) pour se souvenir de l'alarme alarme = False def boucle(): global alarme pass"
+ },
+ {
+  "k": "rien (None)"
+ },
+ {
+  "k": "vrai/faux"
+ },
+ {
+  "k": "yeux"
+ },
+ {
+  "k": "s'allume en couleur"
+ },
+ {
+  "k": "batterie"
+ },
+ {
+  "k": "jeu"
+ },
+ {
+  "k": "monter"
+ },
+ {
+  "k": "descendre"
+ },
+ {
+  "k": "supprimer"
+ },
+ {
+  "k": "recommencer"
+ },
+ {
+  "k": "erreur"
+ }
+]

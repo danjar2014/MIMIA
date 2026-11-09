@@ -1,0 +1,200 @@
+2100|You learn to repeat, and to give the robot eyes with sensors.
+2101|You discover the robot's parts: its eyes, its brain, its motors. And you start guiding it with blocks.
+2102|You discover that blocks are a way of hiding real code. You watch the code write itself.
+2103|You write conditions and functions, and you make the robot move with code.
+2104|You write the robot's complete brain program, with memory, then you take on the expert challenges and build your Big Project: a complete robot, from the idea to the final sheet.
+2105|You write your first lines of real code, in Python or JavaScript: display, variables, calculations, loops.
+2106|You guide the robot on longer paths and you build your first electronic board.
+2107|You know nothing? That's perfect! We show you what it's all about: what a robot, an order and a program are, and this screen.
+2108|You drive a robot with clever code and you give its brain a memory.
+2109|You repeat cleverly, you measure distance and you invent your own explorer robot.
+2110|. In the next version, the subscription (more content, several children) will be managed from this parent area, protected by your code.
+2111|. You are going to choose a secret code, set up your child's profile, then your child will be able to play.
+2112|✅ All set!
+2113|🧒 Your child's profile
+2114|3 – 6 years old (little ones)
+2115|That's not the right answer. This step is reserved for adults.
+2116|Instruction and result
+2117|Write your child's first name.
+2118|Enter your parent code to continue the setup.
+2119|Girl
+2120|Boy
+2121|The first setup is
+2122|The parent code is active. The settings now only open with this code. You can now hand the device to {1}.
+2123|To continue, answer: what is
+2124|first name
+2125|reserved for a parent
+2126|Nothing to do for now.
+2127|Depending on age (recommended)
+2128|Only with the 🔊 button
+2129|Play time per day
+2130|Finish the setup
+2131|Everything you touch
+2132|Age group
+2133|You can change everything later, with your parent code.
+2134|You are using the
+2135|It's the brain: it gives the orders.
+2136|camera
+2137|distance sensor
+2138|light sensor
+2139|temperature sensor
+2140|controller
+2141|screens
+2142|propellers
+2143|compasses
+2144|buttons
+2145|arms
+2146|cameras
+2147|distance sensors
+2148|light sensors
+2149|temperature sensors
+2150|tracks
+2151|controllers
+2152|wires
+2153|speakers
+2154|lamps
+2155|lasers
+2156|microphones
+2157|motors
+2158|solar panels
+2159|batteries
+2160|grippers
+2161|chips
+2162|wheels
+2163|satellites
+2164|fans
+2165|screen
+2166|It calculates very fast.
+2167|It picks up waves.
+2168|It counts time.
+2169|It gives power.
+2170|It makes light.
+2171|It makes the robot roll.
+2172|It makes the robot fly.
+2173|It points north.
+2174|It rolls over rough ground.
+2175|It grips objects.
+2176|It sees images.
+2177|propeller
+2178|It turns the robot on and off.
+2179|It moves to grab things.
+2180|It connects the robot to the internet.
+2181|It gives the position, like a GPS.
+2182|It listens to sounds.
+2183|It makes sound.
+2184|It makes the wheels turn.
+2185|It starts an order when you press it.
+2186|It measures distance with sounds.
+2187|It measures very precisely with a beam.
+2188|It shows messages and pictures.
+2189|It talks to a phone, very close by.
+2190|It carries the current.
+2191|It cools the robot.
+2192|It senses hot and cold.
+2193|It senses whether it is bright or dark.
+2194|It turns sunlight into energy.
+2195|It transmits movement.
+2196|the screen
+2197|the propeller
+2198|the compass
+2199|the camera
+2200|the track
+2201|the battery
+2202|the gripper
+2203|the chip
+2204|the wheel
+2205|bluetooth
+2206|the arm
+2207|the temperature sensor
+2208|the controller
+2209|the wire
+2210|the laser
+2211|the microphone
+2212|the motor
+2213|the solar panel
+2214|the satellite
+2215|the fan
+2216|wifi
+2217|🎉 Well done! You got everything right.
+2218|on the right
+2219|on the left
+2220|What is {1} for?
+2221|August
+2222|Look again.
+2223|Numbers
+2224|How many
+2225|How many {1}?
+2226|Count again.
+2227|Colours
+2228|December
+2229|Listen again
+2230|Listen to the sound
+2231|Space
+2232|Try again.
+2233|Example
+2234|February
+2235|Days
+2236|the rocket
+2237|the moon
+2238|the planet
+2239|the Earth
+2240|the sun
+2241|Letters
+2242|Months
+2243|Where is the rocket?
+2244|Parts
+2245|Which day comes after {1}?
+2246|Which month comes after {1}?
+2247|Match each object to its shadow.
+2248|Match
+2249|Touch the letter {1}, as in {2}.
+2250|Touch the {1} robot.
+2251|Touch the days in order.
+2252|Touch the months in order.
+2253|one
+2254|zero
+2255|. Write it on paper, in a safe place: it's needed if you forget your code.
+2256|⚠️ Erase everything?
+2257|✅ Code saved
+2258|🔒 Choose a parent code
+2259|4 digits that only adults know. Avoid 0000 or 1234.
+2260|=
+2261|This code is too easy to guess. Choose another one.
+2262|That's not the right answer. This action is reserved for adults.
+2263|That's not the right recovery code.
+2264|recovery code
+2265|Code erased: choose a new one
+2266|Wrong code. You have {1} try{2} left.
+2267|Forgot the code?
+2268|Enter the
+2269|Enter the 4-digit code.
+2270|It will not be shown again.
+2271|I wrote down my recovery code
+2272|I don't have the recovery code
+2273|The two codes are different. Let's start again.
+2274|noted when you created your parent code (8 characters, for example K7MQ-4XRB).
+2275|To be sure there was no mistake.
+2276|Reserved for adults: what is
+2277|Type your code again
+2278|Without a recovery code, the only solution is to erase ALL the app's data on this device: progress, creations, settings and statistics. This action is final.
+2279|Too many tries. Try again in {1} s.
+2280|Here is your
+2281|Practice {1}
+2282|Guide the robot to the flag 🏁.{1}
+2283|Pick up the stars ⭐ on the way.
+2284|Use "pick up the star" on every star ⭐.
+2285|=
+2286|=
+2287|=
+2288|=
+2289|=
+2290|=
+2291|=
+2292|=
+2293|=
+2294|=
+2295|=
+2296|=
+2297|=
+2298|=
+2299|=

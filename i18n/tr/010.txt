@@ -1,0 +1,200 @@
+1900|The station
+1901|the frog
+1902|the half
+1903|the cow
+1904|=
+1905|The next block
+1906|the square
+1907|the circle
+1908|the cat
+1909|the dog
+1910|the diamond
+1911|the sheep
+1912|Does the number go up or down?
+1913|the quarter
+1914|the rectangle
+1915|Is the sound loud or soft?
+1916|Is the sound low or high?
+1917|the triangle
+1918|=
+1919|The animals
+1920|The hours in order
+1921|three quarters
+1922|Fruit shop
+1923|Shape memory
+1924|Sound memory
+1925|Addition operation
+1926|Yes or no
+1927|Share the sweets
+1928|equal parts
+1929|Equal parts
+1930|unequal parts
+1931|Step by step
+1932|=
+1933|Pay at the supermarket
+1934|Number beads
+1935|=
+1936|=
+1937|Fish to count
+1938|Addition problem
+1939|Triangle puzzle
+1940|Equal puzzle
+1941|What is this number?
+1942|What is the next block?
+1943|Which number is missing?
+1944|Which number comes after {1}?
+1945|Which rod completes it?
+1946|What is this shape?
+1947|Which is the longest?
+1948|What time is it?
+1949|Which piece makes this noise?
+1950|Who is the heaviest?
+1951|=
+1952|Fraction skittles
+1953|Rebuild a whole
+1954|=
+1955|Set the clock
+1956|Match each calculation to its result.
+1957|Match each shape to its shadow.
+1958|Match each clock to its time.
+1959|Match each number to its beads.
+1960|Match the same colours.
+1961|Match the identical triangles.
+1962|Match the calculations
+1963|Fill in the numbers
+1964|Find the pairs.
+1965|Feel the weight
+1966|Split it
+1967|Subtraction
+1968|Subtraction to complete
+1969|Decimal system
+1970|Hundred board
+1971|Tens board
+1972|Colour tablets
+1973|Weight tablets
+1974|Final test
+1975|Tick-tock
+1976|Telescopic rod
+1977|Balloon shooting
+1978|Touch from the shortest to the longest.
+1979|Touch from the lightest to the darkest.
+1980|Touch from the lightest to the heaviest.
+1981|Touch from the smallest to the biggest.
+1982|Touch the clock that shows {1}.
+1983|Touch the rod {1}.
+1984|Touch the different colour.
+1985|Touch the different shape.
+1986|Touch the shape that fits in.
+1987|Touch the same colour.
+1988|Touch the same length.
+1989|Touch half of the rod.
+1990|Touch the half.
+1991|Touch the {1}.
+1992|Touch the {1} balloon.
+1993|Touch the big one.
+1994|Touch the group that has the most.
+1995|Touch the same one.
+1996|Touch the number {1}.
+1997|Touch the small one.
+1998|Touch the biggest.
+1999|Touch the lightest.
+2000|Touch the heaviest.
+2001|Touch the smallest.
+2002|Touch the triangle.
+2003|Touch the hours in order.
+2004|Touch the numbers from the smallest to the biggest.
+2005|Touch the equal parts.
+2006|Pink tower
+2007|Number train
+2008|Carry the pieces
+2009|Triangle and triangle
+2010|Constructive triangles
+2011|Sort the rods
+2012|Sort the numbers
+2013|Sort the triangles
+2014|Sort by length
+2015|Sort by weight
+2016|Find the rule
+2017|Find what comes next.
+2018|Find the match
+2019|Pipe to connect
+2020|=
+2021|one
+2022|Another part
+2023|=
+2024|Neighbour
+2025|, your little robot.
+2026|↩ I'd rather start again from the beginning
+2027|✅ OK, let's go
+2028|11 adventures, from Chick to Expert
+2029|5 questions to find your level, no stress
+2030|at adventure {1}: "{2}" {3}
+2031|Learn to write code
+2032|Have you already programmed a little?
+2033|at the very beginning, with the Chick adventure 🐣
+2034|=
+2035|Let's go
+2036|Each completed step earns you experience points (XP). You can change this whenever you want.
+2037|Build a robot
+2038|Continue with the full course
+2039|One last thing: set your goal for the day.
+2040|Nice to meet you!
+2041|Here, we learn by playing: no timer, no grades. Making mistakes is the best way to learn.
+2042|I don't know
+2043|I'd rather not say
+2044|I'll be your travelling companion in the world of robots and code.
+2045|I'm curious… What is your name?
+2046|I suggest you start {1}.
+2047|I'll suggest the activities that suit you best.
+2048|Have fun
+2049|Practise for school
+2050|Now, I want to place you in the right spot.
+2051|Thank you! Here is what I understood:
+2052|My first steps: {2} {3} · everything unlocks at your own pace
+2053|No, I'm a beginner
+2054|We start with the basics: what is a robot, an order, a program? Each lesson lasts a few minutes.
+2055|Shall we start with your very first lesson?
+2056|We start at the very beginning, calmly
+2057|We skip what you already know: you start at adventure {1}, "{2}" {3}. You can always go back to the earlier adventures.
+2058|We're going to build an experience made for you.
+2059|We'll discover everything together, gently: that's the best start!
+2060|Shall we go? I'll take you to your starting point.
+2061|Yes, a little: I'll take the short test
+2062|Perfect!
+2063|Over 12 years old
+2064|What makes you want to learn?
+2065|Question {1} of 5
+2066|Hi! I'm
+2067|If you don't know, touch "I don't know": that's perfectly fine, it helps me place you in the right spot!
+2068|Your first name
+2069|You already know: {1}.
+2070|You will learn to write real code: first with blocks, then in Python and JavaScript.
+2071|You will learn step by step, with short lessons and no grades: perfect for practising.
+2072|You will build a real robot on an electronic board, connect its eyes and wheels, then write its brain.
+2073|You will play with a little robot: guide it, make it dance, take on challenges.
+2074|You will feel right at home here!
+2075|Here are 5 little questions, from the easiest to the hardest.
+2076|Here is what I suggest:
+2077|Apprentice
+2078|Tinkerer
+2079|Coder
+2080|Curious
+2081|Expert
+2082|Engineer
+2083|Inventor
+2084|the "Go further" card
+2085|the "Sensors" card
+2086|the "Real coding" card
+2087|the "Create" card
+2088|the "Discover the robot" card
+2089|blocks to decide
+2090|the "Program" and "Build" cards
+2091|robot missions in code
+2092|the brain missions in code
+2093|To unlock this card, finish the adventure "{1}" {2} in My journey.
+2094|Chick
+2095|Programmer
+2096|Roboticist
+2097|your first lines of real code
+2098|your expert diploma
+2099|You learn to decide on your own: "while", "if", and you program the brain with blocks.

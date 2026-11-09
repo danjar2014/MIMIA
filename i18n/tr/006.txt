@@ -1,0 +1,200 @@
+1100|A function is a little machine: you give it a value (n), it calculates and gives back the result with return. No need to display: we test the function directly.
+1101|A variable is a box with a name. let nombre = 5; creates the box "nombre" and puts 5 inside. The * sign means "times".
+1102|use % to test multiples.
+1103|use if to choose between even and odd.
+1104|use if to decide.
+1105|use if to pick up only when there is a star.
+1106|use the % sign to test whether a number is even.
+1107|use return to give back the result.
+1108|use a loop (for or while) to keep your program short.
+1109|use while: the corridor changes length.
+1110|Check: a parenthesis, a quotation mark, the word, a quotation mark, a parenthesis, a semicolon.
+1111|while (condition) { … } repeats as long as the condition is true. The exclamation mark ! means "not": !obstacleDevant() = "there is no obstacle ahead".
+1112|=
+1113|=
+1114|=
+1115|% gives the remainder of the division: 7 % 2 equals 1. A number is even if number % 2 == 0. if condition: … else: … chooses between two paths. Careful: to compare we write two equal signs ==.
+1116|+ adds, - subtracts, * multiplies, / divides. You can calculate directly inside print( ).
+1117|At the end of the turn: avant = bouton_appuye() then lampe(memoire)
+1118|and means "AND": both conditions must be true. or means "OR".
+1119|arrive() answers True when the robot is on the flag.
+1120|Tip: lampe(bouton_appuye()) does it all in one line!
+1121|avancer() makes the robot take one step. avancer(3) makes it take three. Here, no semicolon.
+1122|bouton_appuye() answers True if the button is pressed.
+1123|It's your expert challenge: combine what you know. and means AND, and a condition is a value you can give directly to lampe( ) or haut_parleur( ).
+1124|Each print writes a new line. The computer reads your program from top to bottom.
+1125|Start at 2, finish before 11, step by 2: range(2, 11, 2)
+1126|create your box with nombre = 5.
+1127|Create total = 0 before the loop.
+1128|create a box (total = 0) to keep the total.
+1129|In the loop: if i % 2 == 0: print("even") else: print("odd") (indent properly!)
+1130|In the loop: total += i then print(total) after the loop.
+1131|In the loop, test i % 15 == 0 first (bipbop), then i % 3, then i % 5.
+1132|In the function: return n * 2
+1133|In the while: first if etoile_ici(): ramasser() then if obstacle_devant(): … else: …
+1134|In a real robot, the brain repeats the function boucle() non-stop. lampe(True) turns on, lampe(False) turns off. CAREFUL: the lamp stays as you left it until you change it!
+1135|In a loop of 6 turns: if etoile_ici(): ramasser() then avancer()
+1136|In a loop, you can indent several commands: they are all repeated together.
+1137|=
+1138|def contourner(): creates a new command. Then contourner() runs it as many times as you want.
+1139|=
+1140|=
+1141|=
+1142|=
+1143|=
+1144|=
+1145|Second line: print(nombre * 2)
+1146|Write: print("Hello")
+1147|Write the function contourner() as before, then: while not arrive(): if obstacle_devant(): contourner() else: avancer()
+1148|Try all the d from 2 to n - 1: if n % d == 0, return False. If none works, return True at the end.
+1149|=
+1150|=
+1151|etoile_ici() answers True if there is a star under the robot.
+1152|=
+1153|=
+1154|for i in range(7): repeats 7 times what is indented below (4 spaces).
+1155|for repeats instructions. for i in range(1, 6): means "i takes the values 1, 2, 3, 4, 5". Careful: the last number of range is never included! The repeated instructions are indented by 4 spaces, and the for line ends with a colon :
+1156|haut_parleur(True) makes it sound, haut_parleur(False) makes it quiet.
+1157|if … else … chooses between two paths. With while not arrive(): the robot keeps going until the flag.
+1158|=
+1159|if etoile_ici(): ramasser() only picks up if there is a star. Here the robot doesn't pick up on its own.
+1160|=
+1161|You must test the most precise case first: a multiple of 15 is also a multiple of 3 and of 5. A chain if … elif … elif … else stops at the first true test.
+1162|You need three print, one per sentence.
+1163|lampe(True) turns the lamp on, lampe(False) turns it off. It stays as you left it!
+1164|The flag is 4 steps away: avancer(4)
+1165|Boxes created OUTSIDE the function keep their value from one turn to the next: that's the brain's memory. To CHANGE them inside the function, you must first write global memoire, avant. not flips a box (True ↔ False). Careful: the press must count ONE time only, even if the finger stays down.
+1166|=
+1167|Put avancer() indented under the for: the loop runs 7 times.
+1168|obstacle_devant() answers True or False: is there an obstacle right ahead?
+1169|=
+1170|To count down, the step is negative: range(5, 0, -1) gives 5, 4, 3, 2, 1. After the loop, go back to the left (no indentation) to display a last message.
+1171|First line: nombre = 5
+1172|print("…") writes a message. The quotation marks " " surround the words and the parentheses ( ) surround what we write. In Python, no semicolon at the end!
+1173|print("Liftoff!") with no indentation, AFTER the loop.
+1174|=
+1175|print("Hi") writes a message. print(3 + 4) writes 7. (afficher works too.)
+1176|range(start, end, step): range(2, 11, 2) gives 2, 4, 6, 8, 10 (we stop before 11). The step says how much to move forward on each turn.
+1177|roues(True) makes the wheels roll, roues(False) stops them.
+1178|If n < 2: return False.
+1179|Under the for line, indent by 4 spaces (⇥ key) then write print(i)
+1180|tic() answers True every other turn: True, False, True, False…
+1181|tic() answers True every other turn: True, False, True, False… The lamp can follow it!
+1182|tourner_droite() and tourner_gauche() turn the robot on the spot. Commands run in order.
+1183|tourner_droite() turns the robot right, on the spot.
+1184|tourner_gauche() turns the robot left, on the spot.
+1185|A number n is not prime if it has a divisor d between 2 and n - 1: n % d == 0. A return stops the function right away. Test the small cases first (n < 2).
+1186|A new press: bouton_appuye() is true AND avant is false (and not avant).
+1187|A box can keep a total: total = total + i (or total += i) adds i to the total. Display the total AFTER the loop, so with no indentation.
+1188|A true/false box like memoire remembers a past event, even when it is over. Don't forget global memoire to change it inside the function.
+1189|A comparison gives True or False, and lampe( ) directly accepts True or False: lampe(distance() < 20) does the whole if/else by itself.
+1190|A function is a little machine: you give it a value (n), it calculates and gives back the result with return. def doubler(n): creates the function; the content is indented by 4 spaces. No need to display: we test the function directly.
+1191|A function can receive several values, separated by a comma. With if, you compare: if a > b: return a. Function names are written with _ : plus_grand.
+1192|A variable is a box with a name. nombre = 5 creates the box "nombre" and puts 5 inside. The * sign means "times".
+1193|Check: the word print, a parenthesis, a quotation mark, the word, a quotation mark, a parenthesis.
+1194|while condition: repeats as long as the condition is true. The word not means "not": not obstacle_devant() = "there is no obstacle ahead".
+1195|while not obstacle_devant(): then avancer() indented.
+1196|⌨️ Open it in the editor
+1197|👀 See my program as real code
+1198|💡 Each block becomes a line of code. Blocks and code do exactly the same thing!
+1199|🔊 Read this code
+1200|🙈 Hide the code
+1201|Here is your program as code. {1}
+1202|=
+1203|{1} {2} right answer{4} out of {5}. {6}
+1204|▶ Let's go!
+1205|✅ You already did today's challenge! Come back tomorrow for a new one. You can also keep practising, without counting.
+1206|🎯 Today's challenge: 3 little questions to review what you have learned. No timer, no worries if you get it wrong!
+1207|🎯 Practise again
+1208|🏅 My badges
+1209|🙂 Not quite. {1}
+1210|Well played!
+1211|Daily challenge finished: well done for your regularity!
+1212|Practice finished.
+1213|Perfect!
+1214|You worked well!
+1215|Here is the program. {1}
+1216|"If … then …" lets the robot choose.
+1217|"If there is an obstacle ahead, then turn." It's…
+1218|"As long as the path is clear, move forward." When does the robot stop?
+1219|"Turn then move forward" is not the same as "move forward then turn".
+1220|% gives the remainder of the division: 7 = 3 × 2 + 1.
+1221|↶ turn left
+1222|↷ turn right
+1223|= (just one)
+1224|== (two equal signs)
+1225|⬆️ moves forward; the turning arrows make it pivot on the spot.
+1226|1 step
+1227|3 steps
+1228|3 repetitions × 1 step = 3 steps.
+1229|6 steps
+1230|To stop the program
+1231|To change the board
+1232|To give power
+1233|To give a name to a series of orders so you can reuse it
+1234|To turn off the robot
+1235|To make noise
+1236|To measure the distance
+1237|What is "My block" (a function) for?
+1238|What is the brain's memory (a true/false variable) for?
+1239|What is a sensor for?
+1240|To remember an event, even when it is over
+1241|To sense what is happening around the robot
+1242|Displays on the screen
+1243|stop the robot
+1244|At random
+1245|Instead of writing "move forward" 7 times, we repeat 7 times.
+1246|Sensors → brain → motors: the brain decides.
+1247|Sensors on the blue inputs, actions on the green outputs.
+1248|This program has a spelling mistake. On which line?
+1249|what a program is and the order of the orders
+1250|change its colour
+1251|Like a book: from the first order to the last.
+1252|Compares x with 5
+1253|In for i in range(3): how many turns does the loop make?
+1254|In which direction does the robot read its program?
+1255|From bottom to top
+1256|From top to bottom, one order after another
+1257|orders
+1258|In Python, to change inside a function a variable created outside, you first write…
+1259|In real code, a lamp turned on with lampe(True)…
+1260|global tells Python that we want to change the outside variable.
+1261|i is 0, 1, 2: three turns (3 is never reached).
+1262|It tells the brain if a wall is near.
+1263|It is useless
+1264|It receives the information from the sensors and gives orders
+1265|It stores the power
+1266|Never
+1267|The alarm that keeps going after the intruder leaves uses a memory.
+1268|The battery is the robot's power tank.
+1269|the distance between the robot and an obstacle
+1270|The mistake is on line {1}: {2}
+1271|the light
+1272|the weather
+1273|the robot's speed
+1274|The distance sensor measures…
+1275|The program displays, line after line: {1}.
+1276|The robot is facing {1}. It follows this program: {2} Does it reach the flag 🏁?
+1277|loops and choices (if…)
+1278|Sensors are the robot's senses: they see light, distance…
+1279|functions and the brain's memory
+1280|The motors make the wheels turn.
+1281|Line {1}: {2}
+1282|read a real Python program
+1283|nombre = 5 puts 5 in the box "nombre".
+1284|No: the robot meets an obstacle or the edge of the grid before arriving.
+1285|No: the robot stops somewhere else, not on the flag. Follow the orders one by one on the grid!
+1286|No, it doesn't get there
+1287|We write the detour once, then call it whenever we want.
+1288|You write it once, you use it a hundred times.
+1289|We repeat "move forward" 3 times. The robot moves forward by…
+1290|Yes: the robot ends exactly on the flag.
+1291|Yes, it reaches the flag
+1292|To compare two values, we write…
+1293|To make mistakes
+1294|To slow down the computer
+1295|To reuse a piece of a program
+1296|Why do we write functions?
+1297|When an obstacle appears
+1298|What does the robot's brain do?
+1299|What does return do in a function?
