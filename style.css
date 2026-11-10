@@ -471,6 +471,12 @@ body.hasinstall #overlay{bottom:calc(var(--dock) + 48px + env(safe-area-inset-bo
 #lock{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 110%,#4b3a9a,#15133f 60%,#090920);display:flex;align-items:center;justify-content:center;padding:20px}
 #lock .lockbox{background:#fff;border:4px solid var(--line);border-radius:26px;padding:26px 22px;max-width:440px;width:100%;text-align:center}
 #lock .lockico{font-size:56px}#lock h1{font-size:24px;margin:8px 0}#lock p{margin:8px 0 18px;font-size:18px}
-body.locked #overlay{z-index:80}
+body.locked.parentflow #overlay{z-index:80}
 #overlay [data-plan],#overlay #brestore,#lock .big-btn{display:block;width:100%;margin:10px 0;font-size:calc(18px*var(--fs))}
 #overlay #brestore{background:#fff;color:var(--blueD);border:3px solid var(--blueD)}
+
+/* configuration parent : repère d'étapes, listes qui ne coupent plus leur texte */
+.pdots{display:flex;gap:8px;justify-content:center;margin:0 0 10px}.pdots i{width:28px;height:6px;border-radius:99px;background:var(--line)}.pdots i.ok{background:var(--green,#2e8b3d)}.pdots i.on{background:var(--blueD)}
+#overlay .panel[data-step=profile] .row{flex-wrap:wrap;gap:6px 12px}
+#overlay .panel[data-step=profile] .row select,#overlay .panel[data-step=profile] .row input{flex:1 1 170px;min-width:0;max-width:100%}
+#overlay .panel[data-step=plan] [data-plan]{display:block;width:100%;margin:10px 0;font-size:calc(18px*var(--fs))}

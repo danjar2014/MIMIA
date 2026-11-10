@@ -61,19 +61,19 @@ function pinEntry({ title, sub, onDone, onCancel, extra }) {
   const key = e => { if (!document.body.contains(panel)) return document.removeEventListener("keydown", key); if (/^\d$/.test(e.key)) push(e.key); else if (e.key === "Backspace") { code = code.slice(0, -1); paint(); } };
   document.addEventListener("keydown", key); return { say };
 }
-const lockMsg = (sayFn, r) => sayFn(r.wait ? `Trop d'essais. Réessaie dans ${r.wait} s.` : `Code incorrect. Il te reste ${r.left} essai${r.left > 1 ? "s" : ""}.`, "warn");
+const lockMsg = (sayFn, r) => sayFn(r.wait ? `Trop d'essais. Réessayez dans ${r.wait} s.` : `Code incorrect. Il vous reste ${r.left} essai${r.left > 1 ? "s" : ""}.`, "warn");
 // demande le code ; appelle onOk() s'il est bon
-export function askPin({ title = "🔒 Espace parents", sub = "Entre le code à 4 chiffres.", onOk, onCancel }) {
+export function askPin({ title = "🔒 Espace parents", sub = "Entrez le code à 4 chiffres.", onOk, onCancel }) {
   if (!hasPin()) { onOk(); return; }
   const forgot = el("button", "gb", "Code oublié ?"); forgot.onclick = () => recover({ onOk, onCancel: () => askPin({ title, sub, onOk, onCancel }) });
   const e = pinEntry({ title, sub, onCancel, extra: [forgot], onDone: async (code, say) => { const r = await checkPin(code); if (r.ok) { ov().style.display = "none"; onOk(); return; } lockMsg(say, r); } });
-  const w = lockWait(); if (w) e.say(`Trop d'essais. Réessaie dans ${w} s.`, "warn");
+  const w = lockWait(); if (w) e.say(`Trop d'essais. Réessayez dans ${w} s.`, "warn");
 }
 function recover({ onOk, onCancel }) {
   const o = ov(); o.style.display = "flex";
-  o.innerHTML = `<div class="panel"><h1>Code oublié ?</h1><p class="sub">Entre le <b>code de secours</b> noté quand tu as créé ton code parent (8 caractères, par exemple K7MQ-4XRB).</p><input id="rcv" class="pname" autocapitalize="characters" autocomplete="off" maxlength="9" aria-label="Code de secours"><div class="pinmsg gmsg" id="rmsg"></div><div class="agebtns"><button class="big-btn" id="rok">Valider</button><button class="big-btn alt" id="rbk">Retour</button><button class="gb" id="rwipe">Je n'ai pas le code de secours</button></div></div>`;
+  o.innerHTML = `<div class="panel"><h1>Code oublié ?</h1><p class="sub">Entrez le <b>code de secours</b> noté quand vous avez créé votre code parent (8 caractères, par exemple K7MQ-4XRB).</p><input id="rcv" class="pname" autocapitalize="characters" autocomplete="off" maxlength="9" aria-label="Code de secours"><div class="pinmsg gmsg" id="rmsg"></div><div class="agebtns"><button class="big-btn" id="rok">Valider</button><button class="big-btn alt" id="rbk">Retour</button><button class="gb" id="rwipe">Je n'ai pas le code de secours</button></div></div>`;
   o.querySelector("#rbk").onclick = onCancel;
-  o.querySelector("#rok").onclick = async () => { const r = await checkRecovery(o.querySelector("#rcv").value), m = o.querySelector("#rmsg"); if (r.ok) { removePin(); toast("Code effacé : choisis-en un nouveau"); createPin({ onDone: onOk, onCancel: () => { o.style.display = "none"; } }); } else { m.className = "pinmsg gmsg warn"; m.textContent = r.wait ? `Trop d'essais. Réessaie dans ${r.wait} s.` : "Ce n'est pas le bon code de secours."; } };
+  o.querySelector("#rok").onclick = async () => { const r = await checkRecovery(o.querySelector("#rcv").value), m = o.querySelector("#rmsg"); if (r.ok) { removePin(); toast("Code effacé : choisissez-en un nouveau"); createPin({ onDone: onOk, onCancel: () => { o.style.display = "none"; } }); } else { m.className = "pinmsg gmsg warn"; m.textContent = r.wait ? `Trop d'essais. Réessayez dans ${r.wait} s.` : "Ce n'est pas le bon code de secours."; } };
   o.querySelector("#rwipe").onclick = () => {
     const qa = 6 + Math.floor(Math.random() * 4), qb = 6 + Math.floor(Math.random() * 4);
     o.innerHTML = `<div class="panel"><h1>⚠️ Tout effacer ?</h1><p class="sub">Sans code de secours, la seule solution est d'effacer TOUTES les données de l'appli sur cet appareil : progression, créations, réglages et statistiques. Cette action est définitive.</p><p class="sub">Réservé aux adultes : combien font <b>${qa} × ${qb}</b> ?</p><input id="wq" inputmode="numeric" class="pname" autocomplete="off" aria-label="Réponse"><div class="pinmsg gmsg" id="wm" aria-live="polite"></div><div class="cfmbtns"><button class="cfmno" id="wno" aria-label="Non, retour">✖</button><button class="cfmyes" id="wyes" aria-label="Oui, tout effacer">✔</button></div></div>`;
@@ -84,8 +84,8 @@ function recover({ onOk, onCancel }) {
 // créer ou changer le code : deux saisies, puis le code de secours
 export function createPin({ onDone, onCancel }) {
   let first = null;
-  const step1 = () => { first = null; pinEntry({ title: "🔒 Choisis un code parent", sub: "4 chiffres que seuls les adultes connaissent. Évite 0000 ou 1234.", onCancel, onDone: (code, say) => { if (isWeakPin(code)) { say("Ce code est trop facile à deviner. Choisis-en un autre.", "warn"); return; } first = code; step2(); return "keep"; } }); };
-  const step2 = () => { pinEntry({ title: "Retape ton code", sub: "Pour être sûr de ne pas s'être trompé.", onCancel: step1, onDone: async (code, say) => { if (code !== first) { say("Les deux codes sont différents. On recommence.", "warn"); setTimeout(step1, 900); return "keep"; } const rec = await setPin(code); done(rec); return "keep"; } }); };
-  const done = rec => { const o = ov(); o.innerHTML = `<div class="panel"><h1>✅ Code enregistré</h1><p class="sub">Voici ton <b>code de secours</b>. Note-le sur un papier, dans un endroit sûr : il sert si tu oublies ton code.</p><div class="reccode" id="reccode" data-silent>${rec}</div><p class="sub">Il ne sera plus affiché.</p><div class="agebtns"><button class="big-btn" id="recok">J'ai noté mon code de secours</button></div></div>`; o.querySelector("#recok").onclick = () => { o.style.display = "none"; onDone && onDone(); }; };
+  const step1 = () => { first = null; pinEntry({ title: "🔒 Choisissez un code parent", sub: "4 chiffres que seuls les adultes connaissent. Évitez 0000 ou 1234.", onCancel, onDone: (code, say) => { if (isWeakPin(code)) { say("Ce code est trop facile à deviner. Choisissez-en un autre.", "warn"); return; } first = code; step2(); return "keep"; } }); };
+  const step2 = () => { pinEntry({ title: "Retapez votre code", sub: "Pour être sûr de ne pas s'être trompé.", onCancel: step1, onDone: async (code, say) => { if (code !== first) { say("Les deux codes sont différents. On recommence.", "warn"); setTimeout(step1, 900); return "keep"; } const rec = await setPin(code); done(rec); return "keep"; } }); };
+  const done = rec => { const o = ov(); o.innerHTML = `<div class="panel"><h1>✅ Code enregistré</h1><p class="sub">Voici votre <b>code de secours</b>. Notez-le sur un papier, dans un endroit sûr : il sert si vous oubliez votre code.</p><div class="reccode" id="reccode" data-silent>${rec}</div><p class="sub">Il ne sera plus affiché.</p><div class="agebtns"><button class="big-btn" id="recok">J'ai noté mon code de secours</button></div></div>`; o.querySelector("#recok").onclick = () => { o.style.display = "none"; onDone && onDone(); }; };
   step1();
 }

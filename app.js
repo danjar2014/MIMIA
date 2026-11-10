@@ -8,7 +8,7 @@ import { hasPin, askPin, createPin } from "./pin.js";
 import { mountDaily, dailyDoneToday } from "./daily.js";
 import { checkBadges, badgeList, playDays, softStreak } from "./badges.js";
 import { mountOnboarding, mountPlacement } from "./onboard.js";
-import { needsParentSetup, startParentSetup, AGES, VOICES, LIMITS, SEXES } from "./parentsetup.js";
+import { needsParentSetup, startParentSetup, setupActive, AGES, VOICES, LIMITS, SEXES } from "./parentsetup.js";
 import { askConfirm } from "./confirm.js";
 import { initMascot, faceSvg } from "./mascot.js";
 import { initScene, sceneFor } from "./scene.js";
@@ -183,7 +183,7 @@ function ageChooser() {
   Object.entries(BANDS).forEach(([k, b]) => { const x = el("button", "big-btn", b.name); x.onclick = () => { S.age = k; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(x); });
 }
 // première configuration : obligatoirement par un parent (code parent + profil de l'enfant), puis l'enfant commence
-function startSetup() { startParentSetup(overlay, () => { applySettings(); home(); }); }
+function startSetup() { startParentSetup(overlay, () => { document.body.classList.remove("parentflow"); applySettings(); applyLock(); if (!isLocked()) home(); }); }
 function startOnboarding() {
   mountOnboarding(overlay, ans => { applySettings(); home(); if (ans.rank === 0) playLearn("l1"); else parcours(); });
 }
@@ -200,7 +200,7 @@ function showLimit() {
   overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel"><h1>🌙 C'est assez pour aujourd'hui</h1><p class="sub">Tu as bien travaillé, bravo ! Ton robot se repose. À demain !</p><div class="agebtns"><button class="big-btn" id="lm1">🏠 Retour à l'accueil</button><button class="big-btn alt" id="lm2">Je suis un parent</button></div></div>`;
   $("#lm1").onclick = () => { overlay.style.display = "none"; home(); };
   $("#lm2").onclick = () => {
-    if (hasPin()) return askPin({ title: "🔒 Espace parents", sub: "Entre le code pour accorder 15 minutes de plus.", onOk: () => { extendLimit(15); overlay.style.display = "none"; toast("15 minutes de plus accordées ✔"); }, onCancel: showLimit });
+    if (hasPin()) return askPin({ title: "🔒 Espace parents", sub: "Entrez le code pour accorder 15 minutes de plus.", onOk: () => { extendLimit(15); overlay.style.display = "none"; toast("15 minutes de plus accordées ✔"); }, onCancel: showLimit });
     const a = 3 + Math.floor(Math.random() * 7), b = 4 + Math.floor(Math.random() * 6);
     overlay.innerHTML = `<div class="panel"><h1>Espace parents</h1><p class="sub">Pour accorder 15 minutes de plus : combien font <b>${a} × ${b}</b> ?</p><input id="lmq" inputmode="numeric" class="pname" aria-label="Réponse"><div class="agebtns"><button class="big-btn" id="lmo">Valider</button><button class="big-btn alt" id="lmn">Annuler</button></div></div>`;
     $("#lmn").onclick = showLimit;
@@ -416,7 +416,7 @@ function pauseScreen() {
 function resetJourney() {
   S.progress = {}; S.xp = null; S.badges = null; S.badgesInit = false; S.daily = null; S.dailyDays = []; S.dailyLast = []; S.project = null; S.placementResult = null; S.flags = {}; S.startRank = 0; save();
 }
-function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
+function openSettings() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entrez le code à 4 chiffres pour ouvrir les réglages.", onOk: settings, onCancel: () => { overlay.style.display = "none"; } }); }
 // ----- « Qui joue ? » : à chaque ouverture, le robot et le prénom de l'enfant ; en bas à gauche, le cadenas des parents (inspiré d'iwawa) -----
 let onWelcome = false;
 // le bouton des parents : le même sur « Qui joue ? » et sur l'accueil (cadenas en bas à gauche, code obligatoire)
@@ -442,9 +442,10 @@ function startApp() {
   splashShown = true; showSplash(() => enterApp());   // à l'ouverture : le robot arrive dans l'espace
 }
 function enterApp() {
+  if (!needsParentSetup() && isLocked()) return applyLock();
   if (!needsParentSetup() && S.age && S.placed) welcome(); else home();
 }
-const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; onWelcome ? welcome() : home(); };
+const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; document.body.classList.remove("parentflow"); if (!needsParentSetup() && isLocked()) return applyLock(); onWelcome ? welcome() : home(); };
 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
@@ -524,18 +525,26 @@ function wireSubscription() {
   overlay.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
   const r = $("#brestore"); if (r) r.onclick = () => refreshBilling();
 }
+let wasLocked = false;
 function applyLock() {
   const locked = !needsParentSetup() && isLocked();
   let lk = $("#lock");
   document.body.classList.toggle("locked", locked);
   const ap = $("#app"); if (ap) ap.inert = locked;
-  if (!locked) { if (lk) lk.remove(); return; }
+  if (!locked) {
+    if (lk) lk.remove();
+    if (wasLocked) { wasLocked = false; document.body.classList.remove("parentflow"); if (overlay.style.display !== "flex") enterApp(); }
+    return;
+  }
+  wasLocked = true;
+  if (setupActive()) document.body.classList.add("parentflow");   // la configuration parent reste visible au-dessus du verrou
+  else if (!document.body.classList.contains("parentflow") && overlay.style.display === "flex") { overlay.style.display = "none"; overlay.innerHTML = ""; }   // un écran de l'enfant était ouvert : on le ferme
   if (lk) return;
   lk = el("div", "", `<div class="lockbox" data-silent><div class="lockico" aria-hidden="true">🔒</div><h1>RobotKids est réservé aux abonnés</h1><p>Demande à un parent de commencer l'essai gratuit de 7 jours.</p><button class="big-btn" id="lockpar"><span aria-hidden="true">👨‍👩‍👧</span> Je suis un parent</button></div>`);
   lk.id = "lock"; document.body.appendChild(lk);
   $("#lockpar").onclick = openSubscription;
 }
-function openSubscription() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: () => parentScreen("abo"), onCancel: () => { overlay.style.display = "none"; } }); }
+function openSubscription() { if (needsParentSetup()) return startSetup(); document.body.classList.add("parentflow"); askPin({ title: "🔒 Espace parents", sub: "Entrez le code à 4 chiffres pour ouvrir les réglages.", onOk: () => parentScreen("abo"), onCancel: () => { overlay.style.display = "none"; document.body.classList.remove("parentflow"); } }); }
 onBilling(() => { applyLock(); if (overlay.style.display === "flex" && overlay.querySelector("#subscr, #brestore, [data-plan]")) parentScreen("abo"); });
 
 function parentScreen(id) {

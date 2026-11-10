@@ -14,7 +14,7 @@ t("les réglages ne s'enregistrent qu'avec les champs présents (pas d'erreur su
 t("un objectif vide n'est jamais enregistré", /\+g > 0\) S\.dailyGoalXP/.test(app));
 t("le niveau de départ ne « place » l'enfant que si on le choisit (pas de test sauté)", /if \(ss !== null\) \{ S\.startRank = \+ss; S\.placed = true; \}/.test(app));
 
-t("« Qui joue ? » : s'affiche à l'ouverture si tout est réglé, sinon la configuration parent", /function startApp\(\) \{/.test(app) && /function enterApp\(\) \{\n  if \(!needsParentSetup\(\) && S\.age && S\.placed\) welcome\(\); else home\(\);/.test(app) && /else startApp\(\);\n?$/.test(app));
+t("« Qui joue ? » : s'affiche à l'ouverture si tout est réglé, sinon la configuration parent", /function startApp\(\) \{/.test(app) && /function enterApp\(\) \{\n(  if \(!needsParentSetup\(\) && isLocked\(\)\) return applyLock\(\);\n)?  if \(!needsParentSetup\(\) && S\.age && S\.placed\) welcome\(\); else home\(\);/.test(app) && /else startApp\(\);\n?$/.test(app));
 t("« Qui joue ? » : le robot, le prénom, et le cadenas des parents", /wchild/.test(app) && /wname/.test(app) && /wlock/.test(app) && /parentLock\(\)/.test(app.slice(app.indexOf("function welcome"), app.indexOf("function startApp"))) && /function parentLock\(\)[^\n]*openSettings\(\)/.test(app));
 t("accueil : plus d'ancien bouton ⚙️ (appui long), le même cadenas que « Qui joue ? », et le prénom ramène à « Qui joue ? »", !/Maintiens appuyé pour ouvrir les réglages/.test(app) && (app.match(/parentLock\(\)/g) || []).length >= 3 && /title: "Changer de joueur \?"/.test(app));
 t("fermer les réglages revient à « Qui joue ? » quand on en vient", /onWelcome \? welcome\(\) : home\(\)/.test(app));
