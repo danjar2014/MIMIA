@@ -1,13 +1,13 @@
 # RobotKids — dossier de publication Google Play
 
-Fichier à publier : `release/RobotKids-5.5.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
-Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` (même contenu, même signature).
+Fichier à publier : `release/RobotKids-5.6.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
+Fichier pour essayer sur un téléphone : `release/RobotKids-5.6.0-release.apk` (même contenu, même signature).
 
 ## 1. Identité technique (déjà réglée)
 | | |
 |---|---|
 | Identifiant | `com.robotkids.app` (définitif après la première publication) |
-| Version | 5.5.0 (code 55) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
+| Version | 5.6.0 (code 56) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
 | Android cible | 35 (Android 15) · minimum : Android 5 (API 21) |
 | Architectures | arm64-v8a, armeabi-v7a, x86_64 (64 bits inclus) |
 | Autorisations | `INTERNET` seulement (le serveur local de l'appli) — aucune autorisation sensible, pas d'identifiant publicitaire |
@@ -20,7 +20,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 
 ## 2. Avant de commencer dans la Play Console
 1. Compte développeur Google Play (25 $, une fois). **Comptes personnels créés après nov. 2023** : il faut un **test fermé avec 12 testeurs pendant 14 jours** avant de demander la production. Un compte « organisation » n'a pas cette obligation.
-2. Créer l'application : nom, langue par défaut (Français – France), « Application », « Gratuite ».
+2. Créer l'application : nom, langue par défaut (Français – France), « Application », **« Payante »** (abonnement via Google Play : voir section 8).
 3. Politique de confidentialité (déjà en ligne, en anglais puis en français, avec l'e-mail de contact) : **https://robotkids.robotkids.workers.dev/privacy** — à coller dans la Play Console. Site de présentation : https://robotkids.robotkids.workers.dev/ (dossier `site/`, publié avec `npx wrangler deploy`).
 
 ## 3. Fiche du store (copier-coller)
@@ -30,7 +30,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 **Short description — EN** : `Robots, coding and Montessori games for kids 3–12. No ads.`
 
 **Description complète — FR**
-> RobotKids apprend la robotique et la programmation aux enfants de 3 à 12 ans, en jouant, sans publicité et sans connexion Internet.
+> RobotKids apprend la robotique et la programmation aux enfants de 3 à 12 ans, en jouant, sans publicité et sans connexion Internet. Essai gratuit de 7 jours, puis abonnement (mensuel ou annuel).
 >
 > 🧒 Pour les 3-6 ans : jeux de style Montessori dans l'univers des robots — chiffres, lettres, couleurs, jours de la semaine, mois, formes, tailles, sons, additions, horloge… Chaque jeu commence par un petit cours avec un exemple, puis des indices lumineux aident l'enfant. Tout est dit à voix haute : l'enfant n'a pas besoin de savoir lire.
 >
@@ -38,7 +38,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 >
 > 👨‍👩‍👧 Pensé pour les parents : plusieurs profils d'enfants, espace parents protégé par un code secret, suivi des progrès, limite de temps par jour, choix des cartes ouvertes ou bloquées.
 >
-> 🔒 Respect de la vie privée : aucune publicité, aucun achat intégré, aucun compte, aucune donnée envoyée. Tout reste sur l'appareil.
+> 🔒 Respect de la vie privée : aucune publicité, aucun compte, aucune donnée envoyée. Tout reste sur l'appareil ; le paiement est géré par Google Play.
 >
 > 🌍 Disponible en français et en anglais, choisi au premier lancement.
 
@@ -51,7 +51,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 >
 > 👨‍👩‍👧 Made for parents: several child profiles, a parent area protected by a secret code, progress tracking, daily time limit, and the choice of which cards are open or blocked.
 >
-> 🔒 Privacy first: no ads, no in-app purchases, no accounts, no data sent anywhere. Everything stays on the device.
+> 🔒 Privacy first: no ads, no accounts, no data sent anywhere. Everything stays on the device; payment is handled by Google Play.
 >
 > 🌍 Available in French and English, chosen at first launch.
 
@@ -65,7 +65,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 
 ## 5. Déclarations (Contenu de l'appli)
 - **Public cible** : cocher **5 ans et moins**, **6-8 ans**, **9-12 ans** (pas les plus de 13 ans). Cela active la politique **Familles** de Google Play.
-- **Application destinée aux enfants / Familles** : oui. Elle respecte : aucune publicité, aucun SDK publicitaire ou de mesure, aucun lien externe, aucune collecte de données, aucun achat intégré.
+- **Application destinée aux enfants / Familles** : oui. Elle respecte : aucune publicité, aucun SDK publicitaire ou de mesure, aucun lien externe, aucune collecte de données ; abonnement géré par Google Play, avec contrôle parental (code) avant tout achat.
 - **Publicités** : l'appli ne contient pas de publicités.
 - **Identifiant publicitaire (AD_ID)** : non utilisé (aucune autorisation `AD_ID` dans l'appli).
 - **Sécurité des données** : « Cette appli ne collecte ni ne partage aucune donnée utilisateur » · « Les données sont chiffrées en transit » : sans objet (aucune transmission) · « Vous pouvez demander la suppression des données » : les données sont locales, la désinstallation les efface.
@@ -75,11 +75,26 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` 
 - **Permissions sensibles / services de premier plan / exactes alarmes** : aucun.
 
 ## 6. Mise en ligne
-1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.5.0-release.aab`.
+1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.6.0-release.aab`.
 2. Notes de version FR : `Première version : jeux Montessori pour les 3-6 ans, robots et code pour les 6-12 ans, en français et en anglais.` · EN : `First release: Montessori games for ages 3–6, robots and coding for ages 6–12, in French and English.`
 3. Vérifier le rapport « Pre-launch » de Google (test automatique sur des appareils réels), corriger si besoin, puis « Envoyer pour examen ». L'examen d'une appli pour enfants prend en général quelques jours.
 
 ## 7. Mises à jour futures
 1. Modifier le site/l'appli web, `node test-*.mjs` pour vérifier, puis dans `flutter_app` : `powershell -File sync_web.ps1`.
-2. Augmenter `version: 5.5.0+54` (le chiffre après `+` doit toujours augmenter).
+2. Augmenter `version: 5.6.0+54` (le chiffre après `+` doit toujours augmenter).
 3. `flutter build appbundle --release` (et `flutter build apk --release` pour essayer), téléverser le nouveau `.aab`.
+
+## 8. Abonnement (Google Play Billing)
+**Prix décidés** : essai gratuit de **7 jours**, puis **3,99 €/mois** ou **29,99 €/an**. Sans abonnement actif, l'appli est verrouillée pour l'enfant ; seul l'espace parents (code) reste ouvert pour s'abonner.
+
+**À créer dans la Play Console** (Monétiser → Produits → Abonnements). Les identifiants doivent être **exactement** ceux du code (`flutter_app/lib/billing.dart`) :
+| ID du produit | Plan de base | Prix | Offre |
+|---|---|---|---|
+| `robotkids_monthly` | `monthly` — facturation mensuelle, renouvellement automatique | 3,99 € (France ; les autres pays se convertissent) | offre « essai gratuit » de **7 jours** pour les nouveaux abonnés |
+| `robotkids_yearly` | `yearly` — facturation annuelle, renouvellement automatique | 29,99 € | offre « essai gratuit » de **7 jours** pour les nouveaux abonnés |
+
+Étapes : 1) compte marchand (profil de paiement) ; 2) créer les deux produits et activer leur plan de base ; 3) ajouter l'offre d'essai gratuit de 7 jours (éligibilité : « nouveaux abonnés ») et l'activer ; 4) téléverser l'AAB (au moins en test fermé : sans cela les produits sont invisibles dans l'appli) ; 5) Paramètres → Test de licence : ajouter les e-mails des testeurs (ils ne paient pas réellement, les durées sont raccourcies) ; 6) installer l'appli depuis le lien de test (et non l'APK direct) pour tester l'achat.
+
+**Déclarations à adapter** : « L'appli contient des achats intégrés » → **Oui** ; Sécurité des données : les paiements sont traités par Google Play, l'appli ne collecte rien (à déclarer « aucune donnée collectée ») ; la politique de confidentialité (`/privacy`) a été mise à jour pour mentionner l'abonnement.
+
+**Comportement dans l'appli** : essai et achat uniquement dans l'espace parents → Abonnement ; « Restaurer mes achats » ; vérification au démarrage et à chaque retour dans l'appli ; hors ligne, accès conservé 3 jours après le dernier abonnement vu actif. Sur le web/PWA (hors Android), pas de paiement et pas de verrou. Le contrôle est fait sur l'appareil (pas de serveur) : suffisant pour une première version, un contrôle côté serveur (API Google Play Developer) pourra être ajouté plus tard contre la fraude.

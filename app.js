@@ -35,6 +35,7 @@ import { initPraise } from "./praise.js";
 import { showSplash } from "./splash.js";
 import { initInstall } from "./install.js";
 import { LANG, langChosen, setLang } from "./i18n.js";
+import { initBilling, billingEnabled, billingState, isLocked, onBilling, buyPlan, refreshBilling, PLAN_MONTHLY, PLAN_YEARLY } from "./billing.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -435,6 +436,7 @@ function welcome() {
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
 let splashShown = false;
 function startApp() {
+  initBilling(); applyLock();
   if (splashShown) return enterApp();
   initInstall();
   splashShown = true; showSplash(() => enterApp());   // à l'ouverture : le robot arrive dans l'espace
@@ -465,8 +467,8 @@ const PARENT_SCREENS = {
   temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
     <div class="row"><span>Jeu par jour</span><select id="sl">${optList(S.dailyLimit || 0, LIMITS)}</select></div>` }),
   code: () => ({ title: "Code", html: `<div class="row"><span>Code parent ✅</span><button class="big-btn alt psmall" id="pc">Changer</button></div>` }),
-  privacy: () => ({ title: "Confidentialité", html: `<p class="sub">RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.</p><p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni achat intégré, ni compte utilisateur, ni lien vers l'extérieur.</p><p class="sub">Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.</p><p class="sub">Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».</p><p class="sub">L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).</p><p class="sub">La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.</p><p class="sub">Politique complète, en ligne :<br><b>robotkids.robotkids.workers.dev/privacy</b></p><p class="sub">✉️ contactrobotkids@gmail.com</p>` }),
-  abo: () => ({ title: "Abonnement", html: `<div class="row"><span>Version gratuite</span><span aria-hidden="true">⭐</span></div><p class="sub">La gestion de l'abonnement arrive bientôt.</p>` })
+  privacy: () => ({ title: "Confidentialité", html: `<p class="sub">RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.</p><p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni compte utilisateur, ni lien vers l'extérieur. L'abonnement est géré par Google Play : RobotKids ne voit ni ne conserve aucune information de paiement.</p><p class="sub">Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.</p><p class="sub">Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».</p><p class="sub">L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).</p><p class="sub">La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.</p><p class="sub">Politique complète, en ligne :<br><b>robotkids.robotkids.workers.dev/privacy</b></p><p class="sub">✉️ contactrobotkids@gmail.com</p>` }),
+  abo: () => ({ title: "Abonnement", html: subscriptionHtml() })
 };
 // enregistre les réglages affichés (seuls les champs présents sur l'écran courant)
 function grabParent() {
@@ -507,12 +509,42 @@ function profileEdit(id) {
     applySettings(); chime("done"); toast(isNew ? "Joueur ajouté" : "Enregistré"); speak(DEVICE + (isNew ? `Bienvenue ${name} !` : `Salut ${name} !`), { force: true, full: true }); profilesScreen();
   };
 }
+// ----- Abonnement (Google Play Billing) : verrou pour l'enfant, achat réservé à l'espace parents -----
+function subscriptionHtml() {
+  const st = billingState(), P = st.plans || {};
+  if (!billingEnabled()) return `<div class="row"><span>Version gratuite</span><span aria-hidden="true">⭐</span></div><p class="sub">Les abonnements se gèrent depuis l'appli Android RobotKids.</p>`;
+  if (st.active) return `<div id="subscr" class="row"><span>✅ Abonnement actif</span><span aria-hidden="true">⭐</span></div><p class="sub">Merci ! Tout RobotKids est ouvert.</p><p class="sub">Pour gérer ou annuler : Google Play &gt; Profil &gt; Paiements et abonnements &gt; Abonnements.</p><button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>`;
+  if (!st.checked) return `<div id="subscr"></div><p class="sub">Vérification de l'abonnement…</p>`;
+  const plan = (id, per) => { const p = P[id]; return p ? `<button class="big-btn" data-plan="${id}">${p.trial ? `Essai gratuit 7 jours, puis ${p.price} / ${per}` : `S'abonner : ${p.price} / ${per}`}</button>` : ""; };
+  const buttons = plan(PLAN_MONTHLY, "mois") + plan(PLAN_YEARLY, "an");
+  const info = buttons ? `<p class="sub">Choisissez votre formule.</p>${buttons}<p class="sub">Vous pouvez annuler à tout moment dans Google Play (Profil &gt; Paiements et abonnements &gt; Abonnements) : rien n'est débité si vous annulez avant la fin de l'essai. L'abonnement se renouvelle automatiquement.</p>` : `<p class="sub">Les abonnements ne sont pas disponibles sur cet appareil (Google Play est nécessaire).</p>`;
+  return `<div id="subscr" class="row"><span>RobotKids est réservé aux abonnés.</span><span aria-hidden="true">🔒</span></div>${st.pending ? `<p class="sub">⏳ Paiement en attente de confirmation par Google Play.</p>` : ""}${info}<button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>`;
+}
+function wireSubscription() {
+  overlay.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
+  const r = $("#brestore"); if (r) r.onclick = () => refreshBilling();
+}
+function applyLock() {
+  const locked = !needsParentSetup() && isLocked();
+  let lk = $("#lock");
+  document.body.classList.toggle("locked", locked);
+  const ap = $("#app"); if (ap) ap.inert = locked;
+  if (!locked) { if (lk) lk.remove(); return; }
+  if (lk) return;
+  lk = el("div", "", `<div class="lockbox" data-silent><div class="lockico" aria-hidden="true">🔒</div><h1>RobotKids est réservé aux abonnés</h1><p>Demande à un parent de commencer l'essai gratuit de 7 jours.</p><button class="big-btn" id="lockpar"><span aria-hidden="true">👨‍👩‍👧</span> Je suis un parent</button></div>`);
+  lk.id = "lock"; document.body.appendChild(lk);
+  $("#lockpar").onclick = openSubscription;
+}
+function openSubscription() { if (needsParentSetup()) return startSetup(); askPin({ title: "🔒 Espace parents", sub: "Entre le code à 4 chiffres pour ouvrir les réglages.", onOk: () => parentScreen("abo"), onCancel: () => { overlay.style.display = "none"; } }); }
+onBilling(() => { applyLock(); if (overlay.style.display === "flex" && overlay.querySelector("#subscr, #brestore, [data-plan]")) parentScreen("abo"); });
+
 function parentScreen(id) {
   if (id === "profil") return profilesScreen();
   const sc = PARENT_SCREENS[id](); overlay.style.display = "flex";
   overlay.innerHTML = `<div class="panel" data-silent><div class="phead"><button class="iconbtn" id="pback" aria-label="Retour">⬅️</button><h1>${sc.title}</h1></div>${sc.html}</div>`;
   overlay.querySelectorAll(".tog").forEach(b => b.onclick = () => { S[b.dataset.k] = !S[b.dataset.k]; b.classList.toggle("on", S[b.dataset.k]); save(); applySettings(); });
   $("#pback").onclick = () => { grabParent(); settings(); };
+  if (id === "abo") wireSubscription();
   overlay.querySelectorAll(".cardst").forEach(b => b.onclick = () => {
     const nm = b.dataset.nm, nx = CARD_NEXT[(S.cards || {})[nm] || "auto"]; S.cards = S.cards || {}; if (nx === "auto") delete S.cards[nm]; else S.cards[nm] = nx;
     save(); b.textContent = CARD_ICON[nx]; b.setAttribute("aria-label", `${nm} : ${CARD_LABEL[nx]}`); speak(`${nm} : ${CARD_LABEL[nx]}`, { force: true, full: true });

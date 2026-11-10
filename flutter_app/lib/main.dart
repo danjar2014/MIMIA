@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'billing.dart';
 
 // L'appli web (HTML/JS/CSS) est embarquée dans assets/www et servie en local :
 // les modules ES, le worker du code et le stockage fonctionnent comme sur un site, sans internet.
@@ -18,6 +19,7 @@ Future<void> main() async {
   } catch (_) {
     // déjà démarré (2e ouverture) : on réutilise le serveur existant
   }
+  Billing.i.init(); // abonnement : lecture des achats Google Play (en tâche de fond)
   runApp(const PetitsRobotsApp());
 }
 
@@ -38,9 +40,29 @@ class Shell extends StatefulWidget {
   State<Shell> createState() => _ShellState();
 }
 
-class _ShellState extends State<Shell> {
+class _ShellState extends State<Shell> with WidgetsBindingObserver {
   InAppWebViewController? ctrl;
   bool failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // la page web relit l'état de l'abonnement quand il change
+    Billing.i.onChange = () => ctrl?.evaluateJavascript(source: 'window.__billingPush && window.__billingPush()');
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // retour dans l'appli (par exemple après avoir géré l'abonnement dans Google Play) : on relit les achats
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) Billing.i.refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +100,15 @@ class _ShellState extends State<Shell> {
                   ),
                   onWebViewCreated: (c) {
                     ctrl = c;
+                    c.addJavaScriptHandler(
+                      handlerName: 'billing',
+                      callback: (args) async {
+                        final action = args.isNotEmpty ? '${args[0]}' : 'status';
+                        if (action == 'refresh') await Billing.i.refresh();
+                        if (action == 'buy' && args.length > 1) await Billing.i.buy('${args[1]}');
+                        return Billing.i.status();
+                      },
+                    );
                     c.addJavaScriptHandler(
                       handlerName: 'kiosk',
                       callback: (args) async {
