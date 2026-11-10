@@ -1,13 +1,13 @@
 # RobotKids — dossier de publication Google Play
 
-Fichier à publier : `release/RobotKids-5.4.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
-Fichier pour essayer sur un téléphone : `release/RobotKids-5.4.0-release.apk` (même contenu, même signature).
+Fichier à publier : `release/RobotKids-5.5.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
+Fichier pour essayer sur un téléphone : `release/RobotKids-5.5.0-release.apk` (même contenu, même signature).
 
 ## 1. Identité technique (déjà réglée)
 | | |
 |---|---|
 | Identifiant | `com.robotkids.app` (définitif après la première publication) |
-| Version | 5.4.0 (code 54) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
+| Version | 5.5.0 (code 55) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
 | Android cible | 35 (Android 15) · minimum : Android 5 (API 21) |
 | Architectures | arm64-v8a, armeabi-v7a, x86_64 (64 bits inclus) |
 | Autorisations | `INTERNET` seulement (le serveur local de l'appli) — aucune autorisation sensible, pas d'identifiant publicitaire |
@@ -75,11 +75,11 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.4.0-release.apk` 
 - **Permissions sensibles / services de premier plan / exactes alarmes** : aucun.
 
 ## 6. Mise en ligne
-1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.4.0-release.aab`.
+1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.5.0-release.aab`.
 2. Notes de version FR : `Première version : jeux Montessori pour les 3-6 ans, robots et code pour les 6-12 ans, en français et en anglais.` · EN : `First release: Montessori games for ages 3–6, robots and coding for ages 6–12, in French and English.`
 3. Vérifier le rapport « Pre-launch » de Google (test automatique sur des appareils réels), corriger si besoin, puis « Envoyer pour examen ». L'examen d'une appli pour enfants prend en général quelques jours.
 
 ## 7. Mises à jour futures
 1. Modifier le site/l'appli web, `node test-*.mjs` pour vérifier, puis dans `flutter_app` : `powershell -File sync_web.ps1`.
-2. Augmenter `version: 5.4.0+54` (le chiffre après `+` doit toujours augmenter).
+2. Augmenter `version: 5.5.0+54` (le chiffre après `+` doit toujours augmenter).
 3. `flutter build appbundle --release` (et `flutter build apk --release` pour essayer), téléverser le nouveau `.aab`.

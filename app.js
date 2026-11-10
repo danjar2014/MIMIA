@@ -447,7 +447,7 @@ const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
   { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"], ["cartes", "🃏", "Cartes", "#e2dcff"]] },
-  { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"]] }
+  { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"], ["privacy", "🔐", "Confidentialité", "#e6e6ff"]] }
 ];
 const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
@@ -465,6 +465,7 @@ const PARENT_SCREENS = {
   temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
     <div class="row"><span>Jeu par jour</span><select id="sl">${optList(S.dailyLimit || 0, LIMITS)}</select></div>` }),
   code: () => ({ title: "Code", html: `<div class="row"><span>Code parent ✅</span><button class="big-btn alt psmall" id="pc">Changer</button></div>` }),
+  privacy: () => ({ title: "Confidentialité", html: `<p class="sub">RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.</p><p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni achat intégré, ni compte utilisateur, ni lien vers l'extérieur.</p><p class="sub">Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.</p><p class="sub">Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».</p><p class="sub">L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).</p><p class="sub">La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.</p><p class="sub">Politique complète, en ligne :<br><b>robotkids.robotkids.workers.dev/privacy</b></p><p class="sub">✉️ contactrobotkids@gmail.com</p>` }),
   abo: () => ({ title: "Abonnement", html: `<div class="row"><span>Version gratuite</span><span aria-hidden="true">⭐</span></div><p class="sub">La gestion de l'abonnement arrive bientôt.</p>` })
 };
 // enregistre les réglages affichés (seuls les champs présents sur l'écran courant)

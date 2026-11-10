@@ -318,5 +318,14 @@
 "crée une boîte": "creates a box",
 "tant que": "while",
 "sinon si": "else if",
-"ne rien faire": "do nothing"
+"ne rien faire": "do nothing",
+"Confidentialité": "Privacy",
+"RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.": "RobotKids does not collect, transmit or share any personal data.",
+"L'application ne contient ni publicité, ni outil de mesure d'audience, ni achat intégré, ni compte utilisateur, ni lien vers l'extérieur.": "The app contains no advertising, no analytics, no in-app purchases, no user accounts and no external links.",
+"Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.": "The child's first name, age, progress, creations, settings and the parent code (stored in hashed form) are saved only on this device. They never leave it.",
+"Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».": "Uninstalling the app or clearing its data deletes them permanently. You can also erase progress under “My child” > “Players”.",
+"L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).": "The app works without an Internet connection and requests no sensitive permission (no microphone, camera, location or contacts).",
+"La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.": "The voice uses recordings included in the app and the device's text-to-speech. No audio is recorded.",
+"Politique complète, en ligne :": "Full policy, online:",
+"Contact : contactrobotkids@gmail.com": "Contact: contactrobotkids@gmail.com"
 }
