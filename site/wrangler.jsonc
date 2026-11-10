@@ -1,6 +1,6 @@
 {
   // Site de présentation RobotKids : fichiers statiques servis par Cloudflare Workers
-  // Adresse : https://robotkids.<votre-sous-domaine>.workers.dev
+  // Adresse : https://robotkids.robotkids.workers.dev (la politique est à /privacy)
   "name": "robotkids",
   "compatibility_date": "2026-11-01",
   "assets": { "directory": "." }

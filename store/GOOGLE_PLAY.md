@@ -21,7 +21,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.4.0-release.apk` 
 ## 2. Avant de commencer dans la Play Console
 1. Compte développeur Google Play (25 $, une fois). **Comptes personnels créés après nov. 2023** : il faut un **test fermé avec 12 testeurs pendant 14 jours** avant de demander la production. Un compte « organisation » n'a pas cette obligation.
 2. Créer l'application : nom, langue par défaut (Français – France), « Application », « Gratuite ».
-3. Politique de confidentialité à publier à une adresse web : **https://mimia.onrender.com/privacy.html** (fichier `privacy.html`). **Remplacez `[adresse e-mail de contact à renseigner]`** dans ce fichier par votre adresse, puis republiez le site.
+3. Politique de confidentialité (déjà en ligne, en anglais puis en français, avec l'e-mail de contact) : **https://robotkids.robotkids.workers.dev/privacy** — à coller dans la Play Console. Site de présentation : https://robotkids.robotkids.workers.dev/ (dossier `site/`, publié avec `npx wrangler deploy`).
 
 ## 3. Fiche du store (copier-coller)
 **Titre (30 caractères max)** : `RobotKids : code & jeux`
