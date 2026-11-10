@@ -1,13 +1,13 @@
-# Petits Robots — dossier de publication Google Play
+# RobotKids — dossier de publication Google Play
 
-Fichier à publier : `release/PetitsRobots-5.3.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
-Fichier pour essayer sur un téléphone : `release/PetitsRobots-5.3.0-release.apk` (même contenu, même signature).
+Fichier à publier : `release/RobotKids-5.4.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
+Fichier pour essayer sur un téléphone : `release/RobotKids-5.4.0-release.apk` (même contenu, même signature).
 
 ## 1. Identité technique (déjà réglée)
 | | |
 |---|---|
-| Identifiant | `com.petitsrobots.petits_robots` (définitif après la première publication) |
-| Version | 5.3.0 (code 53) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
+| Identifiant | `com.robotkids.app` (définitif après la première publication) |
+| Version | 5.4.0 (code 54) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
 | Android cible | 35 (Android 15) · minimum : Android 5 (API 21) |
 | Architectures | arm64-v8a, armeabi-v7a, x86_64 (64 bits inclus) |
 | Autorisations | `INTERNET` seulement (le serveur local de l'appli) — aucune autorisation sensible, pas d'identifiant publicitaire |
@@ -24,13 +24,13 @@ Fichier pour essayer sur un téléphone : `release/PetitsRobots-5.3.0-release.ap
 3. Politique de confidentialité à publier à une adresse web : **https://mimia.onrender.com/privacy.html** (fichier `privacy.html`). **Remplacez `[adresse e-mail de contact à renseigner]`** dans ce fichier par votre adresse, puis republiez le site.
 
 ## 3. Fiche du store (copier-coller)
-**Titre (30 caractères max)** : `Petits Robots : code & jeux`
+**Titre (30 caractères max)** : `RobotKids : code & jeux`
 
 **Description courte (80 max) — FR** : `Robots, code et jeux Montessori pour enfants de 3 à 12 ans. Sans pub.`
 **Short description — EN** : `Robots, coding and Montessori games for kids 3–12. No ads.`
 
 **Description complète — FR**
-> Petits Robots apprend la robotique et la programmation aux enfants de 3 à 12 ans, en jouant, sans publicité et sans connexion Internet.
+> RobotKids apprend la robotique et la programmation aux enfants de 3 à 12 ans, en jouant, sans publicité et sans connexion Internet.
 >
 > 🧒 Pour les 3-6 ans : jeux de style Montessori dans l'univers des robots — chiffres, lettres, couleurs, jours de la semaine, mois, formes, tailles, sons, additions, horloge… Chaque jeu commence par un petit cours avec un exemple, puis des indices lumineux aident l'enfant. Tout est dit à voix haute : l'enfant n'a pas besoin de savoir lire.
 >
@@ -43,7 +43,7 @@ Fichier pour essayer sur un téléphone : `release/PetitsRobots-5.3.0-release.ap
 > 🌍 Disponible en français et en anglais, choisi au premier lancement.
 
 **Full description — EN**
-> Petits Robots teaches robotics and programming to children aged 3 to 12 through play — no ads and no Internet connection needed.
+> RobotKids teaches robotics and programming to children aged 3 to 12 through play — no ads and no Internet connection needed.
 >
 > 🧒 Ages 3–6: Montessori-style games in a robot world — numbers, letters, colours, days of the week, months, shapes, sizes, sounds, addition, the clock… Each game starts with a short lesson and an example, then glowing hints help the child. Everything is spoken aloud, so no reading is needed.
 >
@@ -55,7 +55,7 @@ Fichier pour essayer sur un téléphone : `release/PetitsRobots-5.3.0-release.ap
 >
 > 🌍 Available in French and English, chosen at first launch.
 
-**Catégorie** : Éducation · **Tags** : Éducation, Jeux éducatifs, Programmation · **Coordonnées** : votre e-mail, (site facultatif).
+**Catégorie** : Éducation · **Tags** : Éducation, Jeux éducatifs, Programmation · **Coordonnées** : contactrobotkids@gmail.com, (site facultatif).
 
 ## 4. Images (dossier `store/`)
 - Icône 512 × 512 : `store/icon-512.png`
@@ -75,11 +75,11 @@ Fichier pour essayer sur un téléphone : `release/PetitsRobots-5.3.0-release.ap
 - **Permissions sensibles / services de premier plan / exactes alarmes** : aucun.
 
 ## 6. Mise en ligne
-1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `PetitsRobots-5.3.0-release.aab`.
+1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.4.0-release.aab`.
 2. Notes de version FR : `Première version : jeux Montessori pour les 3-6 ans, robots et code pour les 6-12 ans, en français et en anglais.` · EN : `First release: Montessori games for ages 3–6, robots and coding for ages 6–12, in French and English.`
 3. Vérifier le rapport « Pre-launch » de Google (test automatique sur des appareils réels), corriger si besoin, puis « Envoyer pour examen ». L'examen d'une appli pour enfants prend en général quelques jours.
 
 ## 7. Mises à jour futures
 1. Modifier le site/l'appli web, `node test-*.mjs` pour vérifier, puis dans `flutter_app` : `powershell -File sync_web.ps1`.
-2. Augmenter `version: 5.3.0+53` (le chiffre après `+` doit toujours augmenter).
+2. Augmenter `version: 5.4.0+54` (le chiffre après `+` doit toujours augmenter).
 3. `flutter build appbundle --release` (et `flutter build apk --release` pour essayer), téléverser le nouveau `.aab`.

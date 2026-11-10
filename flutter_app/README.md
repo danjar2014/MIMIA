@@ -1,6 +1,6 @@
 # petits_robots
 
-Petits Robots - robotique et code pour enfants
+RobotKids - robotique et code pour enfants
 
 ## Getting Started
 

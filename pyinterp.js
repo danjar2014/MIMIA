@@ -32,7 +32,7 @@ function tokenize(src, baseLine = 1) {
       if ((m = /^[A-Za-zÀ-ÿ_][\wÀ-ÿ]*/.exec(text.slice(i)))) {
         const w = m[0], nx = text[i + w.length];
         if (w === "f" && (nx === '"' || nx === "'")) { i += 1; const s = readStr(text, i, line); push("fstr", s.v, line); i = s.end; continue; }
-        if (NOPE.has(w)) throw new PyErr(`Le mot « ${w} » existe en Python, mais il n'est pas disponible dans l'atelier des Petits Robots.`, line, "Syntaxe");
+        if (NOPE.has(w)) throw new PyErr(`Le mot « ${w} » existe en Python, mais il n'est pas disponible dans l'atelier de RobotKids.`, line, "Syntaxe");
         push(KW.has(w) ? "kw" : "name", w, line); i += w.length; continue;
       }
       if (c === '"' || c === "'") { if (text.startsWith(c.repeat(3), i)) throw new PyErr("Les textes sur plusieurs lignes (trois guillemets) ne sont pas disponibles ici. Utilise un seul guillemet \" par texte.", line, "Syntaxe"); const s = readStr(text, i, line); push("str", s.v, line); i = s.end; continue; }

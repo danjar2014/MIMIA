@@ -25,7 +25,7 @@ class PetitsRobotsApp extends StatelessWidget {
   const PetitsRobotsApp({super.key});
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Petits Robots',
+        title: 'RobotKids',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true, colorSchemeSeed: const Color(0xFF2E8B3D)),
         home: const Shell(),

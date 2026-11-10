@@ -1,4 +1,4 @@
-# Petits Robots : apprendre la robotique et le code (6-12 ans, en français)
+# RobotKids : apprendre la robotique et le code (6-12 ans, en français)
 
 Application web installable (PWA), hors ligne. Aucun matériel nécessaire : le robot est simulé.
 Lancer : start.bat (http://localhost:8082). Test des niveaux : `node test-levels.mjs`.

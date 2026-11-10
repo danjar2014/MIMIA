@@ -1,0 +1,15 @@
+:root{--bg:#f7f5ee;--ink:#2b2a26;--card:#fff;--line:#d9d4c3;--brand:#2e8b3d;--link:#1f5fbf;--hero:#1a1740}
+@media (prefers-color-scheme:dark){:root{--bg:#16161a;--ink:#ecebe6;--card:#202026;--line:#3a3a44;--brand:#58c36a;--link:#8db7ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 system-ui,"Segoe UI",sans-serif}
+a{color:var(--link)}main,header .in,footer .in{max-width:860px;margin:0 auto;padding:0 16px}
+header{background:var(--hero);color:#fff}header .in{display:flex;align-items:center;gap:14px;padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+header img{width:44px;height:44px;border-radius:12px}header b{font-size:20px;margin-right:auto}header a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:999px}header a:hover{background:#ffffff22}
+.hero{background:radial-gradient(circle at 75% 120%,#4b3a9a,var(--hero) 60%);color:#fff;text-align:center;padding:56px 16px 64px}
+.hero img.logo{width:120px;height:120px;border-radius:28px;box-shadow:0 8px 30px #0006}.hero h1{font-size:44px;margin:16px 0 6px}.hero p{max-width:620px;margin:8px auto;font-size:19px;color:#e6e6ff}
+.btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:700;margin:14px 6px 0}.btn.alt{background:#ffffff22;border:2px solid #ffffff66}
+section{padding:10px 0}h2{font-size:28px;margin:34px 0 8px}h3{font-size:20px;margin:18px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:6px 18px 14px}
+.shots{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 14px;scroll-snap-type:x mandatory}.shots img{height:460px;border-radius:18px;border:2px solid var(--line);scroll-snap-align:start}
+.lang{display:flex;gap:10px;margin:10px 0}.lang a{border:2px solid var(--line);border-radius:999px;padding:6px 16px;text-decoration:none}
+footer{border-top:2px solid var(--line);margin-top:40px;padding:22px 0 40px;font-size:15px;color:#888}

@@ -17,5 +17,5 @@ t("les tuiles verrouillées gardent leur raison (message + voix)", /lockReason\(
 t("S'entraîner est dans l'accueil", /playPractice\(age, 0\)/.test(home));
 t("le même cadenas parents et le prénom (retour à « Qui joue ? »)", /parentLock\(\)/.test(home) && /Changer de joueur/.test(home));
 t("grille de grosses icônes : au moins 72 px", /\.igrid \.tile \.tic\{width:72px;height:72px\}/.test(css));
-t("service worker à jour (icônes, accueil)", /petits-robots-v(29|[3-9]\d)/.test(sw));
+t("service worker à jour (icônes, accueil)", /(?:petits-robots|robotkids)-v(29|[3-9]\d)/.test(sw));
 console.log(bad ? "PROBLEMES: " + bad : "L'ACCUEIL ENFANT EST EPURE");

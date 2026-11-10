@@ -151,7 +151,7 @@
 2450|the bracket "["
 2451|This line's indentation doesn't match any block above. Align it with a line above.
 2452|The word "{1}" is misplaced here.
-2453|The word "{1}" exists in Python, but it is not available in the Petits Robots workshop.
+2453|The word "{1}" exists in Python, but it is not available in the RobotKids workshop.
 2454|The item number must be a whole number.
 2455|The step of range() cannot be zero.
 2456|The sign "-" only works with a number.
