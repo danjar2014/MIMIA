@@ -1,16 +1,16 @@
 # RobotKids — dossier de publication Google Play
 
-Fichier à publier : `release/RobotKids-5.7.0-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
-Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.0-release.apk` (même contenu, même signature).
+Fichier à publier : `release/RobotKids-5.7.3-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
+Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.3-release.apk` (même contenu, même signature).
 
 ## 1. Identité technique (déjà réglée)
 | | |
 |---|---|
 | Identifiant | `com.robotkids.app` (définitif après la première publication) |
-| Version | 5.7.0 (code 57) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
-| Android cible | 35 (Android 15) · minimum : Android 5 (API 21) |
+| Version | 5.7.3 (code 60) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
+| Android cible | 36 (Android 16, exigé par Google Play depuis le 31 août 2026) · minimum : Android 7 (API 24) |
 | Architectures | arm64-v8a, armeabi-v7a, x86_64 (64 bits inclus) |
-| Autorisations | `INTERNET` seulement (le serveur local de l'appli) — aucune autorisation sensible, pas d'identifiant publicitaire |
+| Autorisations | `INTERNET` (le serveur local de l'appli), `ACCESS_NETWORK_STATE` et `BILLING` (abonnement Google Play) — aucune autorisation sensible, pas d'identifiant publicitaire |
 | Trafic réseau | seul `localhost` est autorisé en clair (`network_security_config.xml`) ; rien d'autre |
 | Sauvegarde Android | désactivée (les données des enfants ne partent pas dans le cloud) |
 | Réduction du code | R8 + réduction des ressources activés |
@@ -20,11 +20,11 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.0-release.apk` 
 
 ## 2. Avant de commencer dans la Play Console
 1. Compte développeur Google Play (25 $, une fois). **Comptes personnels créés après nov. 2023** : il faut un **test fermé avec 12 testeurs pendant 14 jours** avant de demander la production. Un compte « organisation » n'a pas cette obligation.
-2. Créer l'application : nom, langue par défaut (Français – France), « Application », **« Payante »** (abonnement via Google Play : voir section 8).
+2. Créer l'application : nom, langue par défaut **Anglais (États-Unis) – en-US** (le français est ajouté ensuite comme traduction), nom du package `com.robotkids.app`, « Application », **« Gratuite »** (le téléchargement est gratuit ; l'abonnement est un achat intégré, voir section 8 — ne pas choisir « Payante », qui ferait payer le téléchargement en plus).
 3. Politique de confidentialité (déjà en ligne, en anglais puis en français, avec l'e-mail de contact) : **https://robotkids.robotkids.workers.dev/privacy** — à coller dans la Play Console. Site de présentation : https://robotkids.robotkids.workers.dev/ (dossier `site/`, publié avec `npx wrangler deploy`).
 
 ## 3. Fiche du store (copier-coller)
-**Titre (30 caractères max)** : `RobotKids : code & jeux`
+**Titre (30 caractères max)** — EN (par défaut) : `RobotKids: Coding & Games` · FR : `RobotKids : code & jeux`
 
 **Description courte (80 max) — FR** : `Robots, code et jeux Montessori pour enfants de 3 à 12 ans. Sans pub.`
 **Short description — EN** : `Robots, coding and Montessori games for kids 3–12. No ads.`
@@ -43,7 +43,7 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.0-release.apk` 
 > 🌍 Disponible en français et en anglais, choisi au premier lancement.
 
 **Full description — EN**
-> RobotKids teaches robotics and programming to children aged 3 to 12 through play — no ads and no Internet connection needed.
+> RobotKids teaches robotics and programming to children aged 3 to 12 through play — no ads and no Internet connection needed. 7-day free trial, then a subscription (monthly or yearly).
 >
 > 🧒 Ages 3–6: Montessori-style games in a robot world — numbers, letters, colours, days of the week, months, shapes, sizes, sounds, addition, the clock… Each game starts with a short lesson and an example, then glowing hints help the child. Everything is spoken aloud, so no reading is needed.
 >
@@ -75,13 +75,13 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.0-release.apk` 
 - **Permissions sensibles / services de premier plan / exactes alarmes** : aucun.
 
 ## 6. Mise en ligne
-1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.7.0-release.aab`.
+1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.7.3-release.aab`.
 2. Notes de version FR : `Première version : jeux Montessori pour les 3-6 ans, robots et code pour les 6-12 ans, en français et en anglais.` · EN : `First release: Montessori games for ages 3–6, robots and coding for ages 6–12, in French and English.`
 3. Vérifier le rapport « Pre-launch » de Google (test automatique sur des appareils réels), corriger si besoin, puis « Envoyer pour examen ». L'examen d'une appli pour enfants prend en général quelques jours.
 
 ## 7. Mises à jour futures
 1. Modifier le site/l'appli web, `node test-*.mjs` pour vérifier, puis dans `flutter_app` : `powershell -File sync_web.ps1`.
-2. Augmenter `version: 5.7.0+54` (le chiffre après `+` doit toujours augmenter).
+2. Augmenter `version: 5.7.3+60` (le chiffre après `+` doit toujours augmenter).
 3. `flutter build appbundle --release` (et `flutter build apk --release` pour essayer), téléverser le nouveau `.aab`.
 
 ## 8. Abonnement (Google Play Billing)
@@ -98,3 +98,6 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.0-release.apk` 
 **Déclarations à adapter** : « L'appli contient des achats intégrés » → **Oui** ; Sécurité des données : les paiements sont traités par Google Play, l'appli ne collecte rien (à déclarer « aucune donnée collectée ») ; la politique de confidentialité (`/privacy`) a été mise à jour pour mentionner l'abonnement.
 
 **Comportement dans l'appli** : essai et achat uniquement dans l'espace parents → Abonnement ; « Restaurer mes achats » ; vérification au démarrage et à chaque retour dans l'appli ; hors ligne, accès conservé 3 jours après le dernier abonnement vu actif. Sur le web/PWA (hors Android), pas de paiement et pas de verrou. Le contrôle est fait sur l'appareil (pas de serveur) : suffisant pour une première version, un contrôle côté serveur (API Google Play Developer) pourra être ajouté plus tard contre la fraude.
+
+## 9. Vidéo de présentation
+`store/video/RobotKids-ad-en.mp4` et `RobotKids-ad-fr.mp4` (33 s, 1920 × 1080, voix off + musique synthétisée libre de droits). Google Play demande un lien YouTube (vidéo publique ou non répertoriée, sans publicité, monétisation désactivée) dans la fiche du store, champ « Vidéo ». Régénérer : `node store/video/build.mjs fr|en` (chemins de travail dans `C:/gtmp/ad`).

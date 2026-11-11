@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) { keystoreProperties.load(new FileInputStre
 
 android {
     namespace = "com.petitsrobots.petits_robots"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -32,8 +32,8 @@ android {
         applicationId = "com.robotkids.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = 35   // exigé par Google Play (Android 15)
+        minSdk = 24   // protection automatique Play (Play Integrity) : SDK 24 minimum
+        targetSdk = 36   // exigé par Google Play depuis le 31 août 2026 (Android 16)
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -54,6 +54,7 @@ android {
             signingConfig = keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             minifyEnabled true
             shrinkResources true
+            ndk { debugSymbolLevel 'SYMBOL_TABLE' }   // symboles de débogage natifs pour la Play Console
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
