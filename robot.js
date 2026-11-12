@@ -1,10 +1,18 @@
 // Dessin du robot (personnalisable) et description de ses parties
-import { S } from "./util.js";
+import { S, futur } from "./util.js";
 
 export const COLORS = ["#3f7fd6", "#e24b4b", "#4caf6a", "#f4c430", "#8e5bc0", "#f28c28", "#2a2a2e", "#14b8a6"];
 
 // petit robot pour les grilles, la danse, etc.  led = couleur de la LED (ou null)
+// thème « futur » : le robot en 3D, dans la couleur choisie (theme/futur/bolt-c<n>-<pose>.webp) ; -1 si la couleur n'a pas d'image
+export const robot3d = o => (futur() && o && o.color ? COLORS.indexOf(String(o.color).toLowerCase()) : -1);
 export function robotSvg(o = S.robot, led = null) {
+  const i3 = robot3d(o);
+  if (i3 >= 0) return `<svg viewBox="0 0 100 100" class="robot r3d"><image href="theme/futur/bolt-c${i3}-front.webp" x="-4" y="0" width="108" height="108"/>${led ? `<circle cx="50" cy="6.5" r="5" fill="${led}" stroke="#fff" stroke-width="1.5"/>` : ""}</svg>`;
+  return robotSvgFlat(o, led);
+}
+// le dessin à plat (thème clair, et partout où la couleur exacte compte : jeu des couleurs)
+export function robotSvgFlat(o = S.robot, led = null) {
   const c = o.color, d = "#38362f";
   const head = o.head === "square" ? `<rect x="28" y="14" width="44" height="34" rx="6" fill="${c}" stroke="${d}" stroke-width="3"/>` : `<rect x="28" y="14" width="44" height="34" rx="17" fill="${c}" stroke="${d}" stroke-width="3"/>`;
   const eyes = o.eyes === "visor" ? `<rect x="34" y="26" width="32" height="10" rx="5" fill="#bfe9ff" stroke="${d}" stroke-width="2"/><circle cx="44" cy="31" r="3" fill="${d}"/><circle cx="56" cy="31" r="3" fill="${d}"/>` : `<circle cx="42" cy="31" r="6" fill="#fff" stroke="${d}" stroke-width="2"/><circle cx="58" cy="31" r="6" fill="#fff" stroke="${d}" stroke-width="2"/><circle cx="43" cy="32" r="2.5" fill="${d}"/><circle cx="59" cy="32" r="2.5" fill="${d}"/>`;

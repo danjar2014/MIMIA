@@ -9,6 +9,9 @@ Get-ChildItem $root -File | Where-Object {
 # dictionnaire anglais (la langue se choisit au premier lancement)
 New-Item -ItemType Directory -Force (Join-Path $dst 'i18n') | Out-Null
 Copy-Item (Join-Path $root 'i18n\en.json') (Join-Path $dst 'i18n')
+# thème « futur » : robot et icônes 3D, décor
+$th = Join-Path $root 'theme\futur'
+if (Test-Path $th) { New-Item -ItemType Directory -Force (Join-Path $dst 'theme\futur') | Out-Null; Copy-Item (Join-Path $th '*') (Join-Path $dst 'theme\futur') }
 # voix enregistrées (femme F5) : manifeste + clips
 $v = Join-Path $root 'voice'
 if (Test-Path (Join-Path $v 'manifest.json')) {

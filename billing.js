@@ -8,7 +8,7 @@ export const PLAN_MONTHLY = "robotkids_monthly", PLAN_YEARLY = "robotkids_yearly
 
 let enabled = false, mock = null;
 try { mock = localStorage.getItem(MOCK_KEY); } catch (e) {}
-const state = { checked: false, available: false, active: false, pending: false, error: null, plans: {} };
+const state = { checked: false, available: false, active: false, pending: false, error: null, plans: {}, debug: "" };
 const listeners = new Set();
 const handler = () => { const fi = window.flutter_inappwebview; return fi && fi.callHandler ? fi : null; };
 
@@ -16,7 +16,7 @@ const MOCK_PLANS = { [PLAN_MONTHLY]: { price: "3,99 €", trial: true }, [PLAN_Y
 
 function apply(r) {
   if (!r) return;
-  state.checked = !!r.checked; state.available = !!r.available; state.pending = !!r.pending; state.error = r.error || null; state.plans = r.plans || {};
+  state.checked = !!r.checked; state.available = !!r.available; state.pending = !!r.pending; state.error = r.error || null; state.plans = r.plans || {}; state.debug = r.debug || "";
   let active = !!r.active;
   try {
     if (active) localStorage.setItem(LAST_KEY, String(Date.now()));

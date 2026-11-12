@@ -1,0 +1,38 @@
+
+/* ===== thème « futur » : réglages à la main (ajoutés après les règles converties automatiquement) ===== */
+body.theme-futur{--bg:#0b1030;--ink:#e8f4ff;--line:#34429c;--soft:#1d2568;--blue:#4f8ff0;--blueD:#3a6fd0;--clay:0 4px 0 rgba(0,0,0,.35),0 8px 18px rgba(0,0,0,.3);--clayIn:inset 0 2px 0 rgba(255,255,255,.07),inset 0 -3px 0 rgba(0,0,0,.22);color:var(--ink)}
+html:has(body.theme-futur){background:#0b1030}
+body.theme-futur #scene{background:#0b1030 url(theme/futur/decor.jpg) center bottom/cover no-repeat!important}
+body.theme-futur #scene .sc{display:none}
+/* la grande feuille derrière chaque écran : verre sombre à liseré lumineux */
+body.theme-futur #app::before{background:rgba(12,16,58,.86);box-shadow:0 0 0 3px rgba(45,226,230,.55),0 0 34px rgba(45,226,230,.3)}
+body.theme-futur #app.home::before,body.theme-futur #app.welcome::before{display:none}
+body.theme-futur #overlay{background:rgba(6,8,30,.72)}
+body.theme-futur .panel{box-shadow:0 0 0 3px rgba(45,226,230,.55),0 0 30px rgba(45,226,230,.3)}
+body.theme-futur input,body.theme-futur select,body.theme-futur textarea{background:#101650;color:#e8f4ff;border-color:#34429c}
+body.theme-futur ::placeholder{color:#9fb0e6}
+/* barres, puces et accueil */
+body.theme-futur .bar h1,body.theme-futur .bar .ttl{background:#141a45;color:#e8f4ff;box-shadow:0 0 0 3px #2de2e6,0 0 16px rgba(45,226,230,.5)}
+body.theme-futur .pchip,body.theme-futur .hstat{background:rgba(16,20,66,.9);color:#e8f4ff;border-color:#2de2e6;box-shadow:0 0 12px rgba(45,226,230,.4)}
+body.theme-futur .hstat{border-color:#ff5fd2;box-shadow:0 0 12px rgba(255,95,210,.4)}
+body.theme-futur .herotile{background:linear-gradient(135deg,rgba(20,28,92,.94),rgba(52,22,104,.94));border-color:#2de2e6;color:#e8f4ff;box-shadow:0 0 20px rgba(45,226,230,.45)}
+body.theme-futur .herotile .hface{width:96px}body.theme-futur .herotile .hplay{background:none;width:78px;height:78px}body.theme-futur .herotile .hplay svg{width:78px;height:78px}
+body.theme-futur .tile{--nc:#2de2e6;background:rgba(16,20,66,.86);border:3px solid var(--nc);color:#e8f4ff;box-shadow:0 0 14px color-mix(in srgb,var(--nc) 55%,transparent),inset 0 14px 26px rgba(255,255,255,.05)}
+body.theme-futur .tile:nth-child(6n+2){--nc:#ff5fd2}body.theme-futur .tile:nth-child(6n+3){--nc:#ffc93c}body.theme-futur .tile:nth-child(6n+4){--nc:#7cff8a}body.theme-futur .tile:nth-child(6n+5){--nc:#9d8cff}body.theme-futur .tile:nth-child(6n){--nc:#ff7a3d}
+body.theme-futur .igrid .tile .tic,body.theme-futur .igrid .tile .tic.emo{width:96px;height:96px;filter:none}body.theme-futur .igrid .tile .tic.emo svg{width:96px;height:96px}
+body.theme-futur .tile.locked{filter:grayscale(.55);opacity:.72}
+body.theme-futur #dock{background:rgba(10,12,40,.96);border-top-color:#2de2e6}
+body.theme-futur #mascot{width:84px}
+/* menu des parents : une console, trois tuiles par rangée, icônes 3D */
+body.theme-futur .parentpanel{max-width:620px;padding-top:18px}
+body.theme-futur .parentpanel>h1{font-size:calc(26px*var(--fs));letter-spacing:.5px;padding-bottom:10px;border-bottom:2px solid #2de2e6;box-shadow:0 10px 14px -12px #2de2e6}
+body.theme-futur .pbtitle{color:#2de2e6;text-transform:uppercase;letter-spacing:1.5px;font-size:calc(14px*var(--fs));opacity:1;margin:18px 0 10px}
+body.theme-futur .pgrid2{grid-template-columns:repeat(5,1fr);gap:12px}
+body.theme-futur .pgrid2 .tile{min-height:132px;padding:8px 4px 10px;justify-content:center;border-radius:22px}
+body.theme-futur .pgrid2 .tile b{font-size:calc(15px*var(--fs))}
+body.theme-futur .tpic{height:84px;line-height:84px}body.theme-futur .tpic svg{width:84px;height:84px;display:block;margin:0 auto}
+@media (max-width:620px){body.theme-futur .pgrid2{grid-template-columns:repeat(3,1fr)}}
+/* jeu « Relier » : les ombres sont claires sur fond sombre */
+body.theme-futur .ptopt.sil .ptbig{filter:brightness(0) invert(1) opacity(.82)}
+/* code parent : points bien visibles (vide = contour, tapé = plein lumineux) */
+body.theme-futur .pindots i{background:transparent;border-color:#2de2e6}body.theme-futur .pindots i.f{background:#2de2e6;box-shadow:0 0 10px #2de2e6}

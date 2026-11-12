@@ -21,34 +21,34 @@ const T = {
 const LEAD = 0.45, TAIL = 0.65;
 const len = [0, 1, 2, 3, 4, 5].map(i => Math.max(3.4, dur[lang + i] + LEAD + TAIL)); len[5] += 1.2;
 const start = len.map((_, i) => len.slice(0, i).reduce((a, b) => a + b, 0)), total = len.reduce((a, b) => a + b, 0);
-const img = n => `file:///${D}/shots/${lang}-${n}.png`, icon = `file:///${ROOT}/store/icon-512.png`;
+const img = n => `file:///${D}/shots/${lang}-${n}.png`, icon = `file:///C:/gtmp/bolt/out/bolt-celebrate.png`;
 const phones = (list, h) => list.map((n, i) => `<div class="ph" data-i="${i}" data-n="${list.length}" style="--h:${h}px"><img src="${img(n)}"></div>`).join("");
 const age = (i, list, h, col) => `<section class="sc split" style="--c:${col}"><div class="txt"><span class="pill a1">${T.s[i][0]}</span><h2 class="a2">${T.s[i][1]}</h2><p class="a3">${T.s[i][2]}</p></div><div class="stage">${phones(list, h)}</div></section>`;
 const html = `<!doctype html><meta charset="utf-8"><style>
 *{box-sizing:border-box;margin:0}html,body{width:1920px;height:1080px;overflow:hidden}
-body{font-family:"Segoe UI",system-ui,sans-serif;color:#17324d;background:linear-gradient(180deg,#8fd3ff 0%,#c9ecff 55%,#e9f9e4 100%)}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:#e8f4ff;background:#0b1030 url(file:///C:/gtmp/ad/space.jpg) center/cover no-repeat}.cloud,.sun{display:none}
 .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.75;filter:blur(1px)}
 .sun{position:absolute;right:120px;top:70px;width:170px;height:170px;border-radius:50%;background:radial-gradient(#ffe36b,#ffc93c);box-shadow:0 0 90px 30px rgba(255,220,90,.55)}
 .sc{position:absolute;inset:0;opacity:0}
 .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.logo{width:300px;height:300px;border-radius:66px;box-shadow:0 24px 60px rgba(23,50,77,.28)}
-h1{font-size:150px;font-weight:900;letter-spacing:-3px;margin-top:34px;color:#12406b}h1 b{color:#ff7a3d}
-.tagl{font-size:60px;font-weight:700;line-height:1.2;margin-top:14px;color:#22577f}
+.logo{width:640px;height:640px;margin:-80px 0 -80px;filter:drop-shadow(0 0 34px rgba(45,226,230,.55))}
+h1{font-size:150px;font-weight:900;letter-spacing:-3px;margin-top:-20px;color:#e8f4ff;text-shadow:0 0 30px rgba(45,226,230,.45)}h1 b{color:#ff7a3d}
+.tagl{font-size:60px;font-weight:700;line-height:1.2;margin-top:10px;color:#6fe9ee}
 .split .txt{position:absolute;left:100px;top:0;bottom:0;width:800px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
 .pill{background:var(--c);color:#fff;font-weight:900;font-size:54px;padding:12px 40px;border-radius:999px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
-h2{font-size:86px;font-weight:900;line-height:1.08;margin-top:38px;color:#12406b}
-.split p{font-size:44px;font-weight:600;line-height:1.3;margin-top:30px;color:#2c5d84}
+h2{font-size:86px;font-weight:900;line-height:1.08;margin-top:38px;color:#fff}
+.split p{font-size:44px;font-weight:600;line-height:1.3;margin-top:30px;color:#cfe0ff}
 .stage{position:absolute;left:980px;right:40px;top:0;bottom:0}
-.ph{position:absolute;top:50%;left:50%;height:var(--h);aspect-ratio:9/16;border-radius:46px;background:#16202b;padding:13px;box-shadow:0 30px 70px rgba(18,40,66,.42)}
+.ph{position:absolute;top:50%;left:50%;height:var(--h);aspect-ratio:9/16;border-radius:46px;background:#05071c;padding:13px;box-shadow:0 0 0 3px #2de2e6,0 0 46px rgba(45,226,230,.5)}
 .ph img{width:100%;height:100%;object-fit:cover;border-radius:34px;display:block}
-.par h2{margin:0 0 70px;font-size:104px}
+.par h2{margin:0 0 70px;font-size:104px}.bd:nth-child(2){border-color:#ff5fd2;box-shadow:0 0 34px rgba(255,95,210,.45)}.bd:nth-child(3){border-color:#ffc93c;box-shadow:0 0 34px rgba(255,201,60,.4)}
 .badges{display:flex;gap:56px}
-.bd{width:500px;height:400px;background:#fff;border-radius:52px;box-shadow:0 22px 50px rgba(18,40,66,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
-.bd i{font-style:normal;font-size:130px;line-height:1}.bd span{font-size:50px;font-weight:800;color:#12406b;padding:0 30px;line-height:1.15}
-.cta .logo{width:230px;height:230px;border-radius:52px}.cta h1{font-size:120px;margin-top:22px}
+.bd{width:500px;height:400px;background:rgba(20,26,82,.94);border:4px solid #2de2e6;border-radius:52px;box-shadow:0 0 34px rgba(45,226,230,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
+.bd i{font-style:normal;font-size:130px;line-height:1}.bd span{font-size:50px;font-weight:800;color:#e8f4ff;padding:0 30px;line-height:1.15}
+.cta .logo{width:440px;height:440px;margin:-60px 0 -56px}.cta h1{font-size:120px;margin-top:-16px}
 .btn{margin-top:36px;background:#ff7a3d;color:#fff;font-size:84px;font-weight:900;padding:26px 76px;border-radius:999px;box-shadow:0 18px 40px rgba(255,122,61,.45)}
-.store{margin-top:40px;font-size:56px;font-weight:800;color:#12406b}.fine{margin-top:16px;font-size:34px;font-weight:600;color:#3d6a8e}
-.url{margin-top:26px;font-size:36px;font-weight:700;color:#22577f}
+.store{margin-top:36px;font-size:56px;font-weight:800;color:#e8f4ff}.fine{margin-top:14px;font-size:34px;font-weight:600;color:#b9c8f5}
+.url{margin-top:22px;font-size:36px;font-weight:700;color:#6fe9ee}
 </style><body>
 <div class="sun"></div>
 <div class="cloud" data-v="14" style="left:120px;top:110px;width:330px;height:92px"></div><div class="cloud" data-v="9" style="left:980px;top:210px;width:240px;height:70px"></div>

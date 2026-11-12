@@ -1,7 +1,7 @@
 // Les Petits (3-6 ans) : chiffres, lettres, couleurs, jours, mois, relier, espace — dans l'univers des robots (méthode Montessori :
 // un seul geste, de gros boutons, un seul mot à retenir, la voix dit tout). 5 petites manches par activité, sans texte à lire.
 import { el, S, chime, tone, speak, rnd, DEVICE, LANG } from "./util.js";
-import { robotSvg } from "./robot.js";
+import { robotSvg, robotSvgFlat } from "./robot.js";
 import { PARTS } from "./parts.js";
 
 export const NUMS = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix"];
@@ -38,7 +38,7 @@ export function letterRound(r, used = []) {
   return { type: "quiz", L, say: LANG === "en" ? `Touch the letter ${L}, as in ${word}.` : LANG === "ar" ? `المس الحرف ${L}، مثل ${word}.` : `Touche la lettre ${L}, comme ${word}.`, show: `<span class="ptbig">${emo}</span>`, options: three({ html: L, label: L }, wrong.map(x => ({ html: x, label: x })), r) };
 }
 export function colorRound(r, used = []) {
-  const pool = COLORS.filter(c => !used.includes(c[0])), first = pool[r(pool.length)], [c3, ...rest] = [first, ...shuffle(COLORS.filter(c => c !== first), r).slice(0, 2)], opts = [c3, ...rest].map(([name, hex]) => ({ html: robotSvg({ ...S.robot, color: hex }), label: "robot " + name, name }));
+  const pool = COLORS.filter(c => !used.includes(c[0])), first = pool[r(pool.length)], [c3, ...rest] = [first, ...shuffle(COLORS.filter(c => c !== first), r).slice(0, 2)], opts = [c3, ...rest].map(([name, hex]) => ({ html: robotSvgFlat({ ...S.robot, color: hex }), label: "robot " + name, name }));
   return { type: "quiz", name: c3[0], say: `Touche le robot ${c3[0]}.`, show: "", options: shuffle(opts.map((o, i) => ({ ...o, ok: i === 0 })), r) };
 }
 // « Quel jour vient après … ? » : la bonne réponse et deux autres jours (jamais le jour donné)

@@ -1,13 +1,13 @@
 # RobotKids — dossier de publication Google Play
 
-Fichier à publier : `release/RobotKids-5.7.3-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
-Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.3-release.apk` (même contenu, même signature).
+Fichier à publier : `release/RobotKids-5.9.3-release.aab` (Google Play n'accepte plus les .apk pour une nouvelle appli).
+Fichier pour essayer sur un téléphone : `release/RobotKids-5.9.3-release.apk` (même contenu, même signature).
 
 ## 1. Identité technique (déjà réglée)
 | | |
 |---|---|
 | Identifiant | `com.robotkids.app` (définitif après la première publication) |
-| Version | 5.7.3 (code 60) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
+| Version | 5.9.3 (code 66) — à augmenter à chaque nouvelle mise en ligne (`flutter_app/pubspec.yaml`, ligne `version:`) |
 | Android cible | 36 (Android 16, exigé par Google Play depuis le 31 août 2026) · minimum : Android 7 (API 24) |
 | Architectures | arm64-v8a, armeabi-v7a, x86_64 (64 bits inclus) |
 | Autorisations | `INTERNET` (le serveur local de l'appli), `ACCESS_NETWORK_STATE` et `BILLING` (abonnement Google Play) — aucune autorisation sensible, pas d'identifiant publicitaire |
@@ -75,13 +75,13 @@ Fichier pour essayer sur un téléphone : `release/RobotKids-5.7.3-release.apk` 
 - **Permissions sensibles / services de premier plan / exactes alarmes** : aucun.
 
 ## 6. Mise en ligne
-1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.7.3-release.aab`.
+1. *Production* (ou *Test fermé* au début) → « Créer une release » → téléverser `RobotKids-5.9.3-release.aab`.
 2. Notes de version FR : `Première version : jeux Montessori pour les 3-6 ans, robots et code pour les 6-12 ans, en français et en anglais.` · EN : `First release: Montessori games for ages 3–6, robots and coding for ages 6–12, in French and English.`
 3. Vérifier le rapport « Pre-launch » de Google (test automatique sur des appareils réels), corriger si besoin, puis « Envoyer pour examen ». L'examen d'une appli pour enfants prend en général quelques jours.
 
 ## 7. Mises à jour futures
 1. Modifier le site/l'appli web, `node test-*.mjs` pour vérifier, puis dans `flutter_app` : `powershell -File sync_web.ps1`.
-2. Augmenter `version: 5.7.3+60` (le chiffre après `+` doit toujours augmenter).
+2. Augmenter `version: 5.9.3+66` (le chiffre après `+` doit toujours augmenter).
 3. `flutter build appbundle --release` (et `flutter build apk --release` pour essayer), téléverser le nouveau `.aab`.
 
 ## 8. Abonnement (Google Play Billing)

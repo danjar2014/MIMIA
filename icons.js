@@ -1,5 +1,6 @@
 // Les icônes dessinées de l'appli (même trait épais et mêmes couleurs que le petit robot) : elles s'affichent pareil sur tous les appareils,
 // contrairement aux emojis. Chaque icône est décorative : le nom de la carte porte le sens (aria-hidden).
+import { futur } from "./util.js";
 const D = "#38362f", S = `stroke="${D}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
 const wrap = body => `<svg viewBox="0 0 48 48" class="ico" aria-hidden="true" focusable="false">${body}</svg>`;
 const gear = (cx, cy, r, n, fill) => { const pts = []; for (let i = 0; i < n * 2; i++) { const a = (Math.PI * i) / n, rr = i % 2 ? r * 0.78 : r; pts.push(`${(cx + rr * Math.cos(a - 0.2)).toFixed(1)},${(cy + rr * Math.sin(a - 0.2)).toFixed(1)} ${(cx + rr * Math.cos(a + 0.2)).toFixed(1)},${(cy + rr * Math.sin(a + 0.2)).toFixed(1)}`); } return `<polygon points="${pts.join(" ")}" fill="${fill}" ${S}/>`; };
@@ -22,4 +23,9 @@ export const ICONS = {
   puzzle: wrap(`<path d="M7 15h11a5 5 0 1 1 10 0h11v11a5 5 0 1 0 0 10v7H28a5 5 0 1 0-10 0H7V36a5 5 0 1 1 0-10z" fill="#6bbf59" ${S}/><circle cx="20" cy="26" r="2.6" fill="#fff"/><circle cx="29" cy="26" r="2.6" fill="#fff"/>`),
   dice: wrap(`<rect x="6" y="6" width="36" height="36" rx="9" fill="#fff" ${S}/><circle cx="16" cy="16" r="3.4" fill="#e24b4b"/><circle cx="32" cy="16" r="3.4" fill="#e24b4b"/><circle cx="24" cy="24" r="3.4" fill="#e24b4b"/><circle cx="16" cy="32" r="3.4" fill="#e24b4b"/><circle cx="32" cy="32" r="3.4" fill="#e24b4b"/>`)
 };
-export const icon = (name, cls = "") => (ICONS[name] || ICONS.star).replace('class="ico"', `class="ico ${cls}"`);
+// thème « futur » : les mêmes icônes, en images 3D (theme/futur/ico-<nom>.webp), dans la même enveloppe <svg class="ico">
+const F3D = new Set(["play", "path", "target", "medal", "magnifier", "gear", "rocket", "blocks", "code", "sensor", "palette", "star", "lock", "trophy", "bolt", "puzzle", "dice", "school", "numbers", "letters", "colors", "parts", "days", "months", "link", "space", "players", "sound", "screen", "cards", "timer", "stats", "shield"]);
+const img3d = (name, cls) => `<svg viewBox="0 0 48 48" class="ico ico3d ${cls}" aria-hidden="true" focusable="false"><image href="theme/futur/ico-${name}.webp" x="-4" y="-4" width="56" height="56"/></svg>`;
+export const icon = (name, cls = "") => { const n = ICONS[name] ? name : "star"; return futur() && F3D.has(n) && !/mini/.test(cls) ? img3d(n, cls) : ICONS[n].replace('class="ico"', `class="ico ${cls}"`); };
+// tuiles des petits (dessinées en emojis dans le thème clair) : l'image 3D si le thème futur est actif, sinon null
+export const tileIcon = name => (futur() && F3D.has(name) ? img3d(name, "") : null);

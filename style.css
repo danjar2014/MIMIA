@@ -480,3 +480,7 @@ body.locked.parentflow #overlay{z-index:80}
 #overlay .panel[data-step=profile] .row{flex-wrap:wrap;gap:6px 12px}
 #overlay .panel[data-step=profile] .row select,#overlay .panel[data-step=profile] .row input{flex:1 1 170px;min-width:0;max-width:100%}
 #overlay .panel[data-step=plan] [data-plan]{display:block;width:100%;margin:10px 0;font-size:calc(18px*var(--fs))}
+
+/* écrans des parents au-dessus du verrou : fond opaque (le panneau du verrou ne transparaît plus en flou) ; diagnostic de facturation */
+body.locked.parentflow #overlay{background:radial-gradient(ellipse at 50% 110%,#4b3a9a,#15133f 60%,#090920);-webkit-backdrop-filter:none;backdrop-filter:none}
+.bdiag{font-size:12px!important;opacity:.65;word-break:break-word;text-align:left}

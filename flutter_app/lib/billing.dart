@@ -19,6 +19,12 @@ class Billing {
 
   bool available = false, checked = false, active = false, pending = false;
   String? error;
+  String debug = ''; // diagnostic lisible : ce que Google Play a répondu (affiché dans l'espace parents, écrit dans le journal)
+  void _dbg(String s) {
+    debug = s;
+    // ignore: avoid_print
+    print('RKBILL $s');
+  }
   final Map<String, Map<String, Object>> plans = {};
   final Map<String, GooglePlayProductDetails> _details = {};
 
@@ -28,6 +34,7 @@ class Billing {
         'active': active,
         'pending': pending,
         'error': error,
+        'debug': debug,
         'plans': plans,
       };
 
@@ -38,10 +45,12 @@ class Billing {
     });
     try {
       available = await _iap.isAvailable();
-    } catch (_) {
+    } catch (e) {
       available = false;
+      _dbg('isAvailable: $e');
     }
     if (!available) {
+      if (debug.isEmpty) _dbg('Google Play Billing indisponible');
       error = 'unavailable';
       checked = true;
       onChange?.call();
@@ -55,7 +64,9 @@ class Billing {
     if (!available) return;
     try {
       await _loadPlans();
-    } catch (_) {}
+    } catch (e) {
+      _dbg('produits: exception $e');
+    }
     try {
       final add = _iap.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
       final r = await add.queryPastPurchases();
@@ -74,12 +85,17 @@ class Billing {
 
   Future<void> _loadPlans() async {
     final res = await _iap.queryProductDetails(kProductIds);
+    final seen = <String>[];
     final best = <String, GooglePlayProductDetails>{};
     final bestTrial = <String, bool>{};
     for (final d in res.productDetails) {
-      if (d is! GooglePlayProductDetails) continue;
+      if (d is! GooglePlayProductDetails) {
+        seen.add('${d.id}:type?');
+        continue;
+      }
       final offers = d.productDetails.subscriptionOfferDetails;
       final idx = d.subscriptionIndex;
+      seen.add('${d.id}:${d.productDetails.productType.name}/offres=${offers?.length}/i=$idx');
       if (offers == null || idx == null || idx >= offers.length) continue;
       final phases = offers[idx].pricingPhases;
       final trial = phases.isNotEmpty && phases.first.priceAmountMicros == 0;
@@ -88,6 +104,7 @@ class Billing {
         bestTrial[d.id] = trial;
       }
     }
+    _dbg('trouvés=[${seen.join(', ')}] introuvables=${res.notFoundIDs} erreur=${res.error == null ? '-' : '${res.error!.code}: ${res.error!.message}'} retenus=${best.keys.toList()}');
     plans.clear();
     _details.clear();
     best.forEach((id, d) {

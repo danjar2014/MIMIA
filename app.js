@@ -12,7 +12,7 @@ import { needsParentSetup, startParentSetup, setupActive, AGES, VOICES, LIMITS, 
 import { askConfirm } from "./confirm.js";
 import { initMascot, faceSvg } from "./mascot.js";
 import { initScene, sceneFor } from "./scene.js";
-import { icon } from "./icons.js";
+import { icon, tileIcon } from "./icons.js";
 import { addXP, stepXP, todayXP, goalXP, totalXP, GOALS } from "./xp.js";
 import { robotSvg, COLORS } from "./robot.js";
 import { LEVELS, BANDS } from "./levels.js";
@@ -83,7 +83,7 @@ function applyKiosk() {
   try { S.kiosk = false; const fi = window.flutter_inappwebview; if (fi && fi.callHandler) fi.callHandler("kiosk", false); else if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch (e) {}
 }
 setTimeout(applyKiosk, 800);
-const applySettings = () => { document.body.classList.toggle("calm", S.calm); document.body.classList.toggle("big", S.big); if (mascotApi) mascotApi.refresh(); if (sceneApi) sceneApi.refresh(); applyKiosk(); };
+const applySettings = () => { document.body.classList.toggle("theme-futur", S.futur !== false); document.body.classList.toggle("calm", S.calm); document.body.classList.toggle("big", S.big); if (mascotApi) mascotApi.refresh(); if (sceneApi) sceneApi.refresh(); applyKiosk(); };
 
 
 // ---------- coder pour de vrai ----------
@@ -333,7 +333,8 @@ function playMonte(id) {
 function littleHome(body, esc) {
   const grid = el("div", "igrid little");
   const mk = (ic, nm, hue, fn, done) => { const pb = (S.cards || {})[nm] === "blocked", b = el("button", "tile" + (pb ? " locked" : ""), `<span class="tic emo" aria-hidden="true">${pb ? icon("lock") : ic}</span><b>${esc(nm)}</b>${done && !pb ? '<i class="tdone" aria-hidden="true">⭐</i>' : ""}`); b.setAttribute("aria-label", pb ? `${nm} : bloqué` : nm); b.style.setProperty("--tc", hue); b.onclick = pb ? () => { toast("Cette carte est bloquée par tes parents.", 4000); speak("Cette carte est bloquée par tes parents."); } : fn; return b; };
-  grid.append(mk("🏫", "Montessori", "#fde8c8", montessoriHome, CATEGORIES.some(c => c.games.some(g => isDone("monte", g[0])))), ...PETITS.map(([id, ic, nm, hue]) => mk(ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
+  const T3D = { chiffres: "numbers", lettres: "letters", couleurs: "colors", pieces: "parts", jours: "days", mois: "months", relier: "link", espace: "space" };
+  grid.append(mk(tileIcon("school") || "🏫", "Montessori", "#fde8c8", montessoriHome, CATEGORIES.some(c => c.games.some(g => isDone("monte", g[0])))), ...PETITS.map(([id, ic, nm, hue]) => mk(tileIcon(T3D[id]) || ic, nm, hue, () => playPetit(id), isDone("petits", id))), mk(icon("puzzle"), "Puzzle", "#e6f5d0", () => playPuzzle("z"), PUZZLES.some((p, i) => isDone("puzzle", "z" + (i + 1)))), mk(faceSvg("happy"), "Mon robot", "#ece0f7", robotBuilder));
   body.append(grid);
 }
 // « Les pièces du robot » : à quoi sert chaque pièce (30 pièces, 5 questions à chaque fois)
@@ -436,6 +437,7 @@ function welcome() {
 // premier écran : « Qui joue ? » si tout est réglé ; sinon la configuration (parent), puis l'accueil de l'enfant
 let splashShown = false;
 function startApp() {
+  document.body.classList.toggle("theme-futur", S.futur !== false);   // avant tout dessin : le robot et les icônes dépendent du thème
   initBilling(); applyLock();
   if (splashShown) return enterApp();
   initInstall();
@@ -452,6 +454,8 @@ const PARENT_BLOCKS = [
   { title: "Mon enfant", tiles: [["profil", "🧒", "Joueurs", "#ffe0ec"], ["son", "🔊", "Son", "#d6ecff"], ["ecran", "🎨", "Écran", "#eadcff"], ["parcours", "🗺️", "Parcours", "#fff1b8"], ["cartes", "🃏", "Cartes", "#e2dcff"]] },
   { title: "Compte", tiles: [["temps", "⏱️", "Temps", "#d9f5d3"], ["suivi", "📊", "Suivi", "#d2f1ef"], ["code", "🔒", "Code", "#ffe0d2"], ["abo", "⭐", "Abonnement", "#fff0c2"], ["privacy", "🔐", "Confidentialité", "#e6e6ff"]] }
 ];
+// thème futur : chaque tuile du menu des parents a son icône 3D
+const P3D = { profil: "players", son: "sound", ecran: "screen", parcours: "path", cartes: "cards", temps: "timer", suivi: "stats", code: "lock", abo: "star", privacy: "shield" };
 const optList = (v, opts) => opts.map(([val, lab]) => `<option value="${val}" ${v == val ? "selected" : ""}>${lab}</option>`).join("");
 const togRow = (label, k, on) => `<div class="row"><span>${label}</span><button class="tog ${on ? "on" : ""}" data-k="${k}" aria-label="${label}"></button></div>`;
 // les cartes de l'accueil que les parents peuvent bloquer ou ouvrir : « auto » = selon la progression, « open » = toujours ouverte, « blocked » = bloquée
@@ -462,7 +466,7 @@ const PARENT_SCREENS = {
   profil: () => ({ title: "Joueurs", html: "" }),   // écran propre : voir profilesScreen()
   cartes: () => ({ title: "Cartes", html: `<p class="sub">Pour <b>${escH(S.name || "cet enfant")}</b> : ✨ selon la progression · 🔓 toujours ouverte · 🔒 bloquée. Touchez pour changer.</p>` + cardNamesFor().map(nm => { const st = (S.cards || {})[nm] || "auto"; return `<div class="row"><span>${nm}</span><button class="cardst" data-nm="${escH(nm)}" aria-label="${escH(nm)} : ${CARD_LABEL[st]}">${CARD_ICON[st]}</button></div>`; }).join("") }),
   son: () => ({ title: "Son", html: togRow("Voix", "voice", S.voice) + `<div class="row"><span>Langue / Language</span><select id="lg"><option value="fr" ${LANG === "fr" ? "selected" : ""}>Français</option><option value="en" ${LANG === "en" ? "selected" : ""}>English</option></select></div><div class="row"><span>Ce que la voix lit</span><select id="sv">${optList(S.voiceMode || "auto", VOICES)}</select></div>` + togRow("Sons", "sound", S.sound) }),
-  ecran: () => ({ title: "Écran", html: togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
+  ecran: () => ({ title: "Écran", html: togRow("Thème futuriste (robot 3D, espace)", "futur", S.futur !== false) + togRow("Décor animé", "scene", S.scene !== false) + togRow("Petit robot qui réagit", "mascot", S.mascot !== false) + togRow("Mode calme", "calm", S.calm) + togRow("Grand affichage", "big", S.big) }),
   parcours: () => ({ title: "Parcours", html: `<div class="row"><span>Niveau de départ</span><select id="ss">${optList(S.startRank ?? 0, RANKS.map((r, i) => [i, `Aventure ${i + 1} · ${r.name}`]))}</select></div>
     <div class="row"><span>Test de niveau${S.placementResult ? ` (dernier : ${S.placementResult.passes}/5)` : ""}</span><button class="big-btn alt psmall" id="sdt">🎯</button></div>` + togRow("Tout débloquer", "unlockAll", S.unlockAll) + `<div class="row"><span>Effacer la progression</span><button class="big-btn alt psmall" id="rs" aria-label="Effacer la progression">↺</button></div>` }),
   temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
@@ -518,7 +522,7 @@ function subscriptionHtml() {
   if (!st.checked) return `<div id="subscr"></div><p class="sub">Vérification de l'abonnement…</p>`;
   const plan = (id, per) => { const p = P[id]; return p ? `<button class="big-btn" data-plan="${id}">${p.trial ? `Essai gratuit 7 jours, puis ${p.price} / ${per}` : `S'abonner : ${p.price} / ${per}`}</button>` : ""; };
   const buttons = plan(PLAN_MONTHLY, "mois") + plan(PLAN_YEARLY, "an");
-  const info = buttons ? `<p class="sub">Choisissez votre formule.</p>${buttons}<p class="sub">Vous pouvez annuler à tout moment dans Google Play (Profil &gt; Paiements et abonnements &gt; Abonnements) : rien n'est débité si vous annulez avant la fin de l'essai. L'abonnement se renouvelle automatiquement.</p>` : `<p class="sub">Les abonnements ne sont pas disponibles sur cet appareil (Google Play est nécessaire).</p>`;
+  const info = buttons ? `<p class="sub">Choisissez votre formule.</p>${buttons}<p class="sub">Vous pouvez annuler à tout moment dans Google Play (Profil &gt; Paiements et abonnements &gt; Abonnements) : rien n'est débité si vous annulez avant la fin de l'essai. L'abonnement se renouvelle automatiquement.</p>` : `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p><p class="sub">Vérifiez la connexion Internet et le compte Google Play, puis touchez « Restaurer mes achats ».</p>${st.debug ? `<p class="sub bdiag" data-silent>Diagnostic : ${escH(st.debug)}</p>` : ""}`;
   return `<div id="subscr" class="row"><span>RobotKids est réservé aux abonnés.</span><span aria-hidden="true">🔒</span></div>${st.pending ? `<p class="sub">⏳ Paiement en attente de confirmation par Google Play.</p>` : ""}${info}<button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>`;
 }
 function wireSubscription() {
@@ -565,7 +569,7 @@ function parentScreen(id) {
 }
 function settings() {
   overlay.style.display = "flex";
-  overlay.innerHTML = `<div class="panel parentpanel" data-silent><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
+  overlay.innerHTML = `<div class="panel parentpanel" data-silent><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${tileIcon(P3D[id]) || ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
   overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
   $("#pclose").onclick = closeSettings;
 }

@@ -2,6 +2,7 @@
 // selon les messages de l'appli (bravo, « pas tout à fait », indice…). Il se glisse partout sans que chaque écran ait à s'en occuper.
 import { S, speak } from "./util.js";
 import { praise, encourage } from "./praise.js";
+import { robot3d } from "./robot.js";
 
 export const MOODS = ["neutral", "happy", "worried", "thinking", "celebrate"];
 // quelle humeur pour ce message ? (null = message neutre : on ne change rien)
@@ -23,6 +24,8 @@ const LED = { neutral: "#bbb", happy: "#7CFC9A", worried: "#ffb347", thinking: "
 
 // le visage : la tête du robot de l'enfant (forme et couleur), l'écran change selon l'humeur
 export function faceSvg(mood = "neutral", o = S.robot) {
+  const i3 = robot3d(o);
+  if (i3 >= 0) return `<svg viewBox="-2 0 104 90" class="mface m3d" aria-hidden="true"><image href="theme/futur/bolt-c${i3}-${MOODS.includes(mood) ? mood : "neutral"}.webp" x="2" y="-4" width="96" height="96"/></svg>`;
   const c = o.color, d = "#38362f", cy = "#5de6ff", ST = `stroke="${cy}" stroke-width="4.5" stroke-linecap="round" fill="none"`;
   const head = o.head === "square" ? `<rect x="14" y="22" width="72" height="60" rx="10" fill="${c}" stroke="${d}" stroke-width="3.5"/>` : `<rect x="14" y="22" width="72" height="60" rx="28" fill="${c}" stroke="${d}" stroke-width="3.5"/>`;
   const ant = `<path d="M50 22V10" stroke="${d}" stroke-width="3.5"/><circle cx="50" cy="8" r="5.5" fill="${LED[mood] || LED.neutral}" stroke="${d}" stroke-width="2.5"/>`;

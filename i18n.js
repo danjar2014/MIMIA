@@ -28,6 +28,16 @@ if (LANG !== "fr") {
         tpls.push({ re, en: val, weight: parts.join("").length });
       } else dict[key] = val;
     }
+    // un texte de plusieurs phrases : chaque phrase devient aussi une entrée, si le français et la traduction en ont le même nombre
+    // (les menus et les étiquettes lues à voix haute ne reprennent souvent que la première phrase d'une consigne)
+    const cut = s => (s.match(/[^.!?…]+[.!?…]+(?:\s+|$)|[^.!?…]+$/g) || []).map(x => x.trim()).filter(Boolean);
+    for (const k of Object.keys(dict)) {
+      if (!/[.!?…]\s+\S/.test(k)) continue; const a = cut(k), b = cut(String(dict[k]));
+      if (a.length > 1 && a.length === b.length) a.forEach((s, i) => { if (!(s in dict) && s.length > 3) dict[s] = b[i]; });      // les menus coupent une consigne au premier point (« Titre. Début de la consigne. ») : ce début devient aussi une entrée,
+      // si le français et la traduction ont le même nombre de points
+      const v = String(dict[k]), pk = k.indexOf(". "), pv = v.indexOf(". ");
+      if (pk > 3 && pv > 3 && k.split(". ").length === v.split(". ").length) { const s = k.slice(0, pk + 1); if (!(s in dict)) dict[s] = v.slice(0, pv + 1); }
+    }
     tpls.sort((a, b) => b.weight - a.weight); ready = true;
   } catch (e) { ready = false; }
 }
@@ -51,11 +61,13 @@ function punct(c) {
 // morceaux : « A · B », « A : B », « Texte (0/8) », « 🎉 Texte » ; renvoie null si rien n'a changé
 function trPieces(c, depth) {
   if (depth > 4) return null;
-  for (const sep of [" · ", ": "]) if (c.includes(sep)) { const parts = c.split(sep), outp = parts.map(p => trCore(p.trim(), depth + 1)); if (outp.some((o, i) => o !== parts[i].trim())) return outp.join(sep); }
+  // plusieurs phrases : pas de découpe sur « : » ni sur les virgules ici (trCore sépare d'abord les phrases, sinon « Titre. Consigne : suite » est coupé au mauvais endroit)
+  const multi = SENT.test(c);
+  for (const sep of [" · ", ": "]) if (c.includes(sep) && !(multi && sep === ": ")) { const parts = c.split(sep), outp = parts.map(p => trCore(p.trim(), depth + 1)); if (outp.some((o, i) => o !== parts[i].trim())) return outp.join(sep); }
   const cnt = /^(.*?)\s*(\(\d+(?:\/\d+)?\))$/su.exec(c); if (cnt && cnt[1]) { const h = trCore(cnt[1], depth + 1); if (h !== cnt[1]) return h + " " + cnt[2]; }
   const em = /^([^\p{L}\p{N}{]+)(.+)$/su.exec(c); if (em) { const h = trCore(em[2], depth + 1); if (h !== em[2]) return em[1] + h; }
   // listes « mot, mot, mot » (le code lu à voix haute) : les plus longs groupes connus
-  if (c.includes(", ")) {
+  if (c.includes(", ") && !multi) {
     const toks = c.split(", "); let i = 0, any = false; const out = [];
     while (i < toks.length) { let done = false; for (let j = toks.length; j > i; j--) { const h = trSentence(toks.slice(i, j).join(", "), depth + 1); if (h != null) { out.push(h); any = true; i = j; done = true; break; } } if (!done) { out.push(toks[i]); i++; } }
     if (any) return out.join(", ");
@@ -67,7 +79,10 @@ function trSentence(c, depth) {
   let h = tplTry(c, depth, true); if (h != null) return h;
   h = punct(c); if (h != null) return h;
   h = trPieces(c, depth); if (h != null) return h;
-  return tplTry(c, depth, false);
+  h = tplTry(c, depth, false); if (h != null) return h;
+  const m = depth < 4 && /^(.*?\p{L}.*?)\s*([.!?…]+)$/su.exec(c);
+  if (m) { const base = m[1], g = base in dict ? dict[base] : trPieces(base, depth + 1); if (g != null) return /[.!?…]$/.test(g) ? g : g + m[2]; }
+  return null;
 }
 function trCore(core, depth = 0) {
   if (!core) return core;

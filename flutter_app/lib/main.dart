@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'billing.dart';
 
 // L'appli web (HTML/JS/CSS) est embarquée dans assets/www et servie en local :
@@ -43,6 +44,19 @@ class Shell extends StatefulWidget {
 class _ShellState extends State<Shell> with WidgetsBindingObserver {
   InAppWebViewController? ctrl;
   bool failed = false;
+  // voix de l'appareil : la page web la commande par le canal « tts » (voir ttsbridge.js)
+  final FlutterTts _tts = FlutterTts();
+  int _ttsId = 0;
+  // journal de la voix (lisible avec adb logcat, filtre RKTTS) : chaque phrase demandée et ce que le téléphone en a fait
+  void _ttsLog(String s) {
+    // ignore: avoid_print
+    print('RKTTS $s');
+  }
+
+  void _ttsEnd(int id, [String? err]) {
+    _ttsLog('fin $id ${err ?? 'ok'}');
+    ctrl?.evaluateJavascript(source: 'window.__ttsEnd && window.__ttsEnd($id${err == null ? '' : ', "$err"'})');
+  }
 
   @override
   void initState() {
@@ -50,6 +64,8 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     // la page web relit l'état de l'abonnement quand il change
     Billing.i.onChange = () => ctrl?.evaluateJavascript(source: 'window.__billingPush && window.__billingPush()');
+    _tts.setCompletionHandler(() => _ttsEnd(_ttsId));
+    _tts.setErrorHandler((msg) => _ttsEnd(_ttsId, 'synthesis-failed'));
   }
 
   @override
@@ -107,6 +123,39 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
                         if (action == 'refresh') await Billing.i.refresh();
                         if (action == 'buy' && args.length > 1) await Billing.i.buy('${args[1]}');
                         return Billing.i.status();
+                      },
+                    );
+                    c.addJavaScriptHandler(
+                      handlerName: 'tts',
+                      callback: (args) async {
+                        final action = args.isNotEmpty ? '${args[0]}' : '';
+                        try {
+                          if (action == 'stop') {
+                            _ttsLog('stop');
+                            await _tts.stop();
+                          } else if (action == 'speak' && args.length > 2) {
+                            final id = (args[1] as num).toInt();
+                            final lang = args.length > 3 ? '${args[3]}' : '';
+                            final rate = args.length > 4 && args[4] is num ? (args[4] as num).toDouble() : 1.0;
+                            _ttsId = id;
+                            final txt = '${args[2]}';
+                            _ttsLog('dire $id [$lang] ${txt.length} car. : ${txt.length > 60 ? txt.substring(0, 60) : txt}');
+                            if (lang.isNotEmpty) {
+                              final lr = await _tts.setLanguage(lang);
+                              if (lr != 1) _ttsLog('langue $lang refusée ($lr)');
+                            }
+                            await _tts.setSpeechRate((rate * 0.5).clamp(0.2, 1.0)); // 0,5 = vitesse normale sur Android
+                            final r = await _tts.speak(txt);
+                            if (r != 1) {
+                              _ttsLog('refus $id ($r)');
+                              _ttsEnd(id, 'synthesis-failed');
+                            }
+                          }
+                        } catch (e) {
+                          _ttsLog('exception $e');
+                          if (action == 'speak' && args.length > 1 && args[1] is num) _ttsEnd((args[1] as num).toInt(), 'synthesis-failed');
+                        }
+                        return null;
                       },
                     );
                     c.addJavaScriptHandler(

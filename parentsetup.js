@@ -87,7 +87,7 @@ export function startParentSetup(host, onDone) {
     const buttons = btn(PLAN_MONTHLY, "mois") + btn(PLAN_YEARLY, "an");
     host.innerHTML = `<div class="panel" data-step="plan">${dots(4)}<h1>🎁 7 jours d'essai gratuit</h1>
       <p class="sub">RobotKids fonctionne par abonnement. Essayez tout pendant 7 jours : rien n'est débité si vous annulez avant la fin de l'essai, à tout moment, dans Google Play.</p>
-      ${buttons || `<p class="sub">Les abonnements ne sont pas disponibles sur cet appareil (Google Play est nécessaire).</p>`}
+      ${buttons || `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p>`}
       <div class="agebtns"><button class="big-btn alt" id="pllater">Plus tard</button></div></div>`;
     host.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
     host.querySelector("#pllater").onclick = done;

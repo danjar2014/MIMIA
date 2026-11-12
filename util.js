@@ -9,10 +9,10 @@ export const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const KEY = "robotique-junior-v1", GKEY = "robotique-junior-global";
-const DEFAULTS = { name: "", sex: "", age: "", voice: true, sound: true, mascot: true, scene: true, voiceMode: "auto", calm: false, big: false, reminder: 15, progress: {}, creations: [],
+const DEFAULTS = { name: "", sex: "", age: "", voice: true, sound: true, mascot: true, scene: true, futur: true, voiceMode: "auto", calm: false, big: false, reminder: 15, progress: {}, creations: [],
   robot: { name: "Bolt", color: "#3f7fd6", head: "round", eyes: "dots", antenna: true } };
 // Plusieurs joueurs : les réglages de l'appareil et des parents (code, voix, écran…) sont communs ; la progression, le prénom, le robot… sont propres à chaque joueur.
-const GLOBAL = ["pin", "pinFail", "parentSetup", "voice", "sound", "voiceMode", "voiceModeSet", "mascot", "scene", "calm", "big", "reminder", "kiosk", "lastHello"];
+const GLOBAL = ["pin", "pinFail", "parentSetup", "voice", "sound", "voiceMode", "voiceModeSet", "mascot", "scene", "futur", "calm", "big", "reminder", "kiosk", "lastHello"];
 const readJ = k => { try { return JSON.parse(localStorage.getItem(k) || "null") || {}; } catch (e) { return {}; } };
 const pkey = id => (id === "p1" ? KEY : KEY + "-" + id);   // le premier joueur garde l'ancienne clé : rien ne se perd à la mise à jour
 const G = (() => {
@@ -127,8 +127,11 @@ export function whenQuiet(fn, gap = 0) {
 let stopHook = () => {}, playHook = () => false;
 export const setClipHooks = (stop, play) => { stopHook = stop; playHook = play; };
 // la salutation (Bonjour, Bonsoir, Salut…) n'est dite qu'à la première ouverture de la journée, pas à chaque rechargement
-export function greetOnce() { const d = new Date(), day = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; if (S.lastHello === day) return false; S.lastHello = day; save(); return true; }
-export const APP_VERSION = "5.7";   // affichée dans l'animation d'accueil
+// le bonjour avec le prénom : une fois à chaque ouverture de l'appli, et de nouveau quand on change de joueur
+// (avant : une seule fois par jour, enregistrée même si la voix n'avait pas pu parler)
+let greeted = null;
+export function greetOnce() { const who = String(activeId()) + "|" + (S.name || ""); if (greeted === who) return false; greeted = who; return true; }
+export const APP_VERSION = "5.9";   // affichée dans l'animation d'accueil
 // le prénom n'est lu que dans les salutations de la première page (texte préfixé par DEVICE), jamais dans les jeux
 function stripNames(t) {
   const names = [...new Set(profileIds().map(id => String(profileData(id).name || "").trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
@@ -166,3 +169,6 @@ export function speak(text, opts = {}) {
 }
 let toastT;
 export function toast(msg, ms = 2400) { document.querySelectorAll(".toast").forEach(x => x.remove()); const e = el("div", "toast", msg); document.body.append(e); clearTimeout(toastT); toastT = setTimeout(() => e.remove(), ms); }
+
+// thème « futur » (robot et icônes en 3D, décor spatial) : actif quand <body> porte la classe theme-futur (posée par applySettings)
+export const futur = () => typeof document !== "undefined" && !!document.body && document.body.classList.contains("theme-futur");
