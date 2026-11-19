@@ -41,3 +41,39 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+
+  # Version « simulateur » pour tester dans le navigateur sur appetize.io (sans iPhone, sans compte Apple).
+  # Pas de signature ni d'achats (les abonnements ne marchent pas dans un simulateur).
+  # Résultat : RobotKids-simulateur.zip dans les fichiers du build, à envoyer sur appetize.io (Upload, plateforme iOS).
+  # Envoi automatique possible : ajouter la variable secrète APPETIZE_API_TOKEN (groupe « appetize ») ;
+  # après le premier envoi, ajouter aussi APPETIZE_APP_KEY (clé publique de l'appli) pour mettre à jour la même appli.
+  ios-simulator:
+    name: RobotKids iOS -> simulateur (Appetize)
+    max_build_duration: 45
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      xcode: latest
+      groups:
+        - appetize
+    triggering:
+      events: []
+    scripts:
+      - name: Copier l'appli web dans assets/www
+        script: bash flutter_app/sync_web.sh
+      - name: Paquets Flutter
+        script: cd flutter_app && flutter pub get
+      - name: Compiler pour le simulateur
+        script: |
+          cd flutter_app
+          flutter build ios --simulator --debug
+          ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app "$CM_BUILD_DIR/RobotKids-simulateur.zip"
+      - name: Envoyer sur Appetize (si le jeton est configuré)
+        script: |
+          if [ -z "${APPETIZE_API_TOKEN:-}" ]; then echo "Pas de jeton Appetize : télécharger le zip à la main"; exit 0; fi
+          url="https://api.appetize.io/v1/apps"; [ -n "${APPETIZE_APP_KEY:-}" ] && url="$url/$APPETIZE_APP_KEY"
+          curl -fsS -X POST "$url" -H "X-API-KEY: $APPETIZE_API_TOKEN" \
+            -F "file=@$CM_BUILD_DIR/RobotKids-simulateur.zip" -F "platform=ios"
+          echo
+    artifacts:
+      - RobotKids-simulateur.zip
