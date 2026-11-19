@@ -4,7 +4,7 @@
 import { S, save, el } from "./util.js";
 import { hasPin, createPin, askPin } from "./pin.js";
 import { GOALS } from "./xp.js";
-import { billingEnabled, billingState, buyPlan, onBilling, PLAN_MONTHLY, PLAN_YEARLY } from "./billing.js";
+import { billingEnabled, billingState, buyPlan, onBilling, PLAN_MONTHLY, PLAN_YEARLY, isApple, legalHtml, wireLegal } from "./billing.js";
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 export const AGES = [["z", "3 – 6 ans (les petits)"], ["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]];
@@ -86,11 +86,12 @@ export function startParentSetup(host, onDone) {
     const btn = (id, per) => { const p = P[id]; return p ? `<button class="big-btn" data-plan="${id}">${p.trial ? `Essai gratuit 7 jours, puis ${p.price} / ${per}` : `S'abonner : ${p.price} / ${per}`}</button>` : ""; };
     const buttons = btn(PLAN_MONTHLY, "mois") + btn(PLAN_YEARLY, "an");
     host.innerHTML = `<div class="panel" data-step="plan">${dots(4)}<h1>🎁 7 jours d'essai gratuit</h1>
-      <p class="sub">RobotKids fonctionne par abonnement. Essayez tout pendant 7 jours : rien n'est débité si vous annulez avant la fin de l'essai, à tout moment, dans Google Play.</p>
-      ${buttons || `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p>`}
+      ${isApple() ? `<p class="sub">RobotKids fonctionne par abonnement. Premier abonnement : 7 jours d'essai gratuit, puis le prix affiché, débité sur votre compte Apple. Renouvellement automatique, sauf annulation au moins 24 heures avant la fin de la période, dans les Réglages de l'iPhone (votre nom &gt; Abonnements).</p>` : `<p class="sub">RobotKids fonctionne par abonnement. Essayez tout pendant 7 jours : rien n'est débité si vous annulez avant la fin de l'essai, à tout moment, dans Google Play.</p>`}
+      ${buttons || `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p>`}${isApple() ? legalHtml() : ""}
       <div class="agebtns"><button class="big-btn alt" id="pllater">Plus tard</button></div></div>`;
     host.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
     host.querySelector("#pllater").onclick = done;
+    wireLegal(host);
   }
   onBilling(() => { if (active && step === "plan" && billingState().active) done(); });
   function done() {

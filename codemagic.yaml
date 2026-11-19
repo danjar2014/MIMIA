@@ -1,0 +1,43 @@
+# Compilation iPhone / iPad de RobotKids sur un Mac de Codemagic (codemagic.io), envoi sur TestFlight.
+# Avant le premier lancement, dans Codemagic :
+#   1. Ajouter ce dépôt GitHub comme application.
+#   2. Team settings > Integrations > Developer Portal : ajouter la clé d'API App Store Connect
+#      (App Store Connect > Utilisateurs et accès > Intégrations > Clés, rôle « App Manager »), sous le nom « RobotKids ASC ».
+#   3. Lancer le workflow « RobotKids iOS -> TestFlight » (bouton Start new build).
+# Les certificats et le profil de distribution sont créés automatiquement par Codemagic avec cette clé.
+workflows:
+  ios-testflight:
+    name: RobotKids iOS -> TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: RobotKids ASC
+    environment:
+      flutter: stable   # l'APK Android est compilé avec Flutter 3.47.9 (stable)
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.robotkids.app
+    triggering:
+      events: []   # lancement à la main uniquement
+    scripts:
+      - name: Copier l'appli web dans assets/www
+        script: bash flutter_app/sync_web.sh
+      - name: Paquets Flutter
+        script: cd flutter_app && flutter pub get
+      - name: Signature (profils App Store)
+        script: xcode-project use-profiles --project flutter_app/ios/Runner.xcodeproj
+      - name: Compiler l'ipa
+        script: |
+          cd flutter_app
+          # numéro de build iOS : toujours croissant (66 = dernier versionCode Android au départ)
+          flutter build ipa --release \
+            --build-number=$((66 + BUILD_NUMBER)) \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - flutter_app/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

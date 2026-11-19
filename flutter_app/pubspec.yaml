@@ -38,6 +38,8 @@ dependencies:
   in_app_purchase: ^3.3.0
   flutter_tts: ^4.2.0   # voix de l'appareil (le composant web d'Android n'a pas de synthèse vocale)
   in_app_purchase_android: ^0.5.0
+  in_app_purchase_storekit: ^0.4.17   # iPhone / iPad : abonnements App Store (StoreKit 2)
+  url_launcher: ^6.3.2   # liens obligatoires des boutiques (conditions, confidentialité), depuis l'espace parents
 
 dev_dependencies:
   flutter_test:
@@ -100,7 +102,10 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 flutter_launcher_icons:
-  android: true
+  android: false   # les icônes Android (3D) sont faites à la main : ne pas les régénérer depuis assets/icon.png
+  ios: true
+  image_path_ios: "assets/icon-ios.png"   # icône 3D (Bolt), 1024 px, sans transparence
+  remove_alpha_ios: true   # Apple refuse une icône avec transparence
   image_path: "assets/icon.png"
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/icon.png"

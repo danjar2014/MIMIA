@@ -1,14 +1,14 @@
-// Abonnement RobotKids (Google Play Billing).
-// Dans l'appli Android (Flutter), la page web parle au code natif par le canal « billing » (flutter_inappwebview).
+// Abonnement RobotKids (Google Play Billing sur Android, App Store sur iPhone / iPad).
+// Dans l'appli mobile (Flutter), la page web parle au code natif par le canal « billing » (flutter_inappwebview).
 // Sur le web / en PWA, il n'y a pas de paiement : aucun verrou (billingEnabled() reste faux).
-// Pour tester dans un navigateur : localStorage["rk-billing-mock"] = "locked" ou "active".
+// Pour tester dans un navigateur : localStorage["rk-billing-mock"] = "locked" ou "active" (+ ["rk-billing-store"] = "apple" pour les écrans iPhone).
 const GRACE_MS = 3 * 24 * 3600 * 1000;   // hors ligne : on garde l'accès 3 jours après le dernier abonnement vu actif
 const LAST_KEY = "rk-sub-last", MOCK_KEY = "rk-billing-mock";
 export const PLAN_MONTHLY = "robotkids_monthly", PLAN_YEARLY = "robotkids_yearly";
 
 let enabled = false, mock = null;
 try { mock = localStorage.getItem(MOCK_KEY); } catch (e) {}
-const state = { checked: false, available: false, active: false, pending: false, error: null, plans: {}, debug: "" };
+const state = { store: "google", checked: false, available: false, active: false, pending: false, error: null, plans: {}, debug: "" };
 const listeners = new Set();
 const handler = () => { const fi = window.flutter_inappwebview; return fi && fi.callHandler ? fi : null; };
 
@@ -16,7 +16,7 @@ const MOCK_PLANS = { [PLAN_MONTHLY]: { price: "3,99 €", trial: true }, [PLAN_Y
 
 function apply(r) {
   if (!r) return;
-  state.checked = !!r.checked; state.available = !!r.available; state.pending = !!r.pending; state.error = r.error || null; state.plans = r.plans || {}; state.debug = r.debug || "";
+  state.store = r.store === "apple" ? "apple" : "google"; state.checked = !!r.checked; state.available = !!r.available; state.pending = !!r.pending; state.error = r.error || null; state.plans = r.plans || {}; state.debug = r.debug || "";
   let active = !!r.active;
   try {
     if (active) localStorage.setItem(LAST_KEY, String(Date.now()));
@@ -31,13 +31,29 @@ async function call(action, id) {
   const fi = handler();
   if (mock) {
     if (action === "buy") { mock = "active"; try { localStorage.setItem(MOCK_KEY, "active"); } catch (e) {} }
-    return { checked: true, available: true, active: mock === "active", pending: false, error: null, plans: MOCK_PLANS };
+    let store = "google"; try { store = localStorage.getItem("rk-billing-store") || "google"; } catch (e) {}   // test des écrans iPhone : "apple"
+    return { store, checked: true, available: true, active: mock === "active", pending: false, error: null, plans: store === "apple" ? { [PLAN_MONTHLY]: { price: "3,99 €", trial: null }, [PLAN_YEARLY]: { price: "29,99 €", trial: null } } : MOCK_PLANS };
   }
   if (!fi) return null;
   try { return await fi.callHandler("billing", action, id); } catch (e) { return null; }
 }
 
 export const billingEnabled = () => enabled;
+export const isApple = () => state.store === "apple";
+// Liens obligatoires des boutiques (abonnement) : seulement dans l'espace parents, ouverts dans le navigateur par l'appli
+// (les adresses permises sont aussi vérifiées côté Flutter : kExternalOk dans main.dart).
+export const LINKS = {
+  privacy: "https://robotkids.robotkids.workers.dev/privacy",
+  terms: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  manage: { apple: "https://apps.apple.com/account/subscriptions", google: "https://play.google.com/store/account/subscriptions" },
+};
+export function openLink(url) { const fi = handler(); if (fi) fi.callHandler("open", url).catch(() => {}); }
+export function legalHtml() {
+  return `<div class="agebtns legal"><button class="big-btn alt" data-link="terms">📄 Conditions d'utilisation</button><button class="big-btn alt" data-link="privacy">🛡️ Politique de confidentialité</button></div>`;
+}
+export function wireLegal(root) {
+  root.querySelectorAll("[data-link]").forEach(b => b.onclick = () => { const k = b.dataset.link; openLink(k === "manage" ? LINKS.manage[state.store] : LINKS[k]); });
+}
 export const billingState = () => state;
 export const isLocked = () => enabled && state.checked && !state.active;
 export const onBilling = f => { listeners.add(f); };

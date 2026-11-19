@@ -1,14 +1,25 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'billing.dart';
 
 // L'appli web (HTML/JS/CSS) est embarquée dans assets/www et servie en local :
 // les modules ES, le worker du code et le stockage fonctionnent comme sur un site, sans internet.
 const int kPort = 8089;
-// plein écran verrouillé, demandé par l'appli web (réglage des parents) : épinglage de l'écran Android
+// plein écran verrouillé, demandé par l'appli web (réglage des parents) : épinglage de l'écran Android.
+// Sur iPhone / iPad, une appli ne peut pas s'épingler elle-même : le canal ne fait rien.
 const MethodChannel kiosk = MethodChannel('petitsrobots/kiosk');
+// Seules adresses que l'appli peut ouvrir dans le navigateur (canal « open », depuis l'espace parents protégé par le code) :
+// liens obligatoires des boutiques pour un abonnement (conditions, confidentialité, gestion de l'abonnement).
+const Set<String> kExternalOk = {
+  'https://robotkids.robotkids.workers.dev/privacy',
+  'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
+  'https://apps.apple.com/account/subscriptions',
+  'https://play.google.com/store/account/subscriptions',
+};
 final InAppLocalhostServer server =
     InAppLocalhostServer(documentRoot: 'assets/www', port: kPort);
 
@@ -20,7 +31,7 @@ Future<void> main() async {
   } catch (_) {
     // déjà démarré (2e ouverture) : on réutilise le serveur existant
   }
-  Billing.i.init(); // abonnement : lecture des achats Google Play (en tâche de fond)
+  Billing.i.init(); // abonnement : lecture des achats Google Play / App Store (en tâche de fond)
   runApp(const PetitsRobotsApp());
 }
 
@@ -66,6 +77,12 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
     Billing.i.onChange = () => ctrl?.evaluateJavascript(source: 'window.__billingPush && window.__billingPush()');
     _tts.setCompletionHandler(() => _ttsEnd(_ttsId));
     _tts.setErrorHandler((msg) => _ttsEnd(_ttsId, 'synthesis-failed'));
+    if (Platform.isIOS) {
+      // iPhone : la voix passe même si le bouton silencieux est activé, sans couper la musique d'une autre appli
+      _tts.setSharedInstance(true);
+      _tts.setIosAudioCategory(IosTextToSpeechAudioCategory.playback,
+          [IosTextToSpeechAudioCategoryOptions.mixWithOthers], IosTextToSpeechAudioMode.defaultMode);
+    }
   }
 
   @override
@@ -74,7 +91,7 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // retour dans l'appli (par exemple après avoir géré l'abonnement dans Google Play) : on relit les achats
+  // retour dans l'appli (par exemple après avoir géré l'abonnement dans Google Play ou les Réglages de l'iPhone) : on relit les achats
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) Billing.i.refresh();
@@ -106,6 +123,9 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
                     domStorageEnabled: true,
                     databaseEnabled: true,
                     mediaPlaybackRequiresUserGesture: false,
+                    allowsInlineMediaPlayback: true, // iPhone : les sons ne s'ouvrent pas en plein écran
+                    allowsBackForwardNavigationGestures: false, // iPhone : pas de retour arrière par glissement
+                    disableLongPressContextMenuOnLinks: true,
                     supportZoom: false,
                     builtInZoomControls: false,
                     disableContextMenu: true,
@@ -159,9 +179,22 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
                       },
                     );
                     c.addJavaScriptHandler(
+                      handlerName: 'open',
+                      callback: (args) async {
+                        final u = args.isNotEmpty ? Uri.tryParse('${args[0]}') : null;
+                        if (u == null || !kExternalOk.contains(u.toString())) return false;
+                        try {
+                          return await launchUrl(u, mode: LaunchMode.externalApplication);
+                        } catch (_) {
+                          return false;
+                        }
+                      },
+                    );
+                    c.addJavaScriptHandler(
                       handlerName: 'kiosk',
                       callback: (args) async {
                         final on = args.isNotEmpty && args[0] == true;
+                        if (Platform.isIOS) return null; // pas d'épinglage d'écran sur iPhone (l'« Accès guidé » d'iOS se règle par le parent)
                         try {
                           await kiosk.invokeMethod(on ? 'start' : 'stop');
                         } catch (_) {}

@@ -35,7 +35,7 @@ import { initPraise } from "./praise.js";
 import { showSplash } from "./splash.js";
 import { initInstall } from "./install.js";
 import { LANG, langChosen, setLang } from "./i18n.js";
-import { initBilling, billingEnabled, billingState, isLocked, onBilling, buyPlan, refreshBilling, PLAN_MONTHLY, PLAN_YEARLY } from "./billing.js";
+import { initBilling, billingEnabled, billingState, isLocked, onBilling, buyPlan, refreshBilling, PLAN_MONTHLY, PLAN_YEARLY, isApple, legalHtml, wireLegal } from "./billing.js";
 import { mountCode } from "./code.js";
 import { CODE, FLAT, FREE } from "./codemissions.js";
 import { NODELABS, PUBLABS, mountNodes, mountPub, mountRL, mountSup } from "./advlabs.js";
@@ -472,7 +472,7 @@ const PARENT_SCREENS = {
   temps: () => ({ title: "Temps", html: `<div class="row"><span>Pause (minutes)</span><select id="sr">${optList(S.reminder, [[0, "jamais"], [10, "10"], [15, "15"], [20, "20"], [30, "30"]])}</select></div>
     <div class="row"><span>Jeu par jour</span><select id="sl">${optList(S.dailyLimit || 0, LIMITS)}</select></div>` }),
   code: () => ({ title: "Code", html: `<div class="row"><span>Code parent ✅</span><button class="big-btn alt psmall" id="pc">Changer</button></div>` }),
-  privacy: () => ({ title: "Confidentialité", html: `<p class="sub">RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.</p><p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni compte utilisateur, ni lien vers l'extérieur. L'abonnement est géré par Google Play : RobotKids ne voit ni ne conserve aucune information de paiement.</p><p class="sub">Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.</p><p class="sub">Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».</p><p class="sub">L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).</p><p class="sub">La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.</p><p class="sub">Politique complète, en ligne :<br><b>robotkids.robotkids.workers.dev/privacy</b></p><p class="sub">✉️ contactrobotkids@gmail.com</p>` }),
+  privacy: () => ({ title: "Confidentialité", html: `<p class="sub">RobotKids ne collecte, ne transmet et ne partage aucune donnée personnelle.</p>${isApple() ? `<p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni compte utilisateur. Seul l'espace parents, protégé par le code, propose les liens vers les conditions d'utilisation, la politique de confidentialité et la gestion de l'abonnement. L'abonnement est géré par l'App Store : RobotKids ne voit ni ne conserve aucune information de paiement.</p>` : `<p class="sub">L'application ne contient ni publicité, ni outil de mesure d'audience, ni compte utilisateur, ni lien vers l'extérieur. L'abonnement est géré par Google Play : RobotKids ne voit ni ne conserve aucune information de paiement.</p>`}<p class="sub">Le prénom de l'enfant, son âge, sa progression, ses créations, les réglages et le code parent (conservé sous forme chiffrée) sont enregistrés uniquement sur cet appareil. Ils ne le quittent jamais.</p><p class="sub">Désinstaller l'application ou effacer ses données les supprime définitivement. Vous pouvez aussi effacer la progression dans « Mon enfant » > « Joueurs ».</p><p class="sub">L'application fonctionne sans connexion Internet et ne demande aucune autorisation sensible (ni micro, ni caméra, ni position, ni contacts).</p><p class="sub">La voix utilise des enregistrements inclus dans l'application et la synthèse vocale de l'appareil. Aucun son n'est enregistré.</p><p class="sub">Politique complète, en ligne :<br><b>robotkids.robotkids.workers.dev/privacy</b></p><p class="sub">✉️ contactrobotkids@gmail.com</p>` }),
   abo: () => ({ title: "Abonnement", html: subscriptionHtml() })
 };
 // enregistre les réglages affichés (seuls les champs présents sur l'écran courant)
@@ -514,20 +514,23 @@ function profileEdit(id) {
     applySettings(); chime("done"); toast(isNew ? "Joueur ajouté" : "Enregistré"); speak(DEVICE + (isNew ? `Bienvenue ${name} !` : `Salut ${name} !`), { force: true, full: true }); profilesScreen();
   };
 }
-// ----- Abonnement (Google Play Billing) : verrou pour l'enfant, achat réservé à l'espace parents -----
+// ----- Abonnement (Google Play Billing / App Store) : verrou pour l'enfant, achat réservé à l'espace parents -----
+// iPhone : informations exigées par Apple à côté des boutons d'abonnement (essai, renouvellement automatique, annulation)
+const APPLE_TERMS = `<p class="sub">Premier abonnement : 7 jours d'essai gratuit, puis le prix affiché. Le paiement est débité sur votre compte Apple. L'abonnement se renouvelle automatiquement, sauf si vous l'annulez au moins 24 heures avant la fin de la période en cours, dans les Réglages de l'iPhone (votre nom &gt; Abonnements).</p>`;
 function subscriptionHtml() {
-  const st = billingState(), P = st.plans || {};
+  const st = billingState(), P = st.plans || {}, apple = isApple();
   if (!billingEnabled()) return `<div class="row"><span>Version gratuite</span><span aria-hidden="true">⭐</span></div><p class="sub">Les abonnements se gèrent depuis l'appli Android RobotKids.</p>`;
-  if (st.active) return `<div id="subscr" class="row"><span>✅ Abonnement actif</span><span aria-hidden="true">⭐</span></div><p class="sub">Merci ! Tout RobotKids est ouvert.</p><p class="sub">Pour gérer ou annuler : Google Play &gt; Profil &gt; Paiements et abonnements &gt; Abonnements.</p><button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>`;
+  if (st.active) return `<div id="subscr" class="row"><span>✅ Abonnement actif</span><span aria-hidden="true">⭐</span></div><p class="sub">Merci ! Tout RobotKids est ouvert.</p>${apple ? `<p class="sub">Pour gérer ou annuler : Réglages de l'iPhone &gt; votre nom &gt; Abonnements.</p><button class="big-btn alt" data-link="manage">⚙️ Gérer mon abonnement</button>` : `<p class="sub">Pour gérer ou annuler : Google Play &gt; Profil &gt; Paiements et abonnements &gt; Abonnements.</p>`}<button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>${apple ? legalHtml() : ""}`;
   if (!st.checked) return `<div id="subscr"></div><p class="sub">Vérification de l'abonnement…</p>`;
   const plan = (id, per) => { const p = P[id]; return p ? `<button class="big-btn" data-plan="${id}">${p.trial ? `Essai gratuit 7 jours, puis ${p.price} / ${per}` : `S'abonner : ${p.price} / ${per}`}</button>` : ""; };
   const buttons = plan(PLAN_MONTHLY, "mois") + plan(PLAN_YEARLY, "an");
-  const info = buttons ? `<p class="sub">Choisissez votre formule.</p>${buttons}<p class="sub">Vous pouvez annuler à tout moment dans Google Play (Profil &gt; Paiements et abonnements &gt; Abonnements) : rien n'est débité si vous annulez avant la fin de l'essai. L'abonnement se renouvelle automatiquement.</p>` : `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p><p class="sub">Vérifiez la connexion Internet et le compte Google Play, puis touchez « Restaurer mes achats ».</p>${st.debug ? `<p class="sub bdiag" data-silent>Diagnostic : ${escH(st.debug)}</p>` : ""}`;
-  return `<div id="subscr" class="row"><span>RobotKids est réservé aux abonnés.</span><span aria-hidden="true">🔒</span></div>${st.pending ? `<p class="sub">⏳ Paiement en attente de confirmation par Google Play.</p>` : ""}${info}<button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>`;
+  const info = buttons ? `<p class="sub">Choisissez votre formule.</p>${buttons}${apple ? APPLE_TERMS : `<p class="sub">Vous pouvez annuler à tout moment dans Google Play (Profil &gt; Paiements et abonnements &gt; Abonnements) : rien n'est débité si vous annulez avant la fin de l'essai. L'abonnement se renouvelle automatiquement.</p>`}` : `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p><p class="sub">${apple ? "Vérifiez la connexion Internet et le compte Apple, puis touchez « Restaurer mes achats »." : "Vérifiez la connexion Internet et le compte Google Play, puis touchez « Restaurer mes achats »."}</p>${st.debug ? `<p class="sub bdiag" data-silent>Diagnostic : ${escH(st.debug)}</p>` : ""}`;
+  return `<div id="subscr" class="row"><span>RobotKids est réservé aux abonnés.</span><span aria-hidden="true">🔒</span></div>${st.pending ? `<p class="sub">${apple ? "⏳ Paiement en attente de confirmation par l'App Store." : "⏳ Paiement en attente de confirmation par Google Play."}</p>` : ""}${info}<button class="big-btn alt" id="brestore">↻ Restaurer mes achats</button>${apple ? legalHtml() : ""}`;
 }
 function wireSubscription() {
   overlay.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
   const r = $("#brestore"); if (r) r.onclick = () => refreshBilling();
+  wireLegal(overlay);
 }
 let wasLocked = false;
 function applyLock() {
