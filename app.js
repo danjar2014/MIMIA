@@ -572,7 +572,7 @@ function parentScreen(id) {
 }
 function settings() {
   overlay.style.display = "flex";
-  overlay.innerHTML = `<div class="panel parentpanel" data-silent><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${tileIcon(P3D[id]) || ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}<div class="cfmbtns"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div></div>`;
+  overlay.innerHTML = `<div class="panel parentpanel" data-silent><div class="pctop"><button class="cfmno" id="pclose" aria-label="Fermer l'espace parents">✖</button></div><h1>Espace parents</h1>${PARENT_BLOCKS.map(b => `<h2 class="pbtitle">${b.title}</h2><div class="pgrid2">${b.tiles.map(([id, ic, nm, hue]) => `<button class="tile" data-id="${id}" style="--tc:${hue}"><span class="tpic" aria-hidden="true">${tileIcon(P3D[id]) || ic}</span><b>${nm}</b></button>`).join("")}</div>`).join("")}</div>`;
   overlay.querySelectorAll(".tile").forEach(b => b.onclick = () => { if (b.dataset.id === "suivi") { overlay.style.display = "none"; overlay.innerHTML = ""; dashboard(); } else parentScreen(b.dataset.id); });
   $("#pclose").onclick = closeSettings;
 }
