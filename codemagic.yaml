@@ -12,7 +12,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: RobotKids ASC
+      app_store_connect: CodeMagic
     environment:
       flutter: stable   # l'APK Android est compilé avec Flutter 3.47.9 (stable)
       xcode: latest
