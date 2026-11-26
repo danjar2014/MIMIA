@@ -24,8 +24,8 @@ Achat unique : **robotkids_unlock**, non consommable, 4,99 €. Pas d'abonnement
 2. **Achat intégré** : créez `robotkids_unlock` (Non consommable, 4,99 €) et **rattachez-le à la première version de l'appli** avant d'envoyer à la revue. Apple refuse un premier achat envoyé seul.
 3. **Confidentialité de l'App Store** (« App Privacy ») : répondez **« Aucune donnée collectée »**.
 4. **Questionnaire d'âge** : répondez « Aucun » / « Non » à toutes les questions de contenu sensible.
-5. **Captures d'écran iPhone** : Apple demande 1320 × 2868 (6,9 pouces) ou 1290 × 2796. Nos captures actuelles (720 × 1280) ne passent pas : je les régénère à la bonne taille avant l'envoi.
-6. **URL de confidentialité** : https://robotkids.robotkids.workers.dev/privacy (la page doit être republiée après le changement de texte d'aujourd'hui).
+5. **Captures d'écran iPhone** : faites, 8 images en 1320 × 2868 dans `store/appstore/screenshots/` (script `store/make-screenshots-ios.mjs`). À déposer dans la version 1.0, taille 6,9 pouces.
+6. **URL de confidentialité** : https://robotkids.robotkids.workers.dev/privacy (page publiée).
 7. **URL d'assistance** : le site RobotKids, ou une adresse e-mail de contact.
 8. **Coordonnées pour la revue** : prénom, nom, téléphone au format international (+33…), e-mail.
 
@@ -71,8 +71,9 @@ Achat unique : **robotkids_unlock**, non consommable, 4,99 €. Pas d'abonnement
 
 ### Achat intégré `robotkids_unlock`
 - **Nom affiché** FR : RobotKids : accès complet · EN : RobotKids: Full access
-- **Description** FR : Un seul paiement pour débloquer tous les jeux, leçons et labos de RobotKids, pour toujours. Sans abonnement. · EN : One payment unlocks every game, lesson and lab in RobotKids, forever. No subscription.
-- **Capture pour la revue** : l'écran « Achat » de l'espace parents (bouton « Débloquer RobotKids : 4,99 € »).
+- **Description** (45 caractères max chez Apple) FR : Débloque tous les jeux, en un seul achat. · EN : Unlocks every game with one purchase.
+- **Capture pour la revue** : `store/appstore/iap-review-achat.png` (écran « Achat » de l'espace parents, bouton « Débloquer RobotKids : 4,99 € »).
+- **État (26 nov.)** : créé dans App Store Connect (Apple ID 6839771847), 4,99 € base France, tous pays, FR + EN. Reste : déposer la capture de revue.
 
 ## 4. Notes pour la revue (champ « Notes » d'App Store Connect)
 
