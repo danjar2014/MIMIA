@@ -183,7 +183,7 @@ function ageChooser() {
   Object.entries(BANDS).forEach(([k, b]) => { const x = el("button", "big-btn", b.name); x.onclick = () => { S.age = k; save(); overlay.style.display = "none"; home(); }; overlay.querySelector(".agebtns").append(x); });
 }
 // première configuration : obligatoirement par un parent (code parent + profil de l'enfant), puis l'enfant commence
-function startSetup() { startParentSetup(overlay, () => { document.body.classList.remove("parentflow"); applySettings(); applyLock(); if (!isLocked()) home(); }); }
+function startSetup() { startParentSetup(overlay, () => { document.body.classList.remove("parentflow"); applySettings(); applyLock(); home(); }); }
 function startOnboarding() {
   mountOnboarding(overlay, ans => { applySettings(); home(); if (ans.rank === 0) playLearn("l1"); else parcours(); });
 }
@@ -356,7 +356,19 @@ function freeDraw(band, data) { activity("Dessin libre", "draw", "free", s => { 
 function freeDance(band, data) { activity("Ma danse", "dance", "free", s => { const c = mountDance(s, band, { onWin: () => markDone("dance", "free"), onSave: (d) => keep("dance", "Ma danse", { band, lists: d }) }); if (data) c.editor.set(data); return c; }, createMenu); }
 
 // ---------- activité générique ----------
+// Version démo : tant que RobotKids n'est pas acheté, seuls quelques niveaux d'essai s'ouvrent (un par thème) ; le reste affiche l'écran « version complète ».
+const DEMO_FREE = new Set(["learn:l1", "learn:l2", "disc:d1", "prog:a1", "prog:a2", "build:e1", "code:k1", "lab:k1", "petits:chiffres", "petits:couleurs", "puzzle:z1", "puzzle:a1", "draw:free"]);
+CATEGORIES.forEach(c => { if (c.games[0]) DEMO_FREE.add("monte:" + c.games[0][0]); });
+const demoGate = (sec, id) => isLocked() && !DEMO_FREE.has(sec + ":" + id);
+function demoWall() {
+  const msg = "Ce niveau fait partie de RobotKids complet. Demande à un parent de le débloquer.";
+  overlay.style.display = "flex"; overlay.innerHTML = `<div class="panel" data-silent><h1>🔒 Version démo</h1><p class="sub">${msg}</p><p class="sub">Achat unique, sans abonnement.</p><div class="agebtns"><button class="big-btn" id="dwback">⬅️ Continuer la démo</button><button class="big-btn alt" id="dwpar">👨‍👩‍👧 Je suis un parent</button></div></div>`;
+  speak(msg);
+  $("#dwback").onclick = () => { overlay.style.display = "none"; overlay.innerHTML = ""; };
+  $("#dwpar").onclick = openSubscription;
+}
 function activity(title, sec, id, mount, back) {
+  if (demoGate(sec, id)) return demoWall();
   leave(); track(sec, id, title); if (sceneApi) sceneApi.set(sceneFor(sec)); app.innerHTML = ""; app.append(topbar(title, back)); const stage = el("div", "astage" + (sec === "learn" || sec === "daily" ? " player" : "")); app.append(stage);
   const c = mount(stage); cleanup = () => c && c.destroy && c.destroy(); window.__cur = c;
 }
@@ -444,10 +456,9 @@ function startApp() {
   splashShown = true; showSplash(() => enterApp());   // à l'ouverture : le robot arrive dans l'espace
 }
 function enterApp() {
-  if (!needsParentSetup() && isLocked()) return applyLock();
   if (!needsParentSetup() && S.age && S.placed) welcome(); else home();
 }
-const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; document.body.classList.remove("parentflow"); if (!needsParentSetup() && isLocked()) return applyLock(); onWelcome ? welcome() : home(); };
+const closeSettings = () => { overlay.style.display = "none"; overlay.innerHTML = ""; document.body.classList.remove("parentflow"); onWelcome ? welcome() : home(); };
 
 // ----- Espace parents : deux blocs d'icônes ; chaque icône ouvre un petit écran de quelques réglages (inspiré d'iwawa) -----
 const PARENT_BLOCKS = [
@@ -529,24 +540,15 @@ function wireSubscription() {
   const r = $("#brestore"); if (r) r.onclick = () => refreshBilling();
   wireLegal(overlay);
 }
-let wasLocked = false;
+// Plus de verrou total : sans achat, l'appli reste ouverte en version démo (voir demoGate). Après l'achat, on ferme l'écran « version démo » éventuel.
+let wasDemo = false;
 function applyLock() {
-  const locked = !needsParentSetup() && isLocked();
-  let lk = $("#lock");
-  document.body.classList.toggle("locked", locked);
-  const ap = $("#app"); if (ap) ap.inert = locked;
-  if (!locked) {
-    if (lk) lk.remove();
-    if (wasLocked) { wasLocked = false; document.body.classList.remove("parentflow"); if (overlay.style.display !== "flex") enterApp(); }
-    return;
-  }
-  wasLocked = true;
-  if (setupActive()) document.body.classList.add("parentflow");   // la configuration parent reste visible au-dessus du verrou
-  else if (!document.body.classList.contains("parentflow") && overlay.style.display === "flex") { overlay.style.display = "none"; overlay.innerHTML = ""; }   // un écran de l'enfant était ouvert : on le ferme
-  if (lk) return;
-  lk = el("div", "", `<div class="lockbox" data-silent><div class="lockico" aria-hidden="true">🔒</div><h1>RobotKids est verrouillé</h1><p>Demande à un parent de le débloquer (achat unique, sans abonnement).</p><button class="big-btn" id="lockpar"><span aria-hidden="true">👨‍👩‍👧</span> Je suis un parent</button></div>`);
-  lk.id = "lock"; document.body.appendChild(lk);
-  $("#lockpar").onclick = openSubscription;
+  const demo = !needsParentSetup() && isLocked();
+  document.body.classList.toggle("demo", demo);
+  const lk = $("#lock"); if (lk) lk.remove();
+  const ap = $("#app"); if (ap) ap.inert = false;
+  if (!demo && wasDemo && overlay.style.display === "flex" && overlay.querySelector("#dwback")) { overlay.style.display = "none"; overlay.innerHTML = ""; }
+  wasDemo = demo;
 }
 function openSubscription() { if (needsParentSetup()) return startSetup(); document.body.classList.add("parentflow"); askPin({ title: "🔒 Espace parents", sub: "Entrez le code à 4 chiffres pour ouvrir les réglages.", onOk: () => parentScreen("abo"), onCancel: () => { overlay.style.display = "none"; document.body.classList.remove("parentflow"); } }); }
 onBilling(() => { applyLock(); if (overlay.style.display === "flex" && overlay.querySelector("#subscr, #brestore, [data-plan]")) parentScreen("abo"); });

@@ -97,9 +97,9 @@ export function startParentSetup(host, onDone) {
     step = "done";
     const locked = billingEnabled() && !billingState().active;
     host.innerHTML = `<div class="panel" data-step="done"><h1>✅ Tout est prêt !</h1>
-      <p class="sub">Le code parent est actif. Les réglages ne s'ouvrent plus qu'avec ce code.${locked ? "" : ` Vous pouvez maintenant passer l'appareil à ${esc(S.name)}.`}</p>
-      ${locked ? `<p class="sub">Tant que RobotKids n'est pas débloqué, il reste verrouillé. Vous pourrez l'acheter à tout moment avec le bouton « Je suis un parent ».</p>` : ""}
-      <div class="agebtns"><button class="big-btn" id="dnok">${locked ? "Terminer" : `▶ Laisser ${esc(S.name)} commencer`}</button></div></div>`;
+      <p class="sub">Le code parent est actif. Les réglages ne s'ouvrent plus qu'avec ce code. Vous pouvez maintenant passer l'appareil à ${esc(S.name)}.</p>
+      ${locked ? `<p class="sub">RobotKids est en version démo : quelques niveaux sont ouverts. Vous pourrez le débloquer à tout moment (achat unique) avec le bouton « Je suis un parent ».</p>` : ""}
+      <div class="agebtns"><button class="big-btn" id="dnok">▶ Laisser ${esc(S.name)} commencer</button></div></div>`;
     host.querySelector("#dnok").onclick = () => { active = false; step = ""; host.style.display = "none"; host.innerHTML = ""; onDone && onDone(); };
   }
   intro();
