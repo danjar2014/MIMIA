@@ -1,10 +1,10 @@
 // Première configuration, obligatoirement faite par un parent :
-// 1. une question d'adulte, 2. le code parent (avec son code de secours), 3. le profil de l'enfant, 4. l'abonnement (appli Android : essai gratuit de 7 jours), 5. l'enfant peut jouer.
+// 1. une question d'adulte, 2. le code parent (avec son code de secours), 3. le profil de l'enfant, 4. l'achat unique de 4,99 €, 5. l'enfant peut jouer.
 // Tant que ce n'est pas fait, l'enfant n'a accès à rien. Ensuite, tous les réglages passent par le code parent.
 import { S, save, el } from "./util.js";
 import { hasPin, createPin, askPin } from "./pin.js";
 import { GOALS } from "./xp.js";
-import { billingEnabled, billingState, buyPlan, onBilling, PLAN_MONTHLY, PLAN_YEARLY, isApple, legalHtml, wireLegal } from "./billing.js";
+import { billingEnabled, billingState, buyPlan, onBilling, PLAN_FULL, isApple, legalHtml, wireLegal } from "./billing.js";
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 export const AGES = [["z", "3 – 6 ans (les petits)"], ["a", "6 – 8 ans"], ["b", "8 – 10 ans"], ["c", "10 – 12 ans"]];
@@ -40,7 +40,7 @@ export function startParentSetup(host, onDone) {
   const profile = { name: S.name || "", sex: S.sex || "", age: S.age || "a", goal: S.dailyGoalXP || 100, voiceMode: S.voiceMode || "auto", limit: S.dailyLimit || 0 };
   const opts = (list, v) => list.map(([val, lab]) => `<option value="${val}" ${String(v) === String(val) ? "selected" : ""}>${esc(lab)}</option>`).join("");
 
-  // petit repère d'avancement : 4 étapes (question, code, profil, abonnement)
+  // petit repère d'avancement : 4 étapes (question, code, profil, achat)
   const dots = n => `<div class="pdots" role="img" aria-label="Étape ${n} sur 4">${[1, 2, 3, 4].map(i => `<i class="${i < n ? "ok" : i === n ? "on" : ""}"></i>`).join("")}</div>`;
   function intro() {
     const q = adultQuestion();
@@ -83,11 +83,10 @@ export function startParentSetup(host, onDone) {
     step = "plan"; applyProfile(profile);   // le profil est enregistré avant l'achat (l'appli peut passer à l'arrière-plan pendant le paiement)
     const st = billingState(), P = st.plans || {};
     if (st.active) return done();
-    const btn = (id, per) => { const p = P[id]; return p ? `<button class="big-btn" data-plan="${id}">${p.trial ? `Essai gratuit 7 jours, puis ${p.price} / ${per}` : `S'abonner : ${p.price} / ${per}`}</button>` : ""; };
-    const buttons = btn(PLAN_MONTHLY, "mois") + btn(PLAN_YEARLY, "an");
-    host.innerHTML = `<div class="panel" data-step="plan">${dots(4)}<h1>🎁 7 jours d'essai gratuit</h1>
-      ${isApple() ? `<p class="sub">RobotKids fonctionne par abonnement. Premier abonnement : 7 jours d'essai gratuit, puis le prix affiché, débité sur votre compte Apple. Renouvellement automatique, sauf annulation au moins 24 heures avant la fin de la période, dans les Réglages de l'iPhone (votre nom &gt; Abonnements).</p>` : `<p class="sub">RobotKids fonctionne par abonnement. Essayez tout pendant 7 jours : rien n'est débité si vous annulez avant la fin de l'essai, à tout moment, dans Google Play.</p>`}
-      ${buttons || `<p class="sub">Les abonnements ne sont pas disponibles pour le moment.</p>`}${isApple() ? legalHtml() : ""}
+    const pf = P[PLAN_FULL], buttons = pf ? `<button class="big-btn" data-plan="${PLAN_FULL}">Débloquer RobotKids : ${pf.price}</button>` : "";
+    host.innerHTML = `<div class="panel" data-step="plan">${dots(4)}<h1>🎁 Débloquer RobotKids</h1>
+      <p class="sub">Un seul paiement, une seule fois : pas d'abonnement, pas de renouvellement. ${isApple() ? "Le paiement est débité sur votre compte Apple." : "Le paiement est traité par Google Play."}</p>
+      ${buttons || `<p class="sub">L'achat n'est pas disponible pour le moment.</p>`}${isApple() ? legalHtml() : ""}
       <div class="agebtns"><button class="big-btn alt" id="pllater">Plus tard</button></div></div>`;
     host.querySelectorAll("[data-plan]").forEach(b => b.onclick = () => { b.disabled = true; buyPlan(b.dataset.plan).finally(() => { b.disabled = false; }); });
     host.querySelector("#pllater").onclick = done;
@@ -99,7 +98,7 @@ export function startParentSetup(host, onDone) {
     const locked = billingEnabled() && !billingState().active;
     host.innerHTML = `<div class="panel" data-step="done"><h1>✅ Tout est prêt !</h1>
       <p class="sub">Le code parent est actif. Les réglages ne s'ouvrent plus qu'avec ce code.${locked ? "" : ` Vous pouvez maintenant passer l'appareil à ${esc(S.name)}.`}</p>
-      ${locked ? `<p class="sub">Sans abonnement, RobotKids reste verrouillé. Vous pourrez commencer l'essai gratuit à tout moment avec le bouton « Je suis un parent ».</p>` : ""}
+      ${locked ? `<p class="sub">Tant que RobotKids n'est pas débloqué, il reste verrouillé. Vous pourrez l'acheter à tout moment avec le bouton « Je suis un parent ».</p>` : ""}
       <div class="agebtns"><button class="big-btn" id="dnok">${locked ? "Terminer" : `▶ Laisser ${esc(S.name)} commencer`}</button></div></div>`;
     host.querySelector("#dnok").onclick = () => { active = false; step = ""; host.style.display = "none"; host.innerHTML = ""; onDone && onDone(); };
   }

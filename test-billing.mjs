@@ -11,17 +11,17 @@ let B = await import("./billing.js?web"); B.initBilling();
 t("web / PWA : pas de verrou", !B.billingEnabled() && !B.isLocked());
 
 // 2. appli Android simulée : abonnement absent -> verrou ; actif -> ouvert
-let reply = { checked: true, available: true, active: false, pending: false, error: null, plans: { robotkids_monthly: { price: "3,99 €", trial: true } } };
+let reply = { checked: true, available: true, active: false, pending: false, error: null, plans: { robotkids_unlock: { price: "4,99 €", trial: false } } };
 globalThis.window.flutter_inappwebview = { callHandler: async () => reply };
 B = await import("./billing.js?android"); await B.initBilling(); await new Promise(r => setTimeout(r, 20));
 t("Android sans abonnement : verrouillé", B.billingEnabled() && B.isLocked());
-t("prix et essai reçus de Google Play", B.billingState().plans.robotkids_monthly.trial === true);
+t("prix et essai reçus de Google Play", B.billingState().plans.robotkids_unlock.price === "4,99 €" && B.billingState().plans.robotkids_unlock.trial === false);
 reply = { ...reply, active: true }; await window.__billingPush();
 t("abonnement actif : ouvert", !B.isLocked());
-// 3. hors ligne : erreur de Google Play, abonnement vu actif il y a moins de 3 jours -> reste ouvert
+// 3. hors ligne : erreur de Google Play, achat vu actif il y a moins de 90 jours -> reste ouvert
 reply = { ...reply, active: false, error: "query" }; await window.__billingPush();
 t("hors ligne : délai de grâce de 3 jours", !B.isLocked());
-store["rk-sub-last"] = String(Date.now() - 4 * 24 * 3600 * 1000); await window.__billingPush();
+store["rk-sub-last"] = String(Date.now() - 100 * 24 * 3600 * 1000); await window.__billingPush();
 t("hors ligne depuis plus de 3 jours : verrouillé", B.isLocked());
 // 4. Google confirme la fin de l'abonnement
 reply = { ...reply, error: null }; await window.__billingPush();
@@ -29,6 +29,6 @@ t("abonnement terminé (confirmé par Google) : verrouillé", B.isLocked() && !(
 // 5. le code est branché
 const app = src("app.js"), dart = src("flutter_app/lib/main.dart"), bill = src("flutter_app/lib/billing.dart");
 t("achat protégé par le code parent (écran Abonnement dans l'espace parents)", /\["privacy"/.test(app) && /openSubscription/.test(app) && /askPin\(\{[^}]*onOk: \(\) => parentScreen\("abo"\)/.test(app));
-t("côté Android : canal « billing », accusé de réception de l'achat, essai gratuit choisi", /handlerName: 'billing'/.test(dart) && /completePurchase/.test(bill) && /priceAmountMicros == 0/.test(bill) && /robotkids_monthly/.test(bill) && /robotkids_yearly/.test(bill));
+t("côté Android : canal « billing », accusé de réception de l'achat, essai gratuit choisi", /handlerName: 'billing'/.test(dart) && /completePurchase/.test(bill) && /robotkids_unlock/.test(bill) && /buyNonConsumable/.test(bill));
 t("sw.js connaît billing.js", /billing\.js/.test(src("sw.js")));
 console.log(bad ? "PROBLEMES: " + bad : "L'ABONNEMENT FONCTIONNE");

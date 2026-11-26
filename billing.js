@@ -1,10 +1,10 @@
-// Abonnement RobotKids (Google Play Billing sur Android, App Store sur iPhone / iPad).
+// Achat unique RobotKids, 4,99 € (Google Play Billing sur Android, App Store sur iPhone / iPad).
 // Dans l'appli mobile (Flutter), la page web parle au code natif par le canal « billing » (flutter_inappwebview).
 // Sur le web / en PWA, il n'y a pas de paiement : aucun verrou (billingEnabled() reste faux).
 // Pour tester dans un navigateur : localStorage["rk-billing-mock"] = "locked" ou "active" (+ ["rk-billing-store"] = "apple" pour les écrans iPhone).
-const GRACE_MS = 3 * 24 * 3600 * 1000;   // hors ligne : on garde l'accès 3 jours après le dernier abonnement vu actif
+const GRACE_MS = 90 * 24 * 3600 * 1000;   // hors ligne : un achat unique ne s'efface pas, on garde l'accès 90 jours après le dernier achat vu actif
 const LAST_KEY = "rk-sub-last", MOCK_KEY = "rk-billing-mock";
-export const PLAN_MONTHLY = "robotkids_monthly", PLAN_YEARLY = "robotkids_yearly";
+export const PLAN_FULL = "robotkids_unlock";
 
 let enabled = false, mock = null;
 try { mock = localStorage.getItem(MOCK_KEY); } catch (e) {}
@@ -12,7 +12,7 @@ const state = { store: "google", checked: false, available: false, active: false
 const listeners = new Set();
 const handler = () => { const fi = window.flutter_inappwebview; return fi && fi.callHandler ? fi : null; };
 
-const MOCK_PLANS = { [PLAN_MONTHLY]: { price: "3,99 €", trial: true }, [PLAN_YEARLY]: { price: "29,99 €", trial: true } };
+const MOCK_PLANS = { [PLAN_FULL]: { price: "4,99 €", trial: false } };
 
 function apply(r) {
   if (!r) return;
@@ -21,7 +21,7 @@ function apply(r) {
   try {
     if (active) localStorage.setItem(LAST_KEY, String(Date.now()));
     else if (state.error) { const last = +localStorage.getItem(LAST_KEY) || 0; if (Date.now() - last < GRACE_MS) active = true; }   // pas de réseau : délai de grâce
-    else localStorage.removeItem(LAST_KEY);   // Google confirme : plus d'abonnement
+    else localStorage.removeItem(LAST_KEY);   // la boutique confirme : plus d'achat (remboursement)
   } catch (e) {}
   state.active = active;
   listeners.forEach(f => { try { f(); } catch (e) {} });
@@ -32,7 +32,7 @@ async function call(action, id) {
   if (mock) {
     if (action === "buy") { mock = "active"; try { localStorage.setItem(MOCK_KEY, "active"); } catch (e) {} }
     let store = "google"; try { store = localStorage.getItem("rk-billing-store") || "google"; } catch (e) {}   // test des écrans iPhone : "apple"
-    return { store, checked: true, available: true, active: mock === "active", pending: false, error: null, plans: store === "apple" ? { [PLAN_MONTHLY]: { price: "3,99 €", trial: null }, [PLAN_YEARLY]: { price: "29,99 €", trial: null } } : MOCK_PLANS };
+    return { store, checked: true, available: true, active: mock === "active", pending: false, error: null, plans: MOCK_PLANS };
   }
   if (!fi) return null;
   try { return await fi.callHandler("billing", action, id); } catch (e) { return null; }
@@ -40,7 +40,7 @@ async function call(action, id) {
 
 export const billingEnabled = () => enabled;
 export const isApple = () => state.store === "apple";
-// Liens obligatoires des boutiques (abonnement) : seulement dans l'espace parents, ouverts dans le navigateur par l'appli
+// Liens des boutiques : seulement dans l'espace parents, ouverts dans le navigateur par l'appli
 // (les adresses permises sont aussi vérifiées côté Flutter : kExternalOk dans main.dart).
 export const LINKS = {
   privacy: "https://robotkids.robotkids.workers.dev/privacy",

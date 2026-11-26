@@ -2,16 +2,13 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-import 'package:in_app_purchase_storekit/store_kit_2_wrappers.dart';
 
-// Abonnement RobotKids : Google Play Billing sur Android, App Store (StoreKit 2) sur iPhone / iPad.
-// Mêmes identifiants de produits dans la Play Console et dans App Store Connect (un groupe d'abonnements,
-// avec une offre de lancement « essai gratuit 7 jours » sur chacun) :
-//   robotkids_monthly : 3,99 € / mois      robotkids_yearly : 29,99 € / an
-const String kMonthly = 'robotkids_monthly';
-const String kYearly = 'robotkids_yearly';
-const Set<String> kProductIds = {kMonthly, kYearly};
+// Achat unique RobotKids (4,99 €, sans abonnement) : Google Play Billing sur Android, App Store (StoreKit 2) sur iPhone.
+// Un seul produit « non consommable » (produit intégré, pas un abonnement), même identifiant dans la Play Console
+// et dans App Store Connect :  robotkids_unlock : 4,99 € une fois pour toutes.
+// Le prix affiché vient de la boutique : il se change dans la Play Console / App Store Connect.
+const String kUnlock = 'robotkids_unlock';
+const Set<String> kProductIds = {kUnlock};
 
 class Billing {
   Billing._();
@@ -33,9 +30,8 @@ class Billing {
 
   final Map<String, Map<String, Object?>> plans = {};
   final Map<String, ProductDetails> _details = {};
-  final Map<String, String> _offerTokens = {}; // Android : offre (essai) choisie pour chaque produit
 
-  // iPhone : pendant une relecture des achats, on note si un abonnement en cours a été vu
+  // iPhone : pendant une relecture des achats, on note si l'achat a été vu
   bool _restoring = false, _restoreSeen = false;
 
   Map<String, Object?> status() => {
@@ -124,49 +120,11 @@ class Billing {
     final res = await _iap.queryProductDetails(kProductIds);
     plans.clear();
     _details.clear();
-    _offerTokens.clear();
     final seen = <String>[];
-    if (ios) {
-      for (final d in res.productDetails) {
-        final unit = d is AppStoreProduct2Details ? d.sk2Product.subscription?.subscriptionPeriod.unit : null;
-        seen.add('${d.id}:${unit?.name ?? '?'}');
-        _details[d.id] = d;
-        plans[d.id] = {
-          'price': d.price,
-          'period': unit == SK2SubscriptionPeriodUnit.year ? 'P1Y' : 'P1M',
-          'trial': null, // l'App Store ne dit pas ici si l'essai est encore possible : la fenêtre d'achat d'Apple l'affiche
-        };
-      }
-    } else {
-      final best = <String, GooglePlayProductDetails>{};
-      final bestTrial = <String, bool>{};
-      for (final d in res.productDetails) {
-        if (d is! GooglePlayProductDetails) {
-          seen.add('${d.id}:type?');
-          continue;
-        }
-        final offers = d.productDetails.subscriptionOfferDetails;
-        final idx = d.subscriptionIndex;
-        seen.add('${d.id}:${d.productDetails.productType.name}/offres=${offers?.length}/i=$idx');
-        if (offers == null || idx == null || idx >= offers.length) continue;
-        final phases = offers[idx].pricingPhases;
-        final trial = phases.isNotEmpty && phases.first.priceAmountMicros == 0;
-        if (!best.containsKey(d.id) || (trial && bestTrial[d.id] != true)) {
-          best[d.id] = d;
-          bestTrial[d.id] = trial;
-        }
-      }
-      best.forEach((id, d) {
-        final offer = d.productDetails.subscriptionOfferDetails![d.subscriptionIndex!];
-        final phases = offer.pricingPhases;
-        _details[id] = d;
-        _offerTokens[id] = offer.offerIdToken;
-        plans[id] = {
-          'price': phases.last.formattedPrice,
-          'period': phases.last.billingPeriod,
-          'trial': bestTrial[id] == true,
-        };
-      });
+    for (final d in res.productDetails) {
+      seen.add(d.id);
+      _details[d.id] = d;
+      plans[d.id] = {'price': d.price, 'trial': false};
     }
     _dbg('trouvés=[${seen.join(', ')}] introuvables=${res.notFoundIDs} erreur=${res.error == null ? '-' : '${res.error!.code}: ${res.error!.message}'} retenus=${_details.keys.toList()}');
   }
@@ -176,10 +134,7 @@ class Billing {
     final det = _details[id];
     if (det == null) return false;
     try {
-      final PurchaseParam param = ios
-          ? PurchaseParam(productDetails: det)
-          : GooglePlayPurchaseParam(productDetails: det, offerToken: _offerTokens[id]);
-      return await _iap.buyNonConsumable(purchaseParam: param);
+      return await _iap.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: det));
     } catch (e) {
       _dbg('achat: $e');
       return false;
@@ -188,7 +143,7 @@ class Billing {
 
   Future<void> _onPurchases(List<PurchaseDetails> list) async {
     // Android : la liste reçue décrit les achats en cours ; iPhone : le flux n'apporte que des nouveautés
-    // (achat, renouvellement, relecture), la fin d'un abonnement se voit à la relecture (refresh).
+    // (achat, relecture) ; un achat remboursé se voit à la relecture (refresh).
     await _apply(list, replace: !ios);
     if (!_restoring) onChange?.call();
   }
