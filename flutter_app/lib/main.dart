@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'dart:io' show HttpClient, Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -94,7 +94,44 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
   // retour dans l'appli (par exemple après avoir géré l'abonnement dans Google Play ou les Réglages de l'iPhone) : on relit les achats
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) Billing.i.refresh();
+    if (state == AppLifecycleState.resumed) {
+      Billing.i.refresh();
+      _ensureServer();
+    }
+  }
+
+  // iPhone : en arrière-plan, iOS peut couper le petit serveur local. Au retour, les images (icônes 3D) ne se chargeaient plus
+  // et la page affichait des « ? ». On teste le serveur ; s'il ne répond plus, on le relance puis on recharge la page
+  // (les progrès sont gardés dans le stockage de la page).
+  bool _checkingServer = false;
+  Future<void> _ensureServer() async {
+    if (_checkingServer) return;
+    _checkingServer = true;
+    try {
+      var ok = false;
+      final client = HttpClient()..connectionTimeout = const Duration(seconds: 2);
+      try {
+        final req = await client.getUrl(Uri.parse('http://localhost:$kPort/icon.svg'));
+        final res = await req.close().timeout(const Duration(seconds: 3));
+        ok = res.statusCode == 200;
+        await res.drain<void>();
+      } catch (_) {
+        ok = false;
+      } finally {
+        client.close(force: true);
+      }
+      if (!ok) {
+        try {
+          await server.close();
+        } catch (_) {}
+        try {
+          await server.start();
+        } catch (_) {}
+        if (mounted) ctrl?.reload();
+      }
+    } finally {
+      _checkingServer = false;
+    }
   }
 
   @override
